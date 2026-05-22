@@ -1,0 +1,143 @@
+/* Fondo con imagen sutil */
+body {
+    
+    min-height: 100vh;
+    margin: 0px;
+    padding: 0px;
+}
+
+.login-boton-superior {
+    position: relative;
+    z-index: 2;           /* Por encima del overlay (::before z-index: 0) */
+    display: flex;
+    justify-content: center;  /* MÓVIL: centrado por defecto */
+}
+
+.btn-flotante-login {
+    background: white;
+    color: #667eea;
+    padding: 10px 24px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    width: 100%;          /* MÓVIL: ancho completo */
+    text-align: center;
+    max-width: 300px;
+}
+
+.btn-flotante-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    background: #f8f9fa;
+}
+
+
+.login-fondo-con-imagen {
+    position: relative;
+    /* Imagen de fondo */
+    background-image: url('/images/login-fondo.jpg');
+    
+    /* La imagen cubre todo el área */
+    background-size:cover;
+    
+    /* La imagen no se repite */
+    background-repeat: no-repeat;
+    
+    /* La imagen se centra */
+    background-position: center;
+    
+    /* Altura mínima para que se vea bien */
+    min-height: 100vh;
+    
+    /* Espaciado interno */
+    
+    /* Si quieres un color de "respaldo" mientras carga la imagen */
+    background-color: #667eea;
+    padding-top: 50px;
+}
+
+.login-fondo-con-imagen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 0;
+}
+
+/* Tarjeta con efecto glassmorphism */
+.card {
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+/* Inputs más bonitos */
+.form-control {
+    border-radius: 10px;
+    padding: 12px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Botón con gradiente */
+.btn-primary {
+    background: #003d7a;
+    color:white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.login-fondo-con-imagen .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Animación de entrada */
+.card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   DESKTOP (a partir de 769px)
+   ============================================ */
+@media (min-width: 769px) {
+    .login-boton-superior {
+        justify-content: flex-end;  /* DESKTOP: a la derecha */
+        padding-right: 20px;
+    }
+    
+    .btn-flotante-login {
+        width: auto;          /* DESKTOP: ancho natural del texto */
+        max-width: none;
+    }
+}

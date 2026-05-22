@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <footer th:fragment="footer-principal" class="footer-container">
+        <!-- Parte superior: logo + redes -->
+        <div class="footer-content">
+            
+            <!-- Izquierda: nombre -->
+            <div class="footer-logo">
+                <h2>CasaJusta</h2>
+            </div>
+            
+            <!-- Derecha: redes sociales (imágenes descargadas) -->
+            <div class="footer-social">
+                <a href="#" class="social-link" aria-label="Gmail">
+                    <img th:src="@{/images/logo-gmail.jpg}" alt="Gmail">
+                </a>
+                <a href="#" class="social-link" aria-label="Contacto">
+                    <img th:src="@{/images/logo-contacto.jpg}" alt="Contacto">
+                </a>
+            </div>
+            
+        </div>
+        
+        <!-- Barra separadora -->
+        <div class="footer-line"></div>
+    </footer>
+</body>
+</html>

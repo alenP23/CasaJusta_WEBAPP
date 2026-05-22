@@ -1,0 +1,29 @@
+.navbar-container {
+    background-color:#003d7a;
+    padding: 10px 10px;
+    width: 100%;
+}
+
+.navbar-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content:right;
+    align-items:end;
+}
+
+
+.navbar-btn {
+    background-color: white;
+    color: black;
+    padding: 8px 24px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.navbar-btn:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+}

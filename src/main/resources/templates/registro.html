@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casa Justa - Registrarse</title>
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" href="/css/register.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-title">Casa Justa</div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="form-card">
+            <h2 class="form-title">Registrarse</h2>
+            
+            <!-- Mensaje de error si el DNI ya existe -->
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+            
+            <!-- ✅ FORMULARIO CORREGIDO: th:action + method="post" -->
+            <form th:action="@{/registro}" method="post" id="registerForm">
+                
+                <!-- DNI (NUEVO - obligatorio para tu sistema) -->
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <i class="fa-solid fa-id-card" style="font-size: 16px; color: #6b7b8f;"></i>
+                        </span>
+                        <input type="text" class="form-input" name="dni" placeholder="DNI (ej: 12345678A)" required>
+                    </div>
+                </div>
+                <!-- NUEVO: Nombre de usuario -->
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <i class="fa-solid fa-user" style="font-size: 16px; color: #6b7b8f;"></i>
+                        </span>
+                        <input type="text" class="form-input" name="nombreUsuario" placeholder="Nombre de usuario" required>
+                    </div>
+                </div>
+
+                <!-- Nombre -->
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </span>
+                        <input type="text" class="form-input" name="nombre" placeholder="Nombre" required>
+                    </div>
+                </div>
+
+                <!-- Apellido -->
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </span>
+                        <input type="text" class="form-input" name="apellido" placeholder="Apellido" required>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </span>
+                        <input type="email" class="form-input" name="email" placeholder="Correo electrónico" required>
+                    </div>
+                </div>
+
+                <!-- Contraseña -->
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </span>
+                        <input type="password" class="form-input" name="contrasena" id="passwordInput" placeholder="Contraseña" required>
+                        <span class="password-toggle" id="togglePassword">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Fecha de nacimiento -->
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <i class="fa-regular fa-calendar" style="font-size: 16px; color: #6b7b8f;"></i>
+                        </span>
+                        <input type="date" class="form-input" name="fechaNacimiento" required>
+                    </div>
+                </div>
+
+                <!-- Género -->
+                <div class="form-group">
+                    <div class="input-wrapper select-wrapper">
+                        <span class="input-icon">
+                            <i class="fa-solid fa-venus-mars" style="font-size: 16px; color: #6b7b8f;"></i>
+                        </span>
+                        <select class="form-select" name="genero" required>
+                            <option value="" disabled selected>Género</option>
+                            <option value="Hombre">Hombre</option>
+                            <option value="Mujer">Mujer</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                        <span class="select-arrow">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Rol (oculto - todos los registros desde aquí son USER) -->
+                <input type="hidden" name="rol" value="USER">
+
+                <!-- Mascotas (checkbox para que sea Boolean) -->
+                <div class="form-group">
+                    <div class="input-wrapper" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" name="mascotas" value="true">
+                            <span>¿Tienes mascotas?</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Fumador (checkbox para que sea Boolean) -->
+                <div class="form-group">
+                    <div class="input-wrapper" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" name="fumador" value="true">
+                            <span>¿Eres fumador?</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Pareja (checkbox para que sea Boolean) -->
+                <div class="form-group">
+                    <div class="input-wrapper" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" name="pareja" value="true">
+                            <span>¿Tienes pareja?</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn">Registrarse</button>
+            </form>
+        </div>
+    </div>
+    <div th:replace="~{fragmentos/footer :: footer-principal}"></div>
+    <script src="/js/script.js"></script>
+</body>
+</html>

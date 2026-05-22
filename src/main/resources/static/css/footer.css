@@ -1,0 +1,78 @@
+.footer-container {
+    background-color: #003d7a;
+    padding: 25px 0 15px;
+    width: 100%;
+    margin-top: auto;  /* Empuja el footer abajo */
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-logo h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
+    color: white;
+}
+
+.footer-social {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.social-link {
+    display: block;
+    width: 48px;          /* Móvil: más grande que antes (32px) */
+    height: 48px;
+    border-radius: 50%;    /* Bordes redondos (círculo perfecto) */
+    overflow: hidden;      /* Recorta la imagen si sobresale */
+    transition: transform 0.2s, opacity 0.2s;
+    background: white;     /* Fondo blanco si la imagen tiene transparencia */
+}
+
+.social-link:hover {
+    transform: scale(1.15);
+    opacity: 0.8;
+}
+
+.social-link img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;     /* Rellena el círculo sin deformar */
+    border-radius: 50%;    /* Redondeo también en la imagen */
+}
+
+.footer-line {
+    max-width: 1200px;
+    margin: 20px auto 12px;
+    height: 1px;
+    background-color: white;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding: 0 20px;
+}
+
+.footer-bottom p {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+@media (min-width: 769px) {
+    .social-link {
+        width: 56px;       /* Desktop: aún más grandes */
+        height: 56px;
+    }
+}
+        
