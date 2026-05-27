@@ -4,8 +4,6 @@ import edu.mondragon.webengl.CasaJusta.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -23,7 +21,18 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/registro","/inicio", "/vista_casas_usuario", "/css/**", "/js/**", "/images/**").permitAll()
+                // PÚBLICAS: solo login, registro y recursos estáticos
+                .requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll()
+
+                //entrada con usuario de administrador
+                .requestMatchers("/admin/**").hasRole("ADMIN") 
+                
+                // PROTEGIDAS: vista de casas requiere autenticación
+                .requestMatchers("/vista_casas_usuario").authenticated()
+
+                .requestMatchers("/registro").authenticated()
+                
+                // Todo lo demás también requiere login
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -31,14 +40,19 @@ public class SecurityConfig {
                 .defaultSuccessUrl("/vista_casas_usuario", true)
                 .permitAll()
             )
-
             .logout(logout -> logout
                 .logoutSuccessUrl("/login?logout")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
             )
-            .userDetailsService(userDetailsService);  // ← Registras el UserDetailsService aquí
+            // Redirigir raíz "/" a login
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint((request, response, authException) -> 
+                    response.sendRedirect("/login")
+                )
+            )
+            .userDetailsService(userDetailsService);
         
         return http.build();
     }

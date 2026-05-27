@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <aside th:fragment="sidebar-admin" class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-home"></i>
+                <span>PD Admin</span>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a th:href="@{/admin}" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </a>
+            <a th:href="@{/admin/anuncios}" class="nav-item">
+                <i class="fas fa-bullhorn"></i>
+                <span>Anuncios</span>
+            </a>
+            <a th:href="@{/admin/usuarios}" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Usuarios</span>
+            </a>
+            <a th:href="@{/admin/reportes}" class="nav-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reportes</span>
+            </a>
+            <a th:href="@{/admin/configuracion}" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Configuración</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="nav-item logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar sesión</span>
+            </a>
+        </div>
+    </aside>
+</body>
+</html>
