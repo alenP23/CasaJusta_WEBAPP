@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class VistaPisosController {
 
-    @GetMapping("/inicio")
+    @GetMapping("/vista_casas_usuario")
     public String mostrarInicio(Authentication authentication, Model model) {
         if (authentication != null && authentication.isAuthenticated()) {
             model.addAttribute("username", authentication.getName());
             String rol = authentication.getAuthorities().iterator().next().getAuthority();
             model.addAttribute("rol", rol);
         }
-        return "inicio";
+        return "vista_casas_usuario";
     }
 }   

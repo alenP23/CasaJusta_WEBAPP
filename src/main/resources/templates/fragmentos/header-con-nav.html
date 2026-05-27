@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="header-con-nav">
+        <!-- HEADER: Título -->
+        <header class="header-tituluaren-container">
+            <div class="header-orriaren-izena">
+                <h2 id="header-titulua">CasaJusta</h2>
+            </div>
+        </header>
+        
+        <!-- NAVBAR: Navegación -->
+        <nav class="navbar-container">
+            <div class="navbar-content">
+                <!-- Botones a la izquierda -->
+                <div class="nav-links">
+                    <a th:href="@{/vista_casas_usuario}" class="navbar-btn">Inicio</a>
+                    <a href="#" class="navbar-btn">Filtros</a>
+                    <a href="#" class="navbar-btn">Alquiler/Compra</a>
+                    <a href="#" class="navbar-btn">Rango de precio</a>
+                </div>
+                
+                <!-- Usuario a la derecha -->
+                <div class="user-icon" th:if="${username != null}">
+                    <i class="fas fa-user-circle"></i>
+                    <span th:text="${username}">Usuario</span>
+                </div>
+            </div>
+        </nav>
+    </div>
+</body>
+</html>

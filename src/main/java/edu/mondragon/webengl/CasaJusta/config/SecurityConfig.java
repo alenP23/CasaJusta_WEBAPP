@@ -23,14 +23,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/registro","/inicio", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/login", "/registro","/inicio", "/vista_casas_usuario", "/css/**", "/js/**", "/images/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/inicio", true)
+                .defaultSuccessUrl("/vista_casas_usuario", true)
                 .permitAll()
             )
+
             .logout(logout -> logout
                 .logoutSuccessUrl("/login?logout")
                 .invalidateHttpSession(true)
