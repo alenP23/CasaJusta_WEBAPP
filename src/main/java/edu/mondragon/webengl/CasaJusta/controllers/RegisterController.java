@@ -30,7 +30,7 @@ public class RegisterController {
     @PostMapping("/registro")
     public String registrar(
             @RequestParam String dni,
-            @RequestParam String nombreUsuario,  // ← NUEVO
+            @RequestParam String nombreUsuario,
             @RequestParam String nombre,
             @RequestParam String apellido,
             @RequestParam String email,
@@ -49,15 +49,16 @@ public class RegisterController {
             return "registro";
         }
 
-        // NUEVO: Verificar nombre de usuario
+        // Verificar nombre de usuario
         if (usuarioRepository.existsByNombreUsuario(nombreUsuario)) {
             model.addAttribute("error", "Ya existe un usuario con ese nombre de usuario");
             return "registro";
         }
 
+        // Crear usuario
         Usuario usuario = new Usuario();
         usuario.setDni(dni);
-        usuario.setNombreUsuario(nombreUsuario);  // ← NUEVO
+        usuario.setNombreUsuario(nombreUsuario);
         usuario.setNombre(nombre);
         usuario.setApellido(apellido);
         usuario.setEmail(email);
@@ -66,17 +67,18 @@ public class RegisterController {
         usuario.setGenero(genero);
         usuario.setRol(rol);
 
+        // Crear perfil de convivencia si es USER
         if ("USER".equals(rol)) {
             PerfilConvivencia perfil = new PerfilConvivencia();
-            perfil.setDni(dni);
-            perfil.setUsuario(usuario);
+            perfil.setUsuario(usuario);  // Link bidireccional
             perfil.setFumador(fumador != null && fumador);
             perfil.setMascotas(mascotas != null && mascotas);
             perfil.setPareja(pareja != null && pareja);
-            usuario.setPerfilConvivencia(perfil);
+            
+            usuario.setPerfilConvivencia(perfil);  // Link bidireccional
         }
 
-        usuarioRepository.save(usuario);
+        usuarioRepository.save(usuario);  // CascadeType.ALL guarda también el perfil
         return "redirect:/login?registro=exitoso";
     }
 }

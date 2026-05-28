@@ -33,10 +33,13 @@
         </nav>
         
         <div class="sidebar-footer">
-            <a th:href="@{/logout}" class="nav-item logout">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Cerrar sesión</span>
-            </a>
+            <!-- Logout con formulario POST para Spring Security -->
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="nav-item logout" style="width: 100%; border: none; background: none; cursor: pointer; text-align: left;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar sesión</span>
+                </button>
+            </form>
         </div>
     </aside>
 </body>

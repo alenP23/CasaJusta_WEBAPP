@@ -1,6 +1,8 @@
 package edu.mondragon.webengl.CasaJusta.controllers;
 
+import edu.mondragon.webengl.CasaJusta.model.Usuario;
 import edu.mondragon.webengl.CasaJusta.model.Vivienda;
+import edu.mondragon.webengl.CasaJusta.service.UsuarioService;
 import edu.mondragon.webengl.CasaJusta.service.ViviendaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -16,7 +18,11 @@ public class AdminController {
 
     @Autowired
     private ViviendaService viviendaService;
+    
+    @Autowired
+    private UsuarioService usuarioService;  // ← NUEVO
 
+    // ========== PANEL PRINCIPAL (ANUNCIOS) ==========
     @GetMapping
     public String panelAdmin(Authentication authentication, Model model) {
         if (authentication != null) {
@@ -29,6 +35,20 @@ public class AdminController {
         return "vista_casas_admin";
     }
 
+    // ========== USUARIOS ==========
+    @GetMapping("/usuarios")
+    public String listarUsuarios(Authentication authentication, Model model) {
+        if (authentication != null) {
+            model.addAttribute("username", authentication.getName());
+        }
+        
+        List<Usuario> usuarios = usuarioService.findAll();
+        model.addAttribute("usuarios", usuarios);
+        
+        return "admin_usuarios";  // ← NUEVA VISTA
+    }
+
+    // ========== ANUNCIOS CRUD ==========
     @PostMapping("/anuncios/crear")
     public String crearAnuncio(@ModelAttribute Vivienda vivienda) {
         viviendaService.save(vivienda);
@@ -40,4 +60,10 @@ public class AdminController {
         viviendaService.deleteById(id);
         return "redirect:/admin";
     }
+
+    @PostMapping("/usuarios/eliminar")
+    public String eliminarUsuario(@RequestParam Integer id) {   // ← Integer
+    usuarioService.deleteById(id);
+    return "redirect:/admin/usuarios";
+}
 }

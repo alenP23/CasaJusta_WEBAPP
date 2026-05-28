@@ -549,6 +549,113 @@ body {
     background: var(--delete-red-dark);
 }
 
+/* ========== PAGE TITLE ========== */
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+/* ========== TABLA CON SCROLL HORIZONTAL ========== */
+.table-container {
+    width: 100%;
+    overflow-x: auto;           /* ← Scroll horizontal cuando no cabe */
+    -webkit-overflow-scrolling: touch;  /* Smooth scroll en iOS */
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: var(--secondary);
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+.users-table {
+    width: 100%;
+    min-width: 1200px;          /* ← Fuerza scroll si la pantalla es pequeña */
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.users-table thead {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.users-table th {
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 600;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+}
+
+.users-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+.users-table tbody tr:hover {
+    background: var(--primary-light);
+}
+
+/* Badges de rol */
+.role-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.role-admin {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.role-user {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* Iconos check/x */
+.text-success {
+    color: #10b981;
+}
+
+.text-danger {
+    color: #dc2626;
+}
+
+/* Celda de acciones */
+.users-table td:last-child {
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .table-container {
+        border-radius: var(--radius-sm);
+    }
+    
+    .users-table th,
+    .users-table td {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+}
+
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
     .sidebar {
