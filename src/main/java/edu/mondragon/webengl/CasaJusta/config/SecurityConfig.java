@@ -16,28 +16,29 @@ public class SecurityConfig {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private CustomSuccessHandler customSuccessHandler;  // ← NUEVO
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                // PÚBLICAS: solo login, registro y recursos estáticos
-                .requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll()
-
-                //entrada con usuario de administrador
-                .requestMatchers("/admin/**").hasRole("ADMIN") 
+                // PÚBLICAS: login, registro y recursos estáticos
+                .requestMatchers("/login", "/registro", "/css/**", "/js/**", "/images/**").permitAll()
                 
-                // PROTEGIDAS: vista de casas requiere autenticación
+                // ADMIN: solo usuarios con rol ADMIN
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                
+                // USER: usuarios logueados
                 .requestMatchers("/vista_casas_usuario").authenticated()
-
-                .requestMatchers("/registro").authenticated()
                 
-                // Todo lo demás también requiere login
+                // Todo lo demás requiere login
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/vista_casas_usuario", true)
+                .successHandler(customSuccessHandler)  // ← CAMBIO: usa handler personalizado
                 .permitAll()
             )
             .logout(logout -> logout
@@ -46,7 +47,6 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIONID")
                 .permitAll()
             )
-            // Redirigir raíz "/" a login
             .exceptionHandling(ex -> ex
                 .authenticationEntryPoint((request, response, authException) -> 
                     response.sendRedirect("/login")

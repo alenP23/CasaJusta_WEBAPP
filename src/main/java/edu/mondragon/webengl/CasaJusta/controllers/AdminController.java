@@ -26,7 +26,7 @@ public class AdminController {
         List<Vivienda> viviendas = viviendaService.findAll();
         model.addAttribute("viviendas", viviendas);
         
-        return "admin";
+        return "vista_casas_admin";
     }
 
     @PostMapping("/anuncios/crear")
