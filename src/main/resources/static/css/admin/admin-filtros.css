@@ -1,0 +1,209 @@
+/* ========== DROPDOWNS DE FILTROS ========== */
+
+.dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.filter-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--white);
+    color: var(--text-dark);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-chip:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.filter-chip i {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Menú desplegable */
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 220px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 12px 0;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.2s ease;
+}
+
+.dropdown-menu.activo {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu-wide {
+    min-width: 280px;
+}
+
+/* Items del dropdown */
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    font-size: 14px;
+    color: var(--text-dark);
+}
+
+.dropdown-item:hover {
+    background: var(--primary-light);
+}
+
+.dropdown-item input[type="checkbox"],
+.dropdown-item input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--primary);
+}
+
+.dropdown-item i {
+    width: 18px;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+/* Acciones del dropdown */
+.dropdown-actions {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px 4px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+}
+
+.btn-dropdown {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-aplicar {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.btn-aplicar:hover {
+    background: var(--primary-dark);
+}
+
+.btn-limpiar {
+    background: var(--secondary);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+}
+
+.btn-limpiar:hover {
+    background: var(--border);
+}
+
+/* ========== SLIDER DE PRECIO ========== */
+
+.precio-slider-container {
+    padding: 12px 16px;
+}
+
+.precio-slider-container label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+}
+
+.precio-slider-container label span {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.slider-precio {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    margin-bottom: 8px;
+}
+
+.slider-precio::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    border: 3px solid var(--white);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: transform 0.15s ease;
+}
+
+.slider-precio::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
+
+.slider-precio::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    border: 3px solid var(--white);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.slider-rango {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* ========== RESPONSIVE FILTROS ========== */
+@media (max-width: 768px) {
+    .dropdown-menu {
+        left: 0;
+        right: auto;
+    }
+    
+    .dropdown-menu-wide {
+        min-width: 240px;
+    }
+    
+    .header-filters {
+        flex-wrap: wrap;
+    }
+}

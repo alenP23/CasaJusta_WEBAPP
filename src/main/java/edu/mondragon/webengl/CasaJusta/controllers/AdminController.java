@@ -20,7 +20,7 @@ public class AdminController {
     private ViviendaService viviendaService;
     
     @Autowired
-    private UsuarioService usuarioService;  // ← NUEVO
+    private UsuarioService usuarioService;  
 
     // ========== PANEL PRINCIPAL (ANUNCIOS) ==========
     @GetMapping
@@ -65,5 +65,47 @@ public class AdminController {
     public String eliminarUsuario(@RequestParam Integer id) {   // ← Integer
     usuarioService.deleteById(id);
     return "redirect:/admin/usuarios";
-}
+    }
+
+    @GetMapping("/configuracion")
+    public String verConfiguracion(Authentication authentication, Model model) {
+        if (authentication != null) {
+            model.addAttribute("username", authentication.getName());
+        
+            // Obtener el usuario actualmente logueado
+            Usuario usuario = usuarioService.findByNombreUsuario(authentication.getName());
+            model.addAttribute("usuario", usuario);
+        }
+    
+        return "admin/admin_configuracion";
+    }
+
+    @PostMapping("/configuracion/actualizar")
+    public String actualizarPerfil(@ModelAttribute Usuario usuarioActualizado, 
+                                @RequestParam(required = false) String contrasena,
+                                Authentication authentication) {
+    
+        // Obtener usuario original para no perder datos sensibles
+        Usuario usuarioExistente = usuarioService.findById(usuarioActualizado.getUsuarioId());
+                                    
+        // Actualizar campos editables
+        usuarioExistente.setNombre(usuarioActualizado.getNombre());
+        usuarioExistente.setApellido(usuarioActualizado.getApellido());
+        usuarioExistente.setDni(usuarioActualizado.getDni());
+        usuarioExistente.setNombreUsuario(usuarioActualizado.getNombreUsuario());
+        usuarioExistente.setEmail(usuarioActualizado.getEmail());
+        usuarioExistente.setGenero(usuarioActualizado.getGenero());
+        usuarioExistente.setFechaNacimiento(usuarioActualizado.getFechaNacimiento());
+    
+        // Solo actualizar contraseña si se proporcionó una nueva
+        if (contrasena != null && !contrasena.isEmpty()) {
+            // Aquí deberías encriptar la contraseña con BCrypt
+            usuarioExistente.setContrasena(contrasena);
+        }
+    
+        usuarioService.save(usuarioExistente);
+    
+        return "redirect:/admin/configuracion";
+    }
+
 }

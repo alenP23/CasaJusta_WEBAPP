@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="head-admin (titulo)">
+<head th:fragment="head-admin">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${titulo}">Panel Admin</title>
+    <title>Panel Admin</title>
     
-    <link rel="stylesheet" th:href="@{/css/header-nav.css}">
-    <link rel="stylesheet" th:href="@{/css/footer.css}">
-    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <!-- CSS base admin -->
+    <link rel="stylesheet" th:href="@{/css/admin/admin-base.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin-sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin-header.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin-cards.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin-modals.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin-tables.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin-filtros.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin-configuracion.css}">
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body></body>

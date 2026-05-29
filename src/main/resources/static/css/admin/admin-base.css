@@ -1,0 +1,83 @@
+/* ========== VARIABLES ========== */
+:root {
+    --primary: #1e5bc6;
+    --primary-dark: #164a9e;
+    --primary-light: #e8f0fe;
+    --secondary: #f8f9fc;
+    --sidebar-bg: #ffffff;
+    --text-dark: #1a1a2e;
+    --text-muted: #6b7280;
+    --white: #ffffff;
+    --border: #e5e7eb;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --delete-red: #dc2626;
+    --delete-red-dark: #b91c1c;
+    --sidebar-width: 240px;
+}
+
+/* ========== RESET ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--secondary);
+    color: var(--text-dark);
+    line-height: 1.5;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ========== MAIN CONTENT ========== */
+.main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    padding: 0;
+}
+
+/* ========== CONTENT SECTION ========== */
+.content-section {
+    padding: 32px;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: var(--text-dark);
+}
+
+/* ========== PAGE TITLE ========== */
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+/* ========== GRID DE PROPIEDADES ========== */
+.properties-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+}
+
+/* ========== RESPONSIVE BASE ========== */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+    }
+    
+    .content-section {
+        padding: 16px;
+    }
+    
+    .properties-grid {
+        grid-template-columns: 1fr;
+    }
+}

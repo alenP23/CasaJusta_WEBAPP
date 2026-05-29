@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/head/head-admin :: head-admin}">
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <div th:replace="~{fragmentos/navbar/sidebar-admin :: sidebar-admin}"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        
+        <!-- Header superior -->
+        <header class="top-header">
+            <div class="header-filters">
+                <h1 class="page-title">Mi usuario</h1>
+            </div>
+            <div class="header-actions">
+                <div class="user-dropdown">
+                    <div class="user-avatar-mini">
+                        <i class="fas fa-user-circle"></i>
+                        <span th:if="${username != null}" th:text="${username}">Admin</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido del perfil -->
+        <section class="content-section perfil-section">
+            
+            <div class="perfil-container">
+                
+                <!-- Columna izquierda: Avatar y botón -->
+                <div class="perfil-sidebar">
+                    <div class="perfil-avatar-grande">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h2 class="perfil-nombre" th:text="${usuario.nombre + ' ' + usuario.apellido}">Usuario</h2>
+                    <p class="perfil-rol" th:text="${usuario.rol}">ADMIN</p>
+                    <button type="button" class="btn-editar-perfil" id="btnEditarPerfil" onclick="toggleEdicion()">
+                        <i class="fas fa-pen"></i> Editar perfil
+                    </button>
+                </div>
+
+                <!-- Columna derecha: Información personal -->
+                <div class="perfil-datos">
+                    <div class="perfil-header-datos">
+                        <h3>Información personal</h3>
+                        <p class="perfil-subtitulo">Estos son los datos asociados a tu cuenta.</p>
+                    </div>
+
+                    <!-- MODO LECTURA -->
+                    <div id="modoLectura" class="perfil-grid">
+                        <div class="perfil-campo">
+                            <div class="campo-icono"><i class="fas fa-user"></i></div>
+                            <div class="campo-info">
+                                <span class="campo-label">Nombre completo</span>
+                                <span class="campo-valor" th:text="${usuario.nombre + ' ' + usuario.apellido}">Juan Pérez</span>
+                            </div>
+                        </div>
+
+                        <div class="perfil-campo">
+                            <div class="campo-icono"><i class="fas fa-id-card"></i></div>
+                            <div class="campo-info">
+                                <span class="campo-label">DNI</span>
+                                <span class="campo-valor" th:text="${usuario.dni}">12345678A</span>
+                            </div>
+                        </div>
+
+                        <div class="perfil-campo">
+                            <div class="campo-icono"><i class="fas fa-user-tag"></i></div>
+                            <div class="campo-info">
+                                <span class="campo-label">Nombre de usuario</span>
+                                <span class="campo-valor" th:text="${usuario.nombreUsuario}">juanperez</span>
+                            </div>
+                        </div>
+
+                        <div class="perfil-campo">
+                            <div class="campo-icono"><i class="fas fa-envelope"></i></div>
+                            <div class="campo-info">
+                                <span class="campo-label">Correo electrónico</span>
+                                <span class="campo-valor" th:text="${usuario.email}">juan.perez@email.com</span>
+                            </div>
+                        </div>
+
+                        <div class="perfil-campo">
+                            <div class="campo-icono"><i class="fas fa-shield-alt"></i></div>
+                            <div class="campo-info">
+                                <span class="campo-label">Tipo de usuario</span>
+                                <span class="campo-valor" th:text="${usuario.rol}">ADMIN</span>
+                            </div>
+                        </div>
+
+                        <div class="perfil-campo">
+                            <div class="campo-icono"><i class="fas fa-venus-mars"></i></div>
+                            <div class="campo-info">
+                                <span class="campo-label">Género</span>
+                                <span class="campo-valor" th:text="${usuario.genero}">Hombre</span>
+                            </div>
+                        </div>
+
+                        <div class="perfil-campo">
+                            <div class="campo-icono"><i class="fas fa-birthday-cake"></i></div>
+                            <div class="campo-info">
+                                <span class="campo-label">Fecha de nacimiento</span>
+                                <span class="campo-valor" th:text="${usuario.fechaNacimiento}">1990-05-15</span>
+                            </div>
+                        </div>
+
+                        <div class="perfil-campo">
+                            <div class="campo-icono"><i class="fas fa-calendar-check"></i></div>
+                            <div class="campo-info">
+                                <span class="campo-label">Fecha de registro</span>
+                                <span class="campo-valor">15 de marzo de 2024</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MODO EDICIÓN (oculto por defecto) -->
+                    <form id="modoEdicion" class="perfil-form" style="display: none;" 
+                          th:action="@{/admin/configuracion/actualizar}" method="post">
+                        
+                        <input type="hidden" name="usuarioId" th:value="${usuario.usuarioId}">
+                        
+                        <div class="perfil-grid">
+                            <div class="perfil-campo-edit">
+                                <label><i class="fas fa-user"></i> Nombre</label>
+                                <input type="text" name="nombre" th:value="${usuario.nombre}" required>
+                            </div>
+
+                            <div class="perfil-campo-edit">
+                                <label><i class="fas fa-user"></i> Apellido</label>
+                                <input type="text" name="apellido" th:value="${usuario.apellido}" required>
+                            </div>
+
+                            <div class="perfil-campo-edit">
+                                <label><i class="fas fa-id-card"></i> DNI</label>
+                                <input type="text" name="dni" th:value="${usuario.dni}" required>
+                            </div>
+
+                            <div class="perfil-campo-edit">
+                                <label><i class="fas fa-user-tag"></i> Nombre de usuario</label>
+                                <input type="text" name="nombreUsuario" th:value="${usuario.nombreUsuario}" required>
+                            </div>
+
+                            <div class="perfil-campo-edit">
+                                <label><i class="fas fa-envelope"></i> Correo electrónico</label>
+                                <input type="email" name="email" th:value="${usuario.email}" required>
+                            </div>
+
+                            <div class="perfil-campo-edit">
+                                <label><i class="fas fa-venus-mars"></i> Género</label>
+                                <select name="genero" required>
+                                    <option value="Hombre" th:selected="${usuario.genero == 'Hombre'}">Hombre</option>
+                                    <option value="Mujer" th:selected="${usuario.genero == 'Mujer'}">Mujer</option>
+                                    <option value="Otro" th:selected="${usuario.genero == 'Otro'}">Otro</option>
+                                </select>
+                            </div>
+
+                            <div class="perfil-campo-edit">
+                                <label><i class="fas fa-birthday-cake"></i> Fecha de nacimiento</label>
+                                <input type="date" name="fechaNacimiento" th:value="${usuario.fechaNacimiento}" required>
+                            </div>
+
+                            <div class="perfil-campo-edit">
+                                <label><i class="fas fa-lock"></i> Nueva contraseña (opcional)</label>
+                                <input type="password" name="contrasena" placeholder="Dejar en blanco para no cambiar">
+                            </div>
+                        </div>
+
+                        <div class="perfil-acciones-edit">
+                            <button type="button" class="btn btn-secondary" onclick="toggleEdicion()">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                        </div>
+                    </form>
+
+                    <!-- Mensaje informativo -->
+                    <div class="perfil-info-box">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Si necesitas actualizar tu información personal, haz clic en el botón "Editar perfil".</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>

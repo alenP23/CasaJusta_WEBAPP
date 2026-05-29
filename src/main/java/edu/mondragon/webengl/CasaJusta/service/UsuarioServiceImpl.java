@@ -24,7 +24,19 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    public Usuario findByNombreUsuario(String nombreUsuario) {
+        return usuarioRepository.findByNombreUsuario(nombreUsuario).orElse(null);
+    }
+
+    @Override
+    public void save(Usuario usuario) {
+        usuarioRepository.save(usuario);
+    }
+
+    @Override
     public void deleteById(Integer id) {
         usuarioRepository.deleteById(id);
     }
+
+
 }

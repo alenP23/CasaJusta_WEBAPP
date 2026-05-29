@@ -91,4 +91,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     console.log('✅ Admin JS cargado correctamente');
+
+    //===DESPLEGAR CONFIGURACION (CAMBIAR DATOS USUARIO)=====
+    function toggleEdicion() {
+            const modoLectura = document.getElementById('modoLectura');
+            const modoEdicion = document.getElementById('modoEdicion');
+            const btn = document.getElementById('btnEditarPerfil');
+            
+            if (modoEdicion.style.display === 'none') {
+                modoLectura.style.display = 'none';
+                modoEdicion.style.display = 'block';
+                btn.innerHTML = '<i class="fas fa-times"></i> Cancelar edición';
+                btn.classList.add('btn-cancelar');
+            } else {
+                modoLectura.style.display = 'grid';
+                modoEdicion.style.display = 'none';
+                btn.innerHTML = '<i class="fas fa-pen"></i> Editar perfil';
+                btn.classList.remove('btn-cancelar');
+            }
+        }
 });
