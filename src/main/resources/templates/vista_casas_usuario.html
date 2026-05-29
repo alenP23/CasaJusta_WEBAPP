@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos/head-vista-casas :: head-vista-casas('CasaJusta - Pisos en Alquiler y Venta')}">
+<head th:replace="~{fragmentos/head/head-vista-casas :: head-vista-casas('CasaJusta - Pisos en Alquiler y Venta')}">
 </head>
 <body>
 
     <!-- HEADER + NAVBAR -->
-    <div th:replace="~{fragmentos/header-con-nav :: header-con-nav}"></div>
+    <div th:replace="~{fragmentos/header/header-con-nav :: header-con-nav}"></div>
 
     <!-- MAIN -->
     <main class="main-container">
@@ -90,7 +90,7 @@
     <div class="overlay" id="overlay"></div>
 
     <!-- FOOTER -->
-    <div th:replace="~{fragmentos/footer :: footer-principal}"></div>
+    <div th:replace="~{fragmentos/footer/footer :: footer-principal}"></div>
 
     <script th:src="@{/js/script.js}"></script>
 </body>

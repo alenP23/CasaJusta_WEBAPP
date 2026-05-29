@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos/head-registro :: head-registro}">
+<head th:replace="~{fragmentos/head/head-registro :: head-registro}">
 </head>
 <body>
     <!-- Header -->
-    <header class="header">
-        <div class="header-title">Casa Justa</div>
-    </header>
-
+    <div th:replace="~{fragmentos/header/header :: header-principal}"></div>
     <!-- Main Content -->
     <div class="main-container">
         <div class="form-card">
@@ -164,7 +161,7 @@
             </form>
         </div>
     </div>
-    <div th:replace="~{fragmentos/footer :: footer-principal}"></div>
+    <div th:replace="~{fragmentos/footer/footer :: footer-principal}"></div>
     <script src="/js/script.js"></script>
 </body>
 </html>
