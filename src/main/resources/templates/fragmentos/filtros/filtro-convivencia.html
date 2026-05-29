@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="filtro-convivencia" class="dropdown-container">
+        <button class="filter-chip" type="button" id="btnFiltroConvivencia">
+            <i class="fas fa-filter"></i>
+            Filtros
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="dropdown-menu" id="menuConvivencia">
+            <label class="dropdown-item">
+                <input type="checkbox" name="filtroMascotas" value="true">
+                <span><i class="fas fa-paw"></i> Mascotas</span>
+            </label>
+            <label class="dropdown-item">
+                <input type="checkbox" name="filtroFumador" value="true">
+                <span><i class="fas fa-smoking"></i> Fumador/a</span>
+            </label>
+            <label class="dropdown-item">
+                <input type="checkbox" name="filtroPareja" value="true">
+                <span><i class="fas fa-heart"></i> Pareja</span>
+            </label>
+            <div class="dropdown-actions">
+                <button type="button" class="btn-dropdown btn-aplicar" onclick="aplicarFiltros()">Aplicar</button>
+                <button type="button" class="btn-dropdown btn-limpiar" onclick="limpiarFiltros()">Limpiar</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="filtro-tipo-operacion" class="dropdown-container">
+        <button class="filter-chip" type="button" id="btnFiltroTipo">
+            Alquiler/Compra
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="dropdown-menu" id="menuTipoOperacion">
+            <label class="dropdown-item">
+                <input type="radio" name="tipoOperacion" value="todos" checked>
+                <span>Todos</span>
+            </label>
+            <label class="dropdown-item">
+                <input type="radio" name="tipoOperacion" value="alquiler">
+                <span><i class="fas fa-key"></i> Alquiler</span>
+            </label>
+            <label class="dropdown-item">
+                <input type="radio" name="tipoOperacion" value="compra">
+                <span><i class="fas fa-home"></i> Compra</span>
+            </label>
+        </div>
+    </div>
+</body>
+</html>

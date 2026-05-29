@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="filtro-precio" class="dropdown-container">
+        <button class="filter-chip" type="button" id="btnFiltroPrecio">
+            Rango de precio
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-wide" id="menuPrecio">
+            <div class="precio-slider-container">
+                <label for="precioMaximo">Precio máximo: <span id="precioValor">5.000.000</span> €</label>
+                <input type="range" id="precioMaximo" min="0" max="5000000" step="1000" value="5000000" class="slider-precio">
+                <div class="slider-rango">
+                    <span>0 €</span>
+                    <span>5.000.000 €</span>
+                </div>
+            </div>
+            <div class="dropdown-actions">
+                <button type="button" class="btn-dropdown btn-aplicar" onclick="aplicarFiltroPrecio()">Aplicar</button>
+                <button type="button" class="btn-dropdown btn-limpiar" onclick="limpiarFiltroPrecio()">Limpiar</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
