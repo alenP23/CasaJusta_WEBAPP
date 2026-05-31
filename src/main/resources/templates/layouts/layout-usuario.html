@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$CONTENT_TITLE - CasaJusta">CasaJusta</title>
+    
+    <link rel="stylesheet" th:href="@{/css/header-nav.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/vista_casas_usuario.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <th:block layout:fragment="head-extra"></th:block>
+</head>
+<body>
+
+    <!-- HEADER + NAVBAR -->
+    <div th:replace="~{fragmentos/header/header-con-nav :: header-con-nav}"></div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-container" layout:fragment="content">
+    </main>
+
+    <!-- FOOTER -->
+    <div th:replace="~{fragmentos/footer/footer :: footer-principal}"></div>
+
+    <script th:src="@{/js/script.js}"></script>
+    <th:block layout:fragment="scripts-extra"></th:block>
+
+</body>
+</html>
