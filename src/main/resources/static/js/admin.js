@@ -1,3 +1,26 @@
+// ========== FUNCIONES GLOBALES (accesibles desde onclick en HTML) ==========
+
+function toggleEdicion() {
+    const modoLectura = document.getElementById('modoLectura');
+    const modoEdicion = document.getElementById('modoEdicion');
+    const btn = document.getElementById('btnEditarPerfil');
+    
+    if (!modoLectura || !modoEdicion || !btn) return;
+    
+    if (modoEdicion.style.display === 'none') {
+        modoLectura.style.display = 'none';
+        modoEdicion.style.display = 'block';
+        btn.innerHTML = '<i class="fas fa-times"></i> Cancelar edición';
+        btn.classList.add('btn-cancelar');
+    } else {
+        modoLectura.style.display = 'grid';
+        modoEdicion.style.display = 'none';
+        btn.innerHTML = '<i class="fas fa-pen"></i> Editar perfil';
+        btn.classList.remove('btn-cancelar');
+    }
+}
+
+// ========== DOMContentLoaded (todo lo demás) ==========
 document.addEventListener('DOMContentLoaded', function() {
     
     // ========== MODAL AGREGAR ANUNCIO ==========
@@ -51,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.confirmarEliminar = function(id) {
         if (confirm('¿Estás seguro de eliminar este usuario?')) {
-            fetch('/admin/usuarios/eliminar?id=' + id, {  // id es Integer, no necesita encodeURIComponent
+            fetch('/admin/usuarios/eliminar?id=' + id, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -91,30 +114,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     console.log('✅ Admin JS cargado correctamente');
-
-    //===DESPLEGAR CONFIGURACION (CAMBIAR DATOS USUARIO)=====
-    function toggleEdicion() {
-        const modoLectura = document.getElementById('modoLectura');
-        const modoEdicion = document.getElementById('modoEdicion');
-        const btn = document.getElementById('btnEditarPerfil');
-        
-        if (!modoLectura || !modoEdicion || !btn) return; // Si no existe, no hacer nada
-        
-        if (modoEdicion.style.display === 'none') {
-            modoLectura.style.display = 'none';
-            modoEdicion.style.display = 'block';
-            btn.innerHTML = '<i class="fas fa-times"></i> Cancelar edición';
-            btn.classList.add('btn-cancelar');
-        } else {
-            modoLectura.style.display = 'grid';
-            modoEdicion.style.display = 'none';
-            btn.innerHTML = '<i class="fas fa-pen"></i> Editar perfil';
-            btn.classList.remove('btn-cancelar');
-        }
-    }
-
-    // ========== DOMContentLoaded (resto del código) ==========
-    document.addEventListener('DOMContentLoaded', function() {
-        // ... todo tu código actual de modales, filtros, etc. ...
-    });
 });
