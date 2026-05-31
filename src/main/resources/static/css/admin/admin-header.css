@@ -23,24 +23,6 @@
     gap: 16px;
 }
 
-.view-toggle {
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background: var(--white);
-    color: var(--text-muted);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-}
-
-.view-toggle:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-}
 
 .user-avatar {
     font-size: 32px;

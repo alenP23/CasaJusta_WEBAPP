@@ -1,93 +1,81 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos/head/head-admin :: head-admin}">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin}">
+<head>
+    <title>Usuarios</title>
 </head>
 <body>
 
-    <!-- SIDEBAR -->
-    <div th:replace="~{fragmentos/navbar/sidebar-admin :: sidebar-admin}"></div>
-
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
-        
-        <!-- Header superior -->
-        <header class="top-header">
-            <div class="header-filters">
-                <h1 class="page-title">Gestión de Usuarios</h1>
+    <!-- SOBREESCRIBO el header con solo título (sin filtros) -->
+    <header layout:fragment="top-header" class="top-header">
+        <div class="header-filters">
+            <h1 class="page-title">Gestión de Usuarios</h1>
+        </div>
+        <div class="header-actions">
+            <div class="user-avatar">
+                <i class="fas fa-user-circle"></i>
+                <span th:if="${username != null}" th:text="${username}">Admin</span>
             </div>
-            <div class="header-actions">
-                <div class="user-avatar">
-                    <i class="fas fa-user-circle"></i>
-                    <span th:if="${username != null}" th:text="${username}">Admin</span>
-                </div>
-            </div>
-        </header>
+        </div>
+    </header>
 
-        <!-- Tabla de usuarios con scroll horizontal -->
-        <section class="content-section">
-            
-            <div class="table-container">
-                <table class="users-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>DNI</th>
-                            <th>Usuario</th>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Email</th>
-                            <th>Fecha Nac.</th>
-                            <th>Género</th>
-                            <th>Rol</th>
-                            <th>Fumador</th>
-                            <th>Mascotas</th>
-                            <th>Pareja</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Mensaje si no hay usuarios -->
-                        <tr th:if="${#lists.isEmpty(usuarios)}">
-                            <td colspan="13" class="no-results">No hay usuarios registrados.</td>
-                        </tr>
-                        
-                        <!-- Iteración sobre usuarios -->
-                        <tr th:each="usuario : ${usuarios}">
-                            <td th:text="${usuario.usuarioId}">1</td>
-                            <td th:text="${usuario.dni}">12345678A</td>
-                            <td th:text="${usuario.nombreUsuario}">juan123</td>
-                            <td th:text="${usuario.nombre}">Juan</td>
-                            <td th:text="${usuario.apellido}">García</td>
-                            <td th:text="${usuario.email}">juan@email.com</td>
-                            <td th:text="${usuario.fechaNacimiento}">1990-05-15</td>
-                            <td th:text="${usuario.genero}">Hombre</td>
-                            <td>
-                                <span class="role-badge" th:classappend="${usuario.rol == 'ADMIN'} ? 'role-admin' : 'role-user'" 
-                                      th:text="${usuario.rol}">USER</span>
-                            </td>
-                            <td>
-                                <i class="fas" th:classappend="${usuario.perfilConvivencia != null && usuario.perfilConvivencia.fumador} ? 'fa-check text-success' : 'fa-times text-danger'"></i>
-                            </td>
-                            <td>
-                                <i class="fas" th:classappend="${usuario.perfilConvivencia != null && usuario.perfilConvivencia.mascotas} ? 'fa-check text-success' : 'fa-times text-danger'"></i>
-                            </td>
-                            <td>
-                                <i class="fas" th:classappend="${usuario.perfilConvivencia != null && usuario.perfilConvivencia.pareja} ? 'fa-check text-success' : 'fa-times text-danger'"></i>
-                            </td>
-                            <td>
-                               <button class="action-btn delete" type="button" th:onclick="|confirmarEliminar(${usuario.usuarioId})|" title="Eliminar">
-                                   <i class="fas fa-trash"></i>
-                               </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    <div layout:fragment="content">
+        <div class="table-container">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>DNI</th>
+                        <th>Usuario</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Email</th>
+                        <th>Fecha Nac.</th>
+                        <th>Género</th>
+                        <th>Rol</th>
+                        <th>Fumador</th>
+                        <th>Mascotas</th>
+                        <th>Pareja</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(usuarios)}">
+                        <td colspan="13" class="no-results">No hay usuarios registrados.</td>
+                    </tr>
+                    <tr th:each="usuario : ${usuarios}">
+                        <td th:text="${usuario.usuarioId}">1</td>
+                        <td th:text="${usuario.dni}">12345678A</td>
+                        <td th:text="${usuario.nombreUsuario}">juan123</td>
+                        <td th:text="${usuario.nombre}">Juan</td>
+                        <td th:text="${usuario.apellido}">García</td>
+                        <td th:text="${usuario.email}">juan@email.com</td>
+                        <td th:text="${usuario.fechaNacimiento}">1990-05-15</td>
+                        <td th:text="${usuario.genero}">Hombre</td>
+                        <td>
+                            <span class="role-badge" th:classappend="${usuario.rol == 'ADMIN'} ? 'role-admin' : 'role-user'" 
+                                  th:text="${usuario.rol}">USER</span>
+                        </td>
+                        <td>
+                            <i class="fas" th:classappend="${usuario.perfilConvivencia != null && usuario.perfilConvivencia.fumador} ? 'fa-check text-success' : 'fa-times text-danger'"></i>
+                        </td>
+                        <td>
+                            <i class="fas" th:classappend="${usuario.perfilConvivencia != null && usuario.perfilConvivencia.mascotas} ? 'fa-check text-success' : 'fa-times text-danger'"></i>
+                        </td>
+                        <td>
+                            <i class="fas" th:classappend="${usuario.perfilConvivencia != null && usuario.perfilConvivencia.pareja} ? 'fa-check text-success' : 'fa-times text-danger'"></i>
+                        </td>
+                        <td>
+                           <button class="action-btn delete" type="button" th:onclick="|confirmarEliminar(${usuario.usuarioId})|" title="Eliminar">
+                               <i class="fas fa-trash"></i>
+                           </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-        </section>
-
-    </main>
-
-    <script th:src="@{/js/admin.js}"></script>
 </body>
 </html>
