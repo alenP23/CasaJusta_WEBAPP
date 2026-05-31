@@ -114,4 +114,41 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     console.log('✅ Admin JS cargado correctamente');
+
+    // ========== MARCAR PESTAÑA ACTIVA EN SIDEBAR ==========
+    function marcarPestanaActiva() {
+        const path = window.location.pathname;
+        const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
+        
+        // Quitar active de todos
+        navItems.forEach(item => item.classList.remove('active'));
+        
+        let mejorCoincidencia = null;
+        let mejorLongitud = 0;
+        
+        // Buscar la coincidencia más específica (la ruta más larga que coincida)
+        navItems.forEach(item => {
+            const href = item.getAttribute('href');
+            if (!href) return;
+        
+            // Coincidencia exacta
+            if (path === href) {
+                mejorCoincidencia = item;
+                mejorLongitud = href.length;
+            }
+            // Coincidencia por prefijo: solo si la ruta actual empieza con href + '/'
+            // y el href es más largo que la mejor coincidencia encontrada hasta ahora
+            else if (path.startsWith(href + '/') && href.length > mejorLongitud) {
+                mejorCoincidencia = item;
+                mejorLongitud = href.length;
+            }
+        });
+        
+        if (mejorCoincidencia) {
+            mejorCoincidencia.classList.add('active');
+        }
+    }
+
+    // Ejecutar al cargar
+    marcarPestanaActiva();
 });
