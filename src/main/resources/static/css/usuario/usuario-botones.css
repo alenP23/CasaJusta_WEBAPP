@@ -1,0 +1,62 @@
+/* ========== BOTONES DE ACCIÓN ========== */
+
+.filters-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 40px;
+    margin-bottom: 20px;      /* Espacio al final del sidebar */
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.btn-aplicar {
+    width: 100%;
+    padding: 14px;
+    background: #0066ff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.1s;
+    box-sizing: border-box;
+}
+
+.btn-aplicar:hover {
+    background: #0052cc;
+}
+
+.btn-aplicar:active {
+    transform: scale(0.98);
+}
+
+.btn-limpiar {
+    width: 100%;
+    padding: 14px;
+    background: #fff;
+    color: #0066ff;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.btn-limpiar:hover {
+    border-color: #0066ff;
+    background: #f0f7ff;
+}

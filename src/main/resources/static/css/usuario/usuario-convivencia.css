@@ -1,0 +1,48 @@
+/* ========== CONVIVENCIA ========== */
+
+.convivencia-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.convivencia-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 4px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.15s;
+}
+
+.convivencia-item:hover {
+    background: #f8f9fa;
+}
+
+.convivencia-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.convivencia-info i {
+    font-size: 1.1rem;
+    color: #444;
+    width: 20px;
+    text-align: center;
+}
+
+.convivencia-info span {
+    font-size: 0.95rem;
+    color: #333;
+    font-weight: 400;
+}
+
+.convivencia-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #0066ff;
+    cursor: pointer;
+    border-radius: 4px;
+}
