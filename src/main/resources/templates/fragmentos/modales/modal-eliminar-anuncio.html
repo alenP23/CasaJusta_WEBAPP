@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <div th:fragment="modal-eliminar" class="modal-overlay" id="deleteModalOverlay">
+        <div class="modal modal-small">
+            <div class="modal-header">
+                <h2><i class="fas fa-exclamation-triangle"></i> Confirmar eliminación</h2>
+                <button class="modal-close" id="closeDeleteModal" type="button" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="delete-message">¿Estás seguro de que quieres eliminar este anuncio? Esta acción no se puede deshacer.</p>
+                <form id="deleteForm" th:action="@{/admin/anuncios/eliminar}" method="post">
+                    <input type="hidden" id="deleteId" name="id">
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelDelete">Cancelar</button>
+                        <button type="submit" class="btn btn-danger" id="confirmDelete">Eliminar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

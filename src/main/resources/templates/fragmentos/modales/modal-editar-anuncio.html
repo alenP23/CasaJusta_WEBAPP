@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <div th:fragment="modal-editar" class="modal-overlay" id="editModalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-pen"></i> Editar anuncio</h2>
+                <button class="modal-close" id="closeEditModal" type="button" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editPropertyForm" th:action="@{/admin/anuncios/editar}" method="post">
+                    <input type="hidden" id="editId" name="id">
+                    
+                    <div class="form-group">
+                        <label for="editTitle">Título del anuncio</label>
+                        <input type="text" id="editTitle" name="titulo" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editType">Tipo de operación</label>
+                            <select id="editType" name="tipoOperacion" required>
+                                <option value="alquiler">Alquiler</option>
+                                <option value="compra">Compra</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPrice">Precio</label>
+                            <input type="number" id="editPrice" name="precio" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editLocation">Dirección</label>
+                        <input type="text" id="editLocation" name="direccion" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editRooms">Habitaciones</label>
+                            <input type="number" id="editRooms" name="habitaciones" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="editBathrooms">Baños</label>
+                            <input type="number" id="editBathrooms" name="banos" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editMeters">Metros cuadrados</label>
+                            <input type="number" id="editMeters" name="metrosCuadrados" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="editPersons">Cupo personas</label>
+                            <input type="number" id="editPersons" name="cupoPersonas" min="0">
+                        </div>
+                    </div>
+                    
+                    <!-- TOGGLES DE CONVIVENCIA -->
+                    <div class="form-group">
+                        <label>Preferencias de convivencia</label>
+                        <div class="toggle-filters">
+                            <button type="button" class="toggle-pill" id="toggleFumador" onclick="toggleFilter('fumador')">
+                                <i class="fas fa-smoking"></i>
+                                <span>Fumador</span>
+                                <input type="hidden" name="fumador" id="inputFumador" value="false">
+                            </button>
+                            <button type="button" class="toggle-pill" id="toggleMascotas" onclick="toggleFilter('mascotas')">
+                                <i class="fas fa-paw"></i>
+                                <span>Mascotas</span>
+                                <input type="hidden" name="mascotas" id="inputMascotas" value="false">
+                            </button>
+                            <button type="button" class="toggle-pill" id="togglePareja" onclick="toggleFilter('pareja')">
+                                <i class="fas fa-heart"></i>
+                                <span>Pareja</span>
+                                <input type="hidden" name="pareja" id="inputPareja" value="false">
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelEdit">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
