@@ -1,22 +1,28 @@
 /* ========== TARJETA ADMIN ========== */
 .admin-property-card {
-    background: var(--white);
-    border-radius: var(--radius);
+    background: #fff;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: var(--shadow);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
     position: relative;
+    cursor: pointer;
 }
 
 .admin-property-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
 
-/* ========== IMAGEN ========== */
+/* ========== IMAGEN (60% de altura) ========== */
 .property-image {
     position: relative;
-    height: 180px;
+    width: 100%;
+    height: 200px; /* o 60% si el padre tiene altura fija */
+    min-height: 200px;
+    background: #f3f4f6;
     overflow: hidden;
 }
 
@@ -24,177 +30,161 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 
+/* Imagen por defecto cuando no carga */
+.property-image img[src*="casa_default"] {
+    object-fit: contain;
+    padding: 20px;
+    opacity: 0.5;
+}
+
+/* ========== BADGE TIPO OPERACIÓN ========== */
 .property-badge {
     position: absolute;
     top: 12px;
     left: 12px;
-    padding: 4px 12px;
+    padding: 6px 14px;
     border-radius: 20px;
     font-size: 12px;
-    font-weight: 600;
-    color: var(--white);
-}
-
-.badge-alquiler { background-color: var(--primary); }
-.badge-compra { background-color: #10b981; }
-
-/* ========== DETALLES ========== */
-.property-details {
-    padding: 16px;
-}
-
-.property-details h3 {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 4px;
-}
-
-.property-type {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 8px;
-}
-
-.property-price {
-    font-size: 18px;
     font-weight: 700;
-    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 2;
 }
 
-/* ========== ACCIONES ========== */
+.badge-alquiler {
+    background: #dbeafe;
+    color: #1e5bc6;
+}
+
+.badge-compra {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+/* ========== BOTONES ACCIÓN (editar/eliminar) ========== */
 .property-actions {
     position: absolute;
     top: 12px;
     right: 12px;
     display: flex;
     gap: 8px;
+    z-index: 2;
 }
 
 .action-btn {
     width: 32px;
     height: 32px;
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
     border: none;
     background: rgba(255,255,255,0.9);
-    color: var(--text-muted);
+    backdrop-filter: blur(4px);
+    color: #6b7280;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
 .action-btn:hover {
-    background: var(--white);
-    color: var(--primary);
+    background: #fff;
+    transform: scale(1.1);
+}
+
+.action-btn.edit:hover {
+    color: #1e5bc6;
 }
 
 .action-btn.delete:hover {
-    color: var(--delete-red);
+    color: #dc2626;
 }
 
-/* ========== BOTÓN ELIMINAR DESPLEGABLE (versión alternativa) ========== */
-.delete-btn-wrapper {
-    position: absolute;
-    right: 8px;
-    z-index: 10;
-    overflow: hidden;
+/* ========== DETALLES (parte inferior) ========== */
+.property-details {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-.delete-btn {
+.property-details h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.property-meta {
     display: flex;
     align-items: center;
-    justify-content: center;
-    background: var(--delete-red);
-    color: var(--white);
-    border: none;
-    cursor: pointer;
-    width: 36px;
-    height: 36px;
-    border-bottom-left-radius: var(--radius-sm);
-    border-bottom-right-radius: var(--radius-sm);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-.delete-btn i {
-    font-size: 16px;
-    transition: transform 0.3s ease;
-    z-index: 2;
+.property-type {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 500;
+    text-transform: capitalize;
 }
 
-.delete-btn:hover {
-    height: 72px;
-    background: var(--delete-red-dark);
-}
-
-.delete-btn:hover i {
-    transform: scale(1.2);
-}
-
-.delete-btn::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(255,255,255,0.2);
-    transform: scale(0);
-    border-radius: 50%;
-    transition: transform 0.3s ease;
-}
-
-.delete-btn:active::after {
-    transform: scale(2);
-    opacity: 0;
+.property-price {
+    font-size: 18px;
+    font-weight: 800;
+    color: #1e5bc6;
 }
 
 /* ========== TARJETA AGREGAR ========== */
 .add-card {
-    border: 2px dashed var(--border);
-    background: transparent;
-    box-shadow: none;
-    min-height: 280px;
+    border: 2px dashed #d1d5db;
+    background: #f9fafb;
+    cursor: pointer;
+    min-height: 320px;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
 }
 
 .add-card:hover {
-    border-color: var(--primary);
-    background: var(--primary-light);
-    transform: none;
-    box-shadow: none;
+    border-color: #1e5bc6;
+    background: #eff6ff;
 }
 
 .add-card-content {
-    text-align: center;
-    color: var(--primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: #6b7280;
 }
 
 .add-icon {
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    border: 2px solid var(--primary);
+    background: #e5e7eb;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 24px;
-    margin: 0 auto 12px;
+    color: #6b7280;
+    transition: all 0.2s;
 }
 
-.add-card-content p {
-    font-weight: 600;
-    font-size: 14px;
+.add-card:hover .add-icon {
+    background: #1e5bc6;
+    color: #fff;
 }
 
-/* ========== RESPONSIVE CARDS ========== */
-@media (max-width: 768px) {
-    .delete-btn:hover {
-        height: 60px;
+/* ========== RESPONSIVE ========== */
+@media (max-width: 640px) {
+    .property-image {
+        height: 180px;
     }
 }
