@@ -67,6 +67,7 @@ body {
     gap: 24px;
 }
 
+
 /* ========== RESPONSIVE BASE ========== */
 @media (max-width: 768px) {
     .main-content {

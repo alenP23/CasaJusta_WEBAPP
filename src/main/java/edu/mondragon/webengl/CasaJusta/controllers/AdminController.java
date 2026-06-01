@@ -71,11 +71,6 @@ public class AdminController {
     @PostMapping("/anuncios/crear")
     public String crearAnuncio(@ModelAttribute Vivienda vivienda) {
         vivienda.setEstado(false);
-
-        if (vivienda.getFumador() == null) vivienda.setFumador(false);
-        if (vivienda.getMascotas() == null) vivienda.setMascotas(false);
-        if (vivienda.getPareja() == null) vivienda.setPareja(false);
-
         viviendaService.save(vivienda);
         return "redirect:/admin";
     }

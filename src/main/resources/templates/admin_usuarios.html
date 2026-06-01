@@ -67,7 +67,11 @@
                             <i class="fas" th:classappend="${usuario.perfilConvivencia != null && usuario.perfilConvivencia.pareja} ? 'fa-check text-success' : 'fa-times text-danger'"></i>
                         </td>
                         <td>
-                           <button class="action-btn delete" type="button" th:onclick="|confirmarEliminar(${usuario.usuarioId})|" title="Eliminar">
+                           <button class="action-btn delete btn-eliminar-usuario" 
+                                   type="button" 
+                                   th:data-id="${usuario.usuarioId}"
+                                   th:data-nombre="${usuario.nombre} + ' ' + ${usuario.apellido}"
+                                   title="Eliminar">
                                <i class="fas fa-trash"></i>
                            </button>
                         </td>
@@ -75,6 +79,9 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- INCLUIR MODAL DE ELIMINAR USUARIO -->
+        <div th:replace="~{fragmentos/modales/modal-eliminar-usuario :: modal-eliminar-usuario}"></div>
     </div>
 
 </body>

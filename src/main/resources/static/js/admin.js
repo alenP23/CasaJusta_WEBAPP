@@ -39,6 +39,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ========== TOGGLES PARA MODAL CREAR ==========
+    window.toggleCrearFilter = function(nombre) {
+        const capitalized = nombre.charAt(0).toUpperCase() + nombre.slice(1);
+        const pill = document.getElementById('toggleCrear' + capitalized);
+        const input = document.getElementById('inputCrear' + capitalized);
+        
+        if (!pill || !input) return;
+        
+        const actual = input.value === 'true';
+        const nuevo = !actual;
+        
+        input.value = nuevo ? 'true' : 'false';
+        
+        if (nuevo) {
+            pill.classList.add('active');
+            pill.classList.remove('inactive');
+        } else {
+            pill.classList.remove('active');
+            pill.classList.add('inactive');
+        }
+    };
+
     function closeAddModal() {
         if (modalOverlay) {
             modalOverlay.classList.remove('active');
@@ -54,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========== MODAL ELIMINAR ==========
+    // ========== MODAL ELIMINAR ANUNCIO ==========
     const deleteModalOverlay = document.getElementById('deleteModalOverlay');
     const closeDeleteModal = document.getElementById('closeDeleteModal');
     const cancelDelete = document.getElementById('cancelDelete');
@@ -82,6 +104,49 @@ document.addEventListener('DOMContentLoaded', function() {
     if (deleteModalOverlay) {
         deleteModalOverlay.addEventListener('click', function(e) {
             if (e.target === deleteModalOverlay) closeDeleteModalFunc();
+        });
+    }
+
+     // ========== MODAL ELIMINAR USUARIO (NUEVO) ==========
+    const deleteUserModalOverlay = document.getElementById('deleteUserModalOverlay');
+    const closeDeleteUserModal = document.getElementById('closeDeleteUserModal');
+    const cancelDeleteUser = document.getElementById('cancelDeleteUser');
+    const deleteUserForm = document.getElementById('deleteUserForm');
+    const deleteUserIdInput = document.getElementById('deleteUserId');
+    const deleteUserName = document.getElementById('deleteUserName');
+
+    // Event delegation para los botones de eliminar usuario
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.btn-eliminar-usuario');
+        if (!btn) return;
+        
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        const nombre = btn.getAttribute('data-nombre');
+        
+        if (deleteUserIdInput) deleteUserIdInput.value = id;
+        if (deleteUserName) deleteUserName.textContent = nombre;
+        
+        if (deleteUserModalOverlay) {
+            deleteUserModalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    });
+
+    function closeDeleteUserModalFunc() {
+        if (deleteUserModalOverlay) {
+            deleteUserModalOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        if (deleteUserIdInput) deleteUserIdInput.value = '';
+        if (deleteUserName) deleteUserName.textContent = '';
+    }
+
+    if (closeDeleteUserModal) closeDeleteUserModal.addEventListener('click', closeDeleteUserModalFunc);
+    if (cancelDeleteUser) cancelDeleteUser.addEventListener('click', closeDeleteUserModalFunc);
+    if (deleteUserModalOverlay) {
+        deleteUserModalOverlay.addEventListener('click', function(e) {
+            if (e.target === deleteUserModalOverlay) closeDeleteUserModalFunc();
         });
     }
 
@@ -140,6 +205,30 @@ document.addEventListener('DOMContentLoaded', function() {
             editModalOverlay.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
+    };
+
+    // ========== FILTRAR POR CONVIVENCIA ==========
+    window.filtrarPorConvivencia = function(tipo, valor) {
+        // Evitar que se propague el click a la tarjeta
+        event.stopPropagation();
+        
+        const cards = document.querySelectorAll('.admin-property-card[data-id]');
+        
+        cards.forEach(card => {
+            const cardValor = card.dataset[tipo] === 'true';
+            
+            if (cardValor === valor) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        // Ocultar también la tarjeta de "Agregar"
+        const addCard = document.getElementById('addPropertyBtn');
+        if (addCard) addCard.style.display = 'none';
+        
+        console.log(`Filtrado por ${tipo}: ${valor}`);
     };
 
     function setToggle(nombre, valor) {
@@ -209,6 +298,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (deleteModalOverlay && deleteModalOverlay.classList.contains('active')) {
                 closeDeleteModalFunc();
+            }
+            if (deleteUserModalOverlay && deleteUserModalOverlay.classList.contains('active')) {
+                closeDeleteUserModalFunc();
             }
             if (editModalOverlay && editModalOverlay.classList.contains('active')) {
                 closeEditModalFunc();

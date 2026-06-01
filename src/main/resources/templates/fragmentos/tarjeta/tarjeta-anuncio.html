@@ -46,6 +46,25 @@
                 <span class="property-type" th:text="${vivienda.tipoOperacion}">alquiler</span>
                 <span class="property-price" th:text="${#numbers.formatDecimal(vivienda.precio, 0, 'POINT', 0, 'COMMA')} + ' €'">100.000 €</span>
             </div>
+            
+            <!-- FILTROS DE CONVIVENCIA (solo informativos, sin onclick) -->
+            <div class="convivencia-filters" onclick="event.stopPropagation();">
+                <span class="conv-pill" 
+                      th:classappend="${vivienda.fumador} ? 'conv-allowed' : 'conv-not-allowed'">
+                    <i class="fas fa-smoking"></i>
+                    <span th:text="${vivienda.fumador} ? 'Fumador' : 'No fumador'">No fumador</span>
+                </span>
+                <span class="conv-pill" 
+                      th:classappend="${vivienda.mascotas} ? 'conv-allowed' : 'conv-not-allowed'">
+                    <i class="fas fa-paw"></i>
+                    <span th:text="${vivienda.mascotas} ? 'Mascotas' : 'No mascotas'">No mascotas</span>
+                </span>
+                <span class="conv-pill" 
+                      th:classappend="${vivienda.pareja} ? 'conv-allowed' : 'conv-not-allowed'">
+                    <i class="fas fa-heart"></i>
+                    <span th:text="${vivienda.pareja} ? 'Pareja' : 'No pareja'">No pareja</span>
+                </span>
+            </div>
         </div>
     </div>
 
@@ -67,6 +86,25 @@
             <div class="property-meta">
                 <span class="property-type" th:text="${vivienda.tipoOperacion}">alquiler</span>
                 <span class="property-price" th:text="${#numbers.formatDecimal(vivienda.precio, 0, 'POINT', 0, 'COMMA')} + ' €'">100.000 €</span>
+            </div>
+            
+            <!-- FILTROS DE CONVIVENCIA (solo informativos) -->
+            <div class="convivencia-filters" onclick="event.stopPropagation();">
+                <span class="conv-pill" 
+                      th:classappend="${vivienda.fumador} ? 'conv-allowed' : 'conv-not-allowed'">
+                    <i class="fas fa-smoking"></i>
+                    <span th:text="${vivienda.fumador} ? 'Fumador' : 'No fumador'">No fumador</span>
+                </span>
+                <span class="conv-pill" 
+                      th:classappend="${vivienda.mascotas} ? 'conv-allowed' : 'conv-not-allowed'">
+                    <i class="fas fa-paw"></i>
+                    <span th:text="${vivienda.mascotas} ? 'Mascotas' : 'No mascotas'">No mascotas</span>
+                </span>
+                <span class="conv-pill" 
+                      th:classappend="${vivienda.pareja} ? 'conv-allowed' : 'conv-not-allowed'">
+                    <i class="fas fa-heart"></i>
+                    <span th:text="${vivienda.pareja} ? 'Pareja' : 'No pareja'">No pareja</span>
+                </span>
             </div>
         </div>
     </div>

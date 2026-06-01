@@ -182,6 +182,57 @@
     color: #fff;
 }
 
+/* ========== FILTROS DE CONVIVENCIA EN TARJETA ========== */
+.convivencia-filters {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #f3f4f6;
+    flex-wrap: wrap;
+}
+
+.conv-pill {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.conv-pill i {
+    font-size: 12px;
+}
+
+/* PERMITIDO: verde */
+.conv-allowed {
+    background: #f0fdf4;
+    color: #16a34a;
+    border-color: #bbf7d0;
+}
+
+.conv-allowed:hover {
+    background: #dcfce7;
+    border-color: #86efac;
+}
+
+/* NO PERMITIDO: rojo */
+.conv-not-allowed {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #fecaca;
+}
+
+.conv-not-allowed:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+}
+
 /* ========== RESPONSIVE ========== */
 @media (max-width: 640px) {
     .property-image {
