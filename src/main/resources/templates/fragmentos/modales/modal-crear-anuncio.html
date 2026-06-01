@@ -54,6 +54,26 @@
                             <input type="number" id="propPersons" name="cupoPersonas" placeholder="0" min="0">
                         </div>
                     </div>
+                    <div class="form-group">
+                    <label>Preferencias de convivencia</label>
+                    <div class="toggle-filters">
+                        <button type="button" class="toggle-pill inactive" id="toggleCrearFumador" onclick="toggleCrearFilter('fumador')">
+                            <i class="fas fa-smoking"></i>
+                            <span>Fumador</span>
+                            <input type="hidden" name="fumador" id="inputCrearFumador" value="false">
+                        </button>
+                        <button type="button" class="toggle-pill inactive" id="toggleCrearMascotas" onclick="toggleCrearFilter('mascotas')">
+                            <i class="fas fa-paw"></i>
+                            <span>Mascotas</span>
+                            <input type="hidden" name="mascotas" id="inputCrearMascotas" value="false">
+                        </button>
+                        <button type="button" class="toggle-pill inactive" id="toggleCrearPareja" onclick="toggleCrearFilter('pareja')">
+                            <i class="fas fa-heart"></i>
+                            <span>Pareja</span>
+                            <input type="hidden" name="pareja" id="inputCrearPareja" value="false">
+                        </button>
+                    </div>
+                </div>
                     <div class="modal-actions">
                         <button type="button" class="btn btn-secondary" id="cancelModal">Cancelar</button>
                         <button type="submit" class="btn btn-primary">Guardar anuncio</button>

@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const precioMaximo = document.getElementById('precioMaximo');
     const precioValor = document.getElementById('precioValor');
 
-    // Abrir/cerrar menús al hacer clic en el botón
+    // Abrir/cerrar menús
     btnFiltroConvivencia?.addEventListener('click', (e) => {
         e.stopPropagation();
         cerrarTodosMenus();
@@ -29,63 +29,88 @@ document.addEventListener('DOMContentLoaded', () => {
         menuPrecio?.classList.toggle('activo');
     });
 
-    // Cerrar menús al hacer clic fuera
-    document.addEventListener('click', () => {
-        cerrarTodosMenus();
-    });
-
-    // Evitar que se cierre al hacer clic dentro del menú
+    document.addEventListener('click', () => cerrarTodosMenus());
+    
     [menuConvivencia, menuTipoOperacion, menuPrecio].forEach(menu => {
         menu?.addEventListener('click', (e) => e.stopPropagation());
     });
 
-    function cerrarTodosMenus() {
-        menuConvivencia?.classList.remove('activo');
-        menuTipoOperacion?.classList.remove('activo');
-        menuPrecio?.classList.remove('activo');
-    }
-
     // ========== SLIDER DE PRECIO ==========
-    
     precioMaximo?.addEventListener('input', (e) => {
         const valor = parseInt(e.target.value);
-        if (precioValor) {
-            precioValor.textContent = valor.toLocaleString('es-ES');
-        }
-    });
-
-    // ========== FILTRO ALQUILER/COMPRA (AUTO-APLICAR) ==========
-    
-    document.querySelectorAll('input[name="tipoOperacion"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-            const seleccion = document.querySelector('input[name="tipoOperacion"]:checked')?.value;
-            filtrarPorTipo(seleccion);
-        });
+        if (precioValor) precioValor.textContent = valor.toLocaleString('es-ES');
     });
 });
 
-// ========== FUNCIONES DE FILTRO ==========
+function cerrarTodosMenus() {
+    document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('activo'));
+}
+
+// ========== ESTADO DE FILTROS ==========
+
+let filtrosActivos = {
+    tipoOperacion: 'todos',
+    mascotas: false,
+    fumador: false,
+    pareja: false,
+    precioMaximo: 5000000
+};
+
+// ========== FILTRO CONVIVENCIA ==========
 
 function aplicarFiltros() {
-    const mascotas = document.querySelector('input[name="filtroMascotas"]')?.checked;
-    const fumador = document.querySelector('input[name="filtroFumador"]')?.checked;
-    const pareja = document.querySelector('input[name="filtroPareja"]')?.checked;
+    // Leer checkboxes por name exacto
+    const cbMascotas = document.querySelector('input[name="filtroMascotas"]');
+    const cbFumador = document.querySelector('input[name="filtroFumador"]');
+    const cbPareja = document.querySelector('input[name="filtroPareja"]');
     
-    console.log('Filtros de convivencia:', { mascotas, fumador, pareja });
-    // TODO: Implementar filtrado real o enviar al backend
+    filtrosActivos.mascotas = cbMascotas?.checked || false;
+    filtrosActivos.fumador = cbFumador?.checked || false;
+    filtrosActivos.pareja = cbPareja?.checked || false;
+    
+    console.log('Convivencia - Mascotas:', filtrosActivos.mascotas, 'Fumador:', filtrosActivos.fumador, 'Pareja:', filtrosActivos.pareja);
+    
+    aplicarTodosLosFiltros();
     cerrarTodosMenus();
 }
 
 function limpiarFiltros() {
-    const checkboxes = document.querySelectorAll('input[name="filtroMascotas"], input[name="filtroFumador"], input[name="filtroPareja"]');
-    checkboxes.forEach(cb => cb.checked = false);
-    aplicarFiltros();
+    document.querySelector('input[name="filtroMascotas"]').checked = false;
+    document.querySelector('input[name="filtroFumador"]').checked = false;
+    document.querySelector('input[name="filtroPareja"]').checked = false;
+    
+    filtrosActivos.mascotas = false;
+    filtrosActivos.fumador = false;
+    filtrosActivos.pareja = false;
+    
+    aplicarTodosLosFiltros();
+    cerrarTodosMenus();
 }
 
+// ========== FILTRO TIPO OPERACIÓN ==========
+
+function aplicarFiltroTipo() {
+    const seleccionado = document.querySelector('input[name="tipoOperacion"]:checked');
+    filtrosActivos.tipoOperacion = seleccionado?.value || 'todos';
+    aplicarTodosLosFiltros();
+    cerrarTodosMenus();
+}
+
+function limpiarFiltroTipo() {
+    const todos = document.querySelector('input[name="tipoOperacion"][value="todos"]');
+    if (todos) todos.checked = true;
+    filtrosActivos.tipoOperacion = 'todos';
+    aplicarTodosLosFiltros();
+    cerrarTodosMenus();
+}
+
+// ========== FILTRO PRECIO ==========
+
 function aplicarFiltroPrecio() {
-    const maximo = parseInt(document.getElementById('precioMaximo')?.value || 0);
-    console.log('Precio máximo:', maximo);
-    filtrarPorPrecio(maximo);
+    const slider = document.getElementById('precioMaximo');
+    filtrosActivos.precioMaximo = parseInt(slider?.value || 5000000);
+    console.log('Precio máximo:', filtrosActivos.precioMaximo);
+    aplicarTodosLosFiltros();
     cerrarTodosMenus();
 }
 
@@ -94,36 +119,49 @@ function limpiarFiltroPrecio() {
     const valor = document.getElementById('precioValor');
     if (slider) slider.value = 5000000;
     if (valor) valor.textContent = '5.000.000';
-    aplicarFiltroPrecio();
+    filtrosActivos.precioMaximo = 5000000;
+    aplicarTodosLosFiltros();
+    cerrarTodosMenus();
 }
 
-function filtrarPorTipo(tipo) {
-    const tarjetas = document.querySelectorAll('.admin-property-card[data-tipo]');
+// ========== FUNCIÓN PRINCIPAL ==========
+
+function aplicarTodosLosFiltros() {
+    const tarjetas = document.querySelectorAll('.admin-property-card[data-id]');
+    const addCard = document.getElementById('addPropertyBtn');
+    
+    let visibles = 0;
     
     tarjetas.forEach(tarjeta => {
-        if (!tipo || tipo === 'todos' || tarjeta.dataset.tipo === tipo) {
-            tarjeta.style.display = '';
+        const tipo = tarjeta.dataset.tipo;
+        const precio = parseFloat(tarjeta.dataset.precio) || 0;
+        const tieneMascotas = tarjeta.dataset.mascotas === 'true';
+        const tieneFumador = tarjeta.dataset.fumador === 'true';
+        const tienePareja = tarjeta.dataset.pareja === 'true';
+        
+        const cumpleTipo = filtrosActivos.tipoOperacion === 'todos' || tipo === filtrosActivos.tipoOperacion;
+        const cumplePrecio = precio <= filtrosActivos.precioMaximo;
+        const cumpleMascotas = !filtrosActivos.mascotas || tieneMascotas;
+        const cumpleFumador = !filtrosActivos.fumador || tieneFumador;
+        const cumplePareja = !filtrosActivos.pareja || tienePareja;
+        
+        if (cumpleTipo && cumplePrecio && cumpleMascotas && cumpleFumador && cumplePareja) {
+            tarjeta.style.display = 'flex';
+            visibles++;
         } else {
             tarjeta.style.display = 'none';
         }
     });
-}
-
-function filtrarPorPrecio(maximo) {
-    const tarjetas = document.querySelectorAll('.admin-property-card[data-precio]');
     
-    tarjetas.forEach(tarjeta => {
-        const precio = parseFloat(tarjeta.dataset.precio);
-        if (precio <= maximo) {
-            tarjeta.style.display = '';
-        } else {
-            tarjeta.style.display = 'none';
-        }
-    });
-}
-
-function cerrarTodosMenus() {
-    document.querySelectorAll('.dropdown-menu').forEach(menu => {
-        menu.classList.remove('activo');
-    });
+    const hayFiltros = filtrosActivos.tipoOperacion !== 'todos' || 
+                       filtrosActivos.mascotas || 
+                       filtrosActivos.fumador || 
+                       filtrosActivos.pareja || 
+                       filtrosActivos.precioMaximo < 5000000;
+    
+    if (addCard) addCard.style.display = hayFiltros ? 'none' : 'flex';
+    
+    console.log('=== FILTROS APLICADOS ===');
+    console.log('Estado:', filtrosActivos);
+    console.log('Tarjetas visibles:', visibles);
 }
