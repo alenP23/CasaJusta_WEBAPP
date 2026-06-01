@@ -9,6 +9,7 @@
 
     <div layout:fragment="content">
         
+        <!-- Header de sección -->
         <div class="section-header">
             <h1 class="section-title">Anuncios</h1>
             <button class="filter-btn" id="filterToggle" type="button" aria-label="Abrir filtros">
@@ -16,11 +17,207 @@
             </button>
         </div>
 
+        <!-- Sidebar de filtros (overlay) - MISMO PATRÓN QUE ADMIN PERO EN SIDEBAR -->
+        <div class="overlay" id="overlay"></div>
+        <aside class="filters-sidebar" id="filtersSidebar" aria-hidden="true">
+            <div class="filters-header">
+                <h3>Filtros</h3>
+                <button class="close-filters" id="closeFilters" type="button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Formulario que envía al backend (igual que admin pero con th:action) -->
+            <form id="filtersForm" th:action="@{/vista_casas_usuario}" method="get">
+                
+                <!-- ===== TIPO DE OPERACIÓN: Cards con iconos (radio buttons) ===== -->
+                <!-- Mismo patrón que admin: radio buttons con "todos" por defecto -->
+                <div class="filter-group">
+                    <label class="filter-label">Tipo de operación</label>
+                    <div class="tipo-cards">
+                        <label class="tipo-card" th:classappend="${tipoOperacionSeleccionado == 'todos'} ? 'selected'">
+                            <input type="radio" name="tipoOperacion" value="todos" 
+                                   th:checked="${tipoOperacionSeleccionado == 'todos'}">
+                            <span class="radio-indicator"></span>
+                            <div class="tipo-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <span class="tipo-text">Todos</span>
+                        </label>
+                        <label class="tipo-card" th:classappend="${tipoOperacionSeleccionado == 'alquiler'} ? 'selected'">
+                            <input type="radio" name="tipoOperacion" value="alquiler"
+                                   th:checked="${tipoOperacionSeleccionado == 'alquiler'}">
+                            <span class="radio-indicator"></span>
+                            <div class="tipo-icon">
+                                <i class="fas fa-key"></i>
+                            </div>
+                            <span class="tipo-text">Alquiler</span>
+                        </label>
+                        <label class="tipo-card" th:classappend="${tipoOperacionSeleccionado == 'compra'} ? 'selected'">
+                            <input type="radio" name="tipoOperacion" value="compra"
+                                   th:checked="${tipoOperacionSeleccionado == 'compra'}">
+                            <span class="radio-indicator"></span>
+                            <div class="tipo-icon">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <span class="tipo-text">Compra</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- ===== PRECIO MÁXIMO: Slider (mismo patrón que admin) ===== -->
+                
+                <div class="filter-group">
+                    <label class="filter-label">
+                        Precio máximo: <span id="precioValor" class="precio-valor-destacado"
+                            th:text="${#numbers.formatDecimal(precioMaxSeleccionado, 0, 'POINT', 0, 'COMMA')} + ' €'">
+                            5.000.000 €
+                        </span>
+                    </label>
+                    <div class="slider-custom">
+                        <div class="slider-track">
+                            <div class="slider-fill" id="sliderFill"></div>
+                        </div>
+                        <div class="slider-thumb" id="sliderThumb"></div>
+                        <input type="range" id="precioMaximo" name="precioMax" min="0" max="5000000" step="1000" 
+                            th:value="${precioMaxSeleccionado}"
+                            class="slider-input">
+                        <div class="slider-rango">
+                            <span>0 €</span>
+                            <span>5.000.000 €</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== CONVIVENCIA: Checkboxes (mismo patrón que admin) ===== -->
+                <!-- Admin usa: filtroMascotas, filtroFumador, filtroPareja -->
+                <div class="filter-group">
+                    <label class="filter-label">Convivencia</label>
+                    <div class="convivencia-list">
+                        <label class="convivencia-item">
+                            <div class="convivencia-info">
+                                <i class="fas fa-paw"></i>
+                                <span>Mascotas permitidas</span>
+                            </div>
+                            <input type="checkbox" name="filtroMascotas" value="true"
+                                   th:checked="${filtroMascotasActivo}">
+                        </label>
+                        <label class="convivencia-item">
+                            <div class="convivencia-info">
+                                <i class="fas fa-smoking"></i>
+                                <span>Fumador/a</span>
+                            </div>
+                            <input type="checkbox" name="filtroFumador" value="true"
+                                   th:checked="${filtroFumadorActivo}">
+                        </label>
+                        <label class="convivencia-item">
+                            <div class="convivencia-info">
+                                <i class="fas fa-heart"></i>
+                                <span>Pareja</span>
+                            </div>
+                            <input type="checkbox" name="filtroPareja" value="true"
+                                   th:checked="${filtroParejaActivo}">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- ===== BOTONES: Aplicar / Limpiar (mismo patrón que admin) ===== -->
+                <div class="filters-actions">
+                    <button type="submit" class="btn-aplicar">
+                        <i class="fas fa-check"></i> Aplicar filtros
+                    </button>
+                    <a th:href="@{/vista_casas_usuario}" class="btn-limpiar">
+                        <i class="fas fa-redo-alt"></i> Limpiar
+                    </a>
+                </div>
+            </form>
+        </aside>
+
+        <!-- Grid de propiedades -->
         <div class="properties-grid" id="propertiesGrid">
-            <!-- ... contenido de tarjetas ... -->
+            
+            <!-- Sin resultados -->
+            <div th:if="${#lists.isEmpty(viviendas)}" class="no-results">
+                <i class="fas fa-search"></i>
+                <p>No hay anuncios disponibles con los filtros seleccionados.</p>
+                <a th:href="@{/vista_casas_usuario}" class="btn-limpiar">Ver todos</a>
+            </div>
+
+            <!-- Tarjeta de vivienda -->
+            <div th:each="vivienda : ${viviendas}" class="property-card" 
+                 th:data-id="${vivienda.viviendaID}"
+                 th:data-tipo="${vivienda.tipoOperacion}"
+                 th:data-precio="${vivienda.precio}">
+                
+                <div class="property-image">
+                    <img th:src="@{/images/casa_default.jpg}" alt="Imagen vivienda">
+                    <span class="property-badge" 
+                          th:classappend="${vivienda.tipoOperacion == 'alquiler'} ? 'badge-alquiler' : 'badge-compra'" 
+                          th:text="${vivienda.tipoOperacion}">Alquiler</span>
+                    
+                    <!-- Badge de compatibilidad -->
+                    <div th:if="${perfilConvivencia != null}" class="compatibility-badge"
+                         th:classappend="${(perfilConvivencia.mascotas == vivienda.mascotas) && 
+                                          (perfilConvivencia.fumador == vivienda.fumador) && 
+                                          (perfilConvivencia.pareja == vivienda.pareja)} ? 'compatible' : 'partial'">
+                        <i class="fas fa-user-check"></i>
+                        <span th:text="${(perfilConvivencia.mascotas == vivienda.mascotas) && 
+                                       (perfilConvivencia.fumador == vivienda.fumador) && 
+                                       (perfilConvivencia.pareja == vivienda.pareja)} ? '100% compatible' : 'Ver compatibilidad'">
+                            Compatible
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="property-details">
+                    <h3 th:text="${vivienda.titulo}">Título del anuncio</h3>
+                    <p class="property-location"><i class="fas fa-map-marker-alt"></i> 
+                        <span th:text="${vivienda.direccion}">Dirección</span>
+                    </p>
+                    
+                    <div class="property-features">
+                        <span><i class="fas fa-bed"></i> <span th:text="${vivienda.habitaciones}">3</span> hab.</span>
+                        <span><i class="fas fa-bath"></i> <span th:text="${vivienda.banos}">2</span> baños</span>
+                        <span><i class="fas fa-ruler-combined"></i> <span th:text="${vivienda.metrosCuadrados}">85</span> m²</span>
+                        <span><i class="fas fa-users"></i> <span th:text="${vivienda.cupoPersonas}">4</span> pers.</span>
+                    </div>
+                    
+                    <div class="property-convivencia">
+                        <span th:classappend="${vivienda.mascotas} ? 'active' : 'inactive'" title="Mascotas">
+                            <i class="fas fa-paw"></i>
+                        </span>
+                        <span th:classappend="${vivienda.fumador} ? 'active' : 'inactive'" title="Fumador">
+                            <i class="fas fa-smoking"></i>
+                        </span>
+                        <span th:classappend="${vivienda.pareja} ? 'active' : 'inactive'" title="Pareja">
+                            <i class="fas fa-heart"></i>
+                        </span>
+                    </div>
+                    
+                    <p class="property-price" 
+                       th:text="${#numbers.formatDecimal(vivienda.precio, 0, 'POINT', 0, 'COMMA')} + ' €'">
+                        1.200 €
+                    </p>
+                </div>
+                
+                <div class="property-actions">
+                    <button class="btn-contact" type="button" th:onclick="|contactarAnunciante(${vivienda.viviendaID})|">
+                        <i class="fas fa-envelope"></i> Contactar
+                    </button>
+                    <button class="btn-favorite" type="button" th:onclick="|toggleFavorito(${vivienda.viviendaID})|">
+                        <i class="far fa-heart"></i>
+                    </button>
+                </div>
+            </div>
+
         </div>
 
     </div>
+
+    <!-- Scripts extra -->
+    <th:block layout:fragment="scripts-extra">
+        <script th:src="@{/js/vista_usuario.js}"></script>
+    </th:block>
 
 </body>
 </html>
