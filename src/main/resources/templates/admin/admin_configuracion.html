@@ -138,6 +138,7 @@
                         <div class="perfil-campo-edit">
                             <label><i class="fas fa-venus-mars"></i> Género</label>
                             <select name="genero" required>
+                                <option value="" disabled>Selecciona género</option>
                                 <option value="Hombre" th:selected="${usuario != null && usuario.genero == 'Hombre'}">Hombre</option>
                                 <option value="Mujer" th:selected="${usuario != null && usuario.genero == 'Mujer'}">Mujer</option>
                                 <option value="Otro" th:selected="${usuario != null && usuario.genero == 'Otro'}">Otro</option>
