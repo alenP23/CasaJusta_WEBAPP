@@ -6,6 +6,7 @@ import edu.mondragon.webengl.CasaJusta.service.UsuarioService;
 import edu.mondragon.webengl.CasaJusta.service.ViviendaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,13 +26,23 @@ public class AdminController {
     private UsuarioService usuarioService;
     
     @Autowired
-    private PasswordEncoder passwordEncoder;  // ← Para encriptar contraseña
+    private PasswordEncoder passwordEncoder;
+
+    // ========== MÉTODO AUXILIAR: detectar si es admin ==========
+    private boolean esAdmin(Authentication authentication) {
+        if (authentication == null) return false;
+        return authentication.getAuthorities().stream()
+            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+    }
 
     // ========== PANEL PRINCIPAL (ANUNCIOS) ==========
     @GetMapping
     public String panelAdmin(Authentication authentication, Model model) {
         if (authentication != null) {
             model.addAttribute("username", authentication.getName());
+            model.addAttribute("esAdmin", esAdmin(authentication));  // ← AÑADIDO
+        } else {
+            model.addAttribute("esAdmin", false);  // ← AÑADIDO
         }
         
         List<Vivienda> viviendas = viviendaService.findAll();
@@ -45,6 +56,9 @@ public class AdminController {
     public String listarUsuarios(Authentication authentication, Model model) {
         if (authentication != null) {
             model.addAttribute("username", authentication.getName());
+            model.addAttribute("esAdmin", esAdmin(authentication));  // ← AÑADIDO
+        } else {
+            model.addAttribute("esAdmin", false);  // ← AÑADIDO
         }
         
         List<Usuario> usuarios = usuarioService.findAll();
@@ -56,6 +70,12 @@ public class AdminController {
     // ========== ANUNCIOS CRUD ==========
     @PostMapping("/anuncios/crear")
     public String crearAnuncio(@ModelAttribute Vivienda vivienda) {
+        vivienda.setEstado(false);
+
+        if (vivienda.getFumador() == null) vivienda.setFumador(false);
+        if (vivienda.getMascotas() == null) vivienda.setMascotas(false);
+        if (vivienda.getPareja() == null) vivienda.setPareja(false);
+
         viviendaService.save(vivienda);
         return "redirect:/admin";
     }
@@ -77,10 +97,12 @@ public class AdminController {
     public String verConfiguracion(Authentication authentication, Model model) {
         if (authentication != null) {
             model.addAttribute("username", authentication.getName());
+            model.addAttribute("esAdmin", esAdmin(authentication));  // ← AÑADIDO
             
-            // Obtener el usuario actualmente logueado por nombre de usuario
             Usuario usuario = usuarioService.findByNombreUsuario(authentication.getName());
             model.addAttribute("usuario", usuario);
+        } else {
+            model.addAttribute("esAdmin", false);  // ← AÑADIDO
         }
         
         return "admin/admin_configuracion";
@@ -92,13 +114,11 @@ public class AdminController {
                                    Authentication authentication,
                                    RedirectAttributes redirectAttributes) {
         
-        // Validar que el usuario existe
         if (usuarioActualizado.getUsuarioId() == null) {
             redirectAttributes.addFlashAttribute("error", "ID de usuario no válido");
             return "redirect:/admin/configuracion";
         }
         
-        // Obtener usuario original de la base de datos
         Usuario usuarioExistente = usuarioService.findById(usuarioActualizado.getUsuarioId());
         
         if (usuarioExistente == null) {
@@ -106,7 +126,6 @@ public class AdminController {
             return "redirect:/admin/configuracion";
         }
         
-        // Actualizar campos editables (excepto fecha de registro que no existe en tu entidad)
         usuarioExistente.setNombre(usuarioActualizado.getNombre());
         usuarioExistente.setApellido(usuarioActualizado.getApellido());
         usuarioExistente.setDni(usuarioActualizado.getDni());
@@ -115,16 +134,12 @@ public class AdminController {
         usuarioExistente.setGenero(usuarioActualizado.getGenero());
         usuarioExistente.setFechaNacimiento(usuarioActualizado.getFechaNacimiento());
         
-        // Solo actualizar contraseña si se proporcionó una nueva
         if (contrasena != null && !contrasena.trim().isEmpty()) {
             String contrasenaEncriptada = passwordEncoder.encode(contrasena);
             usuarioExistente.setContrasena(contrasenaEncriptada);
         }
         
-        // Guardar en base de datos
         usuarioService.save(usuarioExistente);
-        
-        // Mensaje de éxito
         redirectAttributes.addFlashAttribute("success", "Perfil actualizado correctamente");
         
         return "redirect:/admin/configuracion";
@@ -137,6 +152,9 @@ public class AdminController {
                                      Model model) {
         if (authentication != null) {
             model.addAttribute("username", authentication.getName());
+            model.addAttribute("esAdmin", esAdmin(authentication));  // ← AÑADIDO
+        } else {
+            model.addAttribute("esAdmin", false);  // ← AÑADIDO
         }
         
         Vivienda vivienda = viviendaService.findById(id);

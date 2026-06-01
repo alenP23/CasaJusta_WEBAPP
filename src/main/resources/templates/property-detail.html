@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${vivienda.titulo} + ' - CasaJusta'">Detalle de Propiedad</title>
+    <link rel="stylesheet" th:href="@{/css/admin/property-card.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- ========== HEADER ========== -->
+    <header class="detail-header">
+        <div class="header-content">
+            <!-- Enlace de vuelta según rol -->
+            <a th:href="@{${esAdmin != null and esAdmin} ? '/admin' : '/vista_casas_usuario'}" class="logo">
+                <i class="fas fa-home"></i>
+                <span>CasaJusta</span>
+            </a>
+            <div class="header-actions">
+                <button class="btn-share">
+                    <i class="fas fa-share-alt"></i>
+                    Compartir Piso
+                </button>
+                <div class="user-icon">
+                    <i class="fas fa-user-circle"></i>
+                    <span th:if="${username != null}" th:text="${username}"></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="detail-container">
+        
+        <!-- Imagen principal -->
+        <div class="property-hero">
+            <img th:src="@{/images/casa_default.jpg}" 
+                 th:alt="${vivienda.titulo}">
+        </div>
+
+        <!-- Layout de dos columnas -->
+        <div class="detail-layout">
+            
+            <!-- Columna izquierda: Info -->
+            <div class="detail-left">
+                
+                <!-- Tipo de operación + título -->
+                <div class="operation-type">
+                    <a th:href="@{${esAdmin} ? '/admin' : '/vista_casas_usuario'}" class="back-link">
+                        <i class="fas fa-arrow-left"></i>
+                        <span th:text="${vivienda.tipoOperacion}">Alquiler</span>
+                    </a>
+                    <h1 class="property-title" th:text="${vivienda.titulo}">Título de la propiedad</h1>
+                </div>
+
+                <!-- Precio -->
+                <div class="prices-section">
+                    <h3 class="prices-title">Precio</h3>
+                    <div class="prices-grid">
+                        <div class="price-box">
+                            <span class="price-label" th:text="${vivienda.tipoOperacion}">Alquiler</span>
+                            <span class="price-value" 
+                                  th:text="${#numbers.formatDecimal(vivienda.precio, 0, 'POINT', 0, 'COMMA')} + ' €'">1.200 €</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Características principales -->
+                <div class="features-section">
+                    <h3 class="section-label">Características</h3>
+                    <div class="features-grid">
+                        <div class="feature-item" th:if="${vivienda.habitaciones != null}">
+                            <div class="feature-icon">
+                                <i class="fas fa-bed"></i>
+                            </div>
+                            <span class="feature-label">Habitaciones</span>
+                            <span class="feature-value" th:text="${vivienda.habitaciones}">3</span>
+                        </div>
+                        <div class="feature-item" th:if="${vivienda.banos != null}">
+                            <div class="feature-icon">
+                                <i class="fas fa-bath"></i>
+                            </div>
+                            <span class="feature-label">Baños</span>
+                            <span class="feature-value" th:text="${vivienda.banos}">2</span>
+                        </div>
+                        <div class="feature-item" th:if="${vivienda.metrosCuadrados != null}">
+                            <div class="feature-icon">
+                                <i class="fas fa-ruler-combined"></i>
+                            </div>
+                            <span class="feature-label">Metros²</span>
+                            <span class="feature-value" th:text="${vivienda.metrosCuadrados}">80</span>
+                        </div>
+                        <div class="feature-item" th:if="${vivienda.cupoPersonas != null}">
+                            <div class="feature-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <span class="feature-label">Capacidad</span>
+                            <span class="feature-value" th:text="${vivienda.cupoPersonas}">4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preferencias de convivencia -->
+                <div class="filters-section" th:if="${vivienda.fumador != null || vivienda.mascotas != null || vivienda.pareja != null}">
+                    <h3 class="section-label">Preferencias de convivencia</h3>
+                    <div class="filters-row">
+                        <span class="filter-pill" th:if="${vivienda.fumador != null}">
+                            <i class="fas fa-smoking" th:style="${vivienda.fumador} ? 'color: #16a34a' : 'color: #dc2626'"></i>
+                            <span th:text="${vivienda.fumador} ? 'Fumador permitido' : 'No fumador'">No fumador</span>
+                        </span>
+                        <span class="filter-pill" th:if="${vivienda.mascotas != null}">
+                            <i class="fas fa-paw" th:style="${vivienda.mascotas} ? 'color: #16a34a' : 'color: #dc2626'"></i>
+                            <span th:text="${vivienda.mascotas} ? 'Mascotas permitidas' : 'No mascotas'">No mascotas</span>
+                        </span>
+                        <span class="filter-pill" th:if="${vivienda.pareja != null}">
+                            <i class="fas fa-heart" th:style="${vivienda.pareja} ? 'color: #16a34a' : 'color: #dc2626'"></i>
+                            <span th:text="${vivienda.pareja} ? 'Parejas bienvenidas' : 'No parejas'">No parejas</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Dirección -->
+                <div class="address-section">
+                    <h3 class="section-label">Dirección</h3>
+                    <p class="address-text" th:text="${vivienda.direccion}">Calle Ejemplo, 123</p>
+                </div>
+
+            </div>
+
+            <!-- Columna derecha: Usuario propietario -->
+            <div class="detail-right">
+                <div class="owner-card">
+                    <div class="owner-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <span class="owner-label" th:text="${propietario != null} ? ${propietario.nombre + ' ' + propietario.apellido} : 'Usuario'">Usuario</span>
+                    <span class="owner-role">Propietario</span>
+                    
+                    <!-- Botón contactar (solo para usuarios, no admin) -->
+                    <button th:if="${!esAdmin}" class="btn-contact">
+                        <i class="fas fa-envelope"></i>
+                        Contactar
+                    </button>
+                    
+                    <!-- Botón editar (solo admin) -->
+                    <button th:if="${esAdmin}" class="btn-contact" th:onclick="|window.location.href='@{/admin/anuncio/editar/}' + ${vivienda.viviendaID}|">
+                        <i class="fas fa-pen"></i>
+                        Editar anuncio
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script th:src="@{/js/property-detail.js}"></script>
+</body>
+</html>

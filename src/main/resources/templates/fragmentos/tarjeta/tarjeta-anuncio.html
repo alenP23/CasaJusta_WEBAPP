@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <!-- FRAGMENTO ADMIN -->
+    <div th:fragment="tarjeta-admin(vivienda)" class="admin-property-card" 
+         th:onclick="|window.location.href='@{/admin/anuncio/}' + ${vivienda.viviendaID}|"
+         th:data-id="${vivienda.viviendaID}" 
+         th:data-tipo="${vivienda.tipoOperacion}"
+         th:data-precio="${vivienda.precio}">
+        
+        <!-- IMAGEN -->
+        <div class="property-image">
+            <img th:src="@{/images/casa_default.jpg}" alt="Imagen vivienda">
+            
+            <!-- Badge sobre la imagen -->
+            <span class="property-badge" 
+                  th:classappend="${vivienda.tipoOperacion == 'alquiler'} ? 'badge-alquiler' : 'badge-compra'" 
+                  th:text="${vivienda.tipoOperacion}">Alquiler</span>
+            
+            <!-- Botones de acción -->
+            <div class="property-actions" onclick="event.stopPropagation();">
+                <button class="action-btn edit" type="button" 
+                        th:onclick="|openEditModal(${vivienda.viviendaID})|" title="Editar">
+                    <i class="fas fa-pen"></i>
+                </button>
+                <button class="action-btn delete" type="button" 
+                        th:onclick="|openDeleteModal(${vivienda.viviendaID})|" title="Eliminar">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- DETALLES -->
+        <div class="property-details">
+            <h3 th:text="${vivienda.titulo}">villa playa</h3>
+            <div class="property-meta">
+                <span class="property-type" th:text="${vivienda.tipoOperacion}">alquiler</span>
+                <span class="property-price" th:text="${#numbers.formatDecimal(vivienda.precio, 0, 'POINT', 0, 'COMMA')} + ' €'">100.000 €</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- FRAGMENTO USUARIO -->
+    <div th:fragment="tarjeta-usuario(vivienda)" class="admin-property-card" 
+         th:onclick="|window.location.href='@{/anuncio/}' + ${vivienda.viviendaID}|"
+         th:data-id="${vivienda.viviendaID}">
+        
+        <div class="property-image">
+            <img th:src="@{/images/casa_default.jpg}" alt="Imagen vivienda">
+            
+            <span class="property-badge" 
+                  th:classappend="${vivienda.tipoOperacion == 'alquiler'} ? 'badge-alquiler' : 'badge-compra'" 
+                  th:text="${vivienda.tipoOperacion}">Alquiler</span>
+        </div>
+        
+        <div class="property-details">
+            <h3 th:text="${vivienda.titulo}">villa playa</h3>
+            <div class="property-meta">
+                <span class="property-type" th:text="${vivienda.tipoOperacion}">alquiler</span>
+                <span class="property-price" th:text="${#numbers.formatDecimal(vivienda.precio, 0, 'POINT', 0, 'COMMA')} + ' €'">100.000 €</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
