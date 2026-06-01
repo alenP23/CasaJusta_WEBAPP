@@ -92,6 +92,39 @@ public class AdminController {
         return "redirect:/admin/usuarios";
     }
 
+    @GetMapping("/anuncio/{id}/datos")
+    @ResponseBody
+    public Vivienda getDatosAnuncio(@PathVariable Integer id) {
+        return viviendaService.findById(id);
+    }
+
+    @PostMapping("/anuncios/editar")
+    public String editarAnuncio(@RequestParam Integer id,
+                                @ModelAttribute Vivienda viviendaActualizada) {
+                                
+        Vivienda existente = viviendaService.findById(id);
+                                
+        if (existente == null) {
+            return "redirect:/admin";
+        }
+
+        // Actualizar todos los campos
+        existente.setTitulo(viviendaActualizada.getTitulo());
+        existente.setTipoOperacion(viviendaActualizada.getTipoOperacion());
+        existente.setPrecio(viviendaActualizada.getPrecio());
+        existente.setDireccion(viviendaActualizada.getDireccion());
+        existente.setHabitaciones(viviendaActualizada.getHabitaciones());
+        existente.setBanos(viviendaActualizada.getBanos());
+        existente.setMetrosCuadrados(viviendaActualizada.getMetrosCuadrados());
+        existente.setCupoPersonas(viviendaActualizada.getCupoPersonas());
+        existente.setFumador(viviendaActualizada.getFumador());
+        existente.setMascotas(viviendaActualizada.getMascotas());
+        existente.setPareja(viviendaActualizada.getPareja());
+
+        viviendaService.save(existente);
+        return "redirect:/admin";
+    }
+
     // ========== CONFIGURACIÓN / PERFIL ==========
     @GetMapping("/configuracion")
     public String verConfiguracion(Authentication authentication, Model model) {

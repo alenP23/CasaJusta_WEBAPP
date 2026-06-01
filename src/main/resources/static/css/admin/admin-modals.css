@@ -169,9 +169,70 @@
     background: var(--delete-red-dark);
 }
 
+/* ========== TOGGLE FILTERS (NUEVO) ========== */
+.toggle-filters {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.toggle-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: 2px solid #e5e7eb;
+    border-radius: 20px;
+    background: #f3f4f6;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.toggle-pill i {
+    font-size: 14px;
+}
+
+/* HOVER */
+.toggle-pill:hover {
+    border-color: #d1d5db;
+    background: #e5e7eb;
+}
+
+/* ACTIVO: filtro seleccionado (verde) */
+.toggle-pill.active {
+    border-color: #16a34a;
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+/* DESACTIVADO: filtro no seleccionado (gris más oscuro) */
+.toggle-pill.inactive {
+    border-color: #e5e7eb;
+    background: #f3f4f6;
+    color: #9ca3af;
+}
+
+/* Animación */
+.toggle-pill {
+    transform: scale(1);
+    transition: all 0.15s ease;
+}
+
+.toggle-pill:active {
+    transform: scale(0.95);
+}
+
 /* ========== RESPONSIVE MODALS ========== */
 @media (max-width: 768px) {
     .form-row {
         grid-template-columns: 1fr;
+    }
+    
+    .toggle-filters {
+        justify-content: center;
     }
 }

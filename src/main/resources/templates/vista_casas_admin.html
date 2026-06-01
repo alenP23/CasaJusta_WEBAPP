@@ -7,10 +7,8 @@
 </head>
 <body>
 
-    <!-- SOBREESCRIBO TODO el header (incluye filtros + título + avatar) -->
     <header layout:fragment="top-header" class="top-header">
         <div class="header-filters">
-            <!-- Aquí van los filtros -->
             <div th:replace="~{fragmentos/filtros/filtro-convivencia :: filtro-convivencia}"></div>
             <div th:replace="~{fragmentos/filtros/filtro-tipo-operacion :: filtro-tipo-operacion}"></div>
             <div th:replace="~{fragmentos/filtros/filtro-precio :: filtro-precio}"></div>
@@ -23,7 +21,6 @@
         </div>
     </header>
 
-    <!-- CONTENIDO PRINCIPAL -->
     <div layout:fragment="content">
         
         <h1 class="section-title">Anuncios</h1>
@@ -34,9 +31,8 @@
                 <p>No hay anuncios disponibles.</p>
             </div>
 
-        <!-- USAR FRAGMENTO: ruta correcta -->
             <th:block th:each="vivienda : ${viviendas}">
-            <div th:replace="~{fragmentos/tarjeta/tarjeta-anuncio :: tarjeta-admin(vivienda=${vivienda})}"></div>
+                <div th:replace="~{fragmentos/tarjeta/tarjeta-anuncio :: tarjeta-admin(vivienda=${vivienda})}"></div>
             </th:block>
 
             <div class="admin-property-card add-card" id="addPropertyBtn">
@@ -48,92 +44,13 @@
 
         </div>
 
-        <!-- MODALES (sin cambios) -->
-        <div class="modal-overlay" id="modalOverlay">
-            <div class="modal">
-                <div class="modal-header">
-                    <h2>Agregar nuevo anuncio</h2>
-                    <button class="modal-close" id="closeModal" type="button" aria-label="Cerrar">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="addPropertyForm" th:action="@{/admin/anuncios/crear}" method="post">
-                        <div class="form-group">
-                            <label for="propTitle">Título del anuncio</label>
-                            <input type="text" id="propTitle" name="titulo" placeholder="Ej: Apartamento en el centro" required>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="propType">Tipo de operación</label>
-                                <select id="propType" name="tipoOperacion" required>
-                                    <option value="" disabled selected>Selecciona tipo</option>
-                                    <option value="alquiler">Alquiler</option>
-                                    <option value="compra">Compra</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="propPrice">Precio</label>
-                                <input type="number" id="propPrice" name="precio" placeholder="0" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="propLocation">Dirección</label>
-                            <input type="text" id="propLocation" name="direccion" placeholder="Calle, Ciudad" required>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="propRooms">Habitaciones</label>
-                                <input type="number" id="propRooms" name="habitaciones" placeholder="0" min="0">
-                            </div>
-                            <div class="form-group">
-                                <label for="propBathrooms">Baños</label>
-                                <input type="number" id="propBathrooms" name="banos" placeholder="0" min="0">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="propMeters">Metros cuadrados</label>
-                                <input type="number" id="propMeters" name="metrosCuadrados" placeholder="0" min="0">
-                            </div>
-                            <div class="form-group">
-                                <label for="propPersons">Cupo personas</label>
-                                <input type="number" id="propPersons" name="cupoPersonas" placeholder="0" min="0">
-                            </div>
-                        </div>
-                        <div class="modal-actions">
-                            <button type="button" class="btn btn-secondary" id="cancelModal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary">Guardar anuncio</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        
-        <div class="modal-overlay" id="deleteModalOverlay">
-            <div class="modal modal-small">
-                <div class="modal-header">
-                    <h2><i class="fas fa-exclamation-triangle"></i> Confirmar eliminación</h2>
-                    <button class="modal-close" id="closeDeleteModal" type="button" aria-label="Cerrar">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p class="delete-message">¿Estás seguro de que quieres eliminar este anuncio? Esta acción no se puede deshacer.</p>
-                    <form id="deleteForm" th:action="@{/admin/anuncios/eliminar}" method="post">
-                        <input type="hidden" id="deleteId" name="id">
-                        <div class="modal-actions">
-                            <button type="button" class="btn btn-secondary" id="cancelDelete">Cancelar</button>
-                            <button type="submit" class="btn btn-danger" id="confirmDelete">Eliminar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        <!-- TODOS LOS MODALES FRAGMENTADOS -->
+        <div th:replace="~{fragmentos/modales/modal-crear-anuncio :: modal-crear}"></div>
+        <div th:replace="~{fragmentos/modales/modal-eliminar-anuncio :: modal-eliminar}"></div>
+        <div th:replace="~{fragmentos/modales/modal-editar-anuncio :: modal-editar}"></div>
 
     </div>
 
-    <!-- Scripts extra -->
     <th:block layout:fragment="scripts-extra">
         <script th:src="@{/js/filtros_admin.js}"></script>
     </th:block>

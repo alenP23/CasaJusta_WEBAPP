@@ -7,7 +7,15 @@
          th:onclick="|window.location.href='@{/admin/anuncio/}' + ${vivienda.viviendaID}|"
          th:data-id="${vivienda.viviendaID}" 
          th:data-tipo="${vivienda.tipoOperacion}"
-         th:data-precio="${vivienda.precio}">
+         th:data-precio="${vivienda.precio}"
+         th:data-direccion="${vivienda.direccion}"
+         th:data-habitaciones="${vivienda.habitaciones}"
+         th:data-banos="${vivienda.banos}"
+         th:data-metros="${vivienda.metrosCuadrados}"
+         th:data-personas="${vivienda.cupoPersonas}"
+         th:data-fumador="${vivienda.fumador}"
+         th:data-mascotas="${vivienda.mascotas}"
+         th:data-pareja="${vivienda.pareja}">
         
         <!-- IMAGEN -->
         <div class="property-image">

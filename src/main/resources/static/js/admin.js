@@ -30,7 +30,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const cancelModal = document.getElementById('cancelModal');
 
     if (addPropertyBtn) {
-        addPropertyBtn.addEventListener('click', function() {
+        addPropertyBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Evitar que el click se propague
             if (modalOverlay) {
                 modalOverlay.classList.add('active');
                 document.body.style.overflow = 'hidden';
@@ -68,23 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    window.openEditModal = function(id) {
-        console.log('Editar anuncio ID:', id);
-    };
-
-    window.confirmarEliminar = function(id) {
-        if (confirm('¿Estás seguro de eliminar este usuario?')) {
-            fetch('/admin/usuarios/eliminar?id=' + id, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                }
-            }).then(() => {
-                window.location.reload();
-            });
-        }
-    };
-
     function closeDeleteModalFunc() {
         if (deleteModalOverlay) {
             deleteModalOverlay.classList.remove('active');
@@ -101,6 +85,122 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ========== MODAL EDITAR ==========
+    const editModalOverlay = document.getElementById('editModalOverlay');
+    const closeEditModal = document.getElementById('closeEditModal');
+    const cancelEdit = document.getElementById('cancelEdit');
+    const editForm = document.getElementById('editPropertyForm');
+
+    window.openEditModal = function(id) {
+        const card = document.querySelector(`.admin-property-card[data-id="${id}"]`);
+        
+        if (!card) {
+            console.error('No se encontró la tarjeta con ID:', id);
+            return;
+        }
+        
+        const titulo = card.querySelector('.property-details h3')?.textContent || '';
+        const tipo = card.dataset.tipo || 'alquiler';
+        const precio = card.dataset.precio || '';
+        
+        document.getElementById('editId').value = id;
+        document.getElementById('editTitle').value = titulo;
+        document.getElementById('editType').value = tipo;
+        document.getElementById('editPrice').value = precio;
+        
+        fetch(`/admin/anuncio/${id}/datos`)
+            .then(response => {
+                if (!response.ok) throw new Error('Error al cargar datos');
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('editLocation').value = data.direccion || '';
+                document.getElementById('editRooms').value = data.habitaciones || 0;
+                document.getElementById('editBathrooms').value = data.banos || 0;
+                document.getElementById('editMeters').value = data.metrosCuadrados || 0;
+                document.getElementById('editPersons').value = data.cupoPersonas || 0;
+                
+                setToggle('fumador', data.fumador);
+                setToggle('mascotas', data.mascotas);
+                setToggle('pareja', data.pareja);
+            })
+            .catch(err => {
+                console.error('Error cargando datos completos:', err);
+                document.getElementById('editLocation').value = '';
+                document.getElementById('editRooms').value = 0;
+                document.getElementById('editBathrooms').value = 0;
+                document.getElementById('editMeters').value = 0;
+                document.getElementById('editPersons').value = 0;
+                setToggle('fumador', false);
+                setToggle('mascotas', false);
+                setToggle('pareja', false);
+            });
+        
+        if (editModalOverlay) {
+            editModalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    };
+
+    function setToggle(nombre, valor) {
+        const capitalized = nombre.charAt(0).toUpperCase() + nombre.slice(1);
+        const pill = document.getElementById('toggle' + capitalized);
+        const input = document.getElementById('input' + capitalized);
+        
+        if (!pill || !input) return;
+        
+        const boolValor = valor === true || valor === 'true' || valor === 1;
+        input.value = boolValor ? 'true' : 'false';
+        
+        if (boolValor) {
+            pill.classList.add('active');
+            pill.classList.remove('inactive');
+        } else {
+            pill.classList.remove('active');
+            pill.classList.add('inactive');
+        }
+    }
+
+    window.toggleFilter = function(nombre) {
+        const capitalized = nombre.charAt(0).toUpperCase() + nombre.slice(1);
+        const pill = document.getElementById('toggle' + capitalized);
+        const input = document.getElementById('input' + capitalized);
+        
+        if (!pill || !input) return;
+        
+        const actual = input.value === 'true';
+        const nuevo = !actual;
+        
+        input.value = nuevo ? 'true' : 'false';
+        
+        if (nuevo) {
+            pill.classList.add('active');
+            pill.classList.remove('inactive');
+        } else {
+            pill.classList.remove('active');
+            pill.classList.add('inactive');
+        }
+    };
+
+    function closeEditModalFunc() {
+        if (editModalOverlay) {
+            editModalOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        if (editForm) editForm.reset();
+        setToggle('fumador', false);
+        setToggle('mascotas', false);
+        setToggle('pareja', false);
+    }
+
+    if (closeEditModal) closeEditModal.addEventListener('click', closeEditModalFunc);
+    if (cancelEdit) cancelEdit.addEventListener('click', closeEditModalFunc);
+    if (editModalOverlay) {
+        editModalOverlay.addEventListener('click', function(e) {
+            if (e.target === editModalOverlay) closeEditModalFunc();
+        });
+    }
+
     // ========== CERRAR CON ESCAPE ==========
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
@@ -109,6 +209,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (deleteModalOverlay && deleteModalOverlay.classList.contains('active')) {
                 closeDeleteModalFunc();
+            }
+            if (editModalOverlay && editModalOverlay.classList.contains('active')) {
+                closeEditModalFunc();
             }
         }
     });
@@ -120,25 +223,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const path = window.location.pathname;
         const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
         
-        // Quitar active de todos
         navItems.forEach(item => item.classList.remove('active'));
         
         let mejorCoincidencia = null;
         let mejorLongitud = 0;
         
-        // Buscar la coincidencia más específica (la ruta más larga que coincida)
         navItems.forEach(item => {
             const href = item.getAttribute('href');
             if (!href) return;
-        
-            // Coincidencia exacta
+
             if (path === href) {
                 mejorCoincidencia = item;
                 mejorLongitud = href.length;
-            }
-            // Coincidencia por prefijo: solo si la ruta actual empieza con href + '/'
-            // y el href es más largo que la mejor coincidencia encontrada hasta ahora
-            else if (path.startsWith(href + '/') && href.length > mejorLongitud) {
+            } else if (path.startsWith(href + '/') && href.length > mejorLongitud) {
                 mejorCoincidencia = item;
                 mejorLongitud = href.length;
             }
@@ -149,6 +246,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Ejecutar al cargar
     marcarPestanaActiva();
 });
