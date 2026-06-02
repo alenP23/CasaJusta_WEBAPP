@@ -11,7 +11,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="addPropertyForm" th:action="@{/admin/anuncios/crear}" method="post">
+                <!-- ✅ enctype="multipart/form-data" AÑADIDO -->
+                <form id="addPropertyForm" th:action="@{/admin/anuncios/crear}" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="propTitle">Título del anuncio</label>
                         <input type="text" id="propTitle" name="titulo" placeholder="Ej: Apartamento en el centro" required>
@@ -54,26 +55,47 @@
                             <input type="number" id="propPersons" name="cupoPersonas" placeholder="0" min="0">
                         </div>
                     </div>
+                    
+                    <!-- ===== CAMPO IMAGEN ===== -->
                     <div class="form-group">
-                    <label>Preferencias de convivencia</label>
-                    <div class="toggle-filters">
-                        <button type="button" class="toggle-pill inactive" id="toggleCrearFumador" onclick="toggleCrearFilter('fumador')">
-                            <i class="fas fa-smoking"></i>
-                            <span>Fumador</span>
-                            <input type="hidden" name="fumador" id="inputCrearFumador" value="false">
-                        </button>
-                        <button type="button" class="toggle-pill inactive" id="toggleCrearMascotas" onclick="toggleCrearFilter('mascotas')">
-                            <i class="fas fa-paw"></i>
-                            <span>Mascotas</span>
-                            <input type="hidden" name="mascotas" id="inputCrearMascotas" value="false">
-                        </button>
-                        <button type="button" class="toggle-pill inactive" id="toggleCrearPareja" onclick="toggleCrearFilter('pareja')">
-                            <i class="fas fa-heart"></i>
-                            <span>Pareja</span>
-                            <input type="hidden" name="pareja" id="inputCrearPareja" value="false">
-                        </button>
+                        <label>Imagen del anuncio</label>
+                        <div class="image-upload-area" id="imageUploadArea">
+                            <input type="file" id="propImage" name="imagen" accept="image/*" style="display: none;">
+                            <div class="upload-placeholder" id="uploadPlaceholder">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Arrastra una imagen o haz clic para subir</span>
+                                <small>JPG, PNG (máx. 5MB)</small>
+                            </div>
+                            <div class="upload-preview" id="uploadPreview" style="display: none;">
+                                <img id="previewImg" src="" alt="Vista previa">
+                                <button type="button" class="remove-image" id="removeImage">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    <!-- ======================== -->
+                    
+                    <div class="form-group">
+                        <label>Preferencias de convivencia</label>
+                        <div class="toggle-filters">
+                            <button type="button" class="toggle-pill inactive" id="toggleCrearFumador" onclick="toggleCrearFilter('fumador')">
+                                <i class="fas fa-smoking"></i>
+                                <span>Fumador</span>
+                                <input type="hidden" name="fumador" id="inputCrearFumador" value="false">
+                            </button>
+                            <button type="button" class="toggle-pill inactive" id="toggleCrearMascotas" onclick="toggleCrearFilter('mascotas')">
+                                <i class="fas fa-paw"></i>
+                                <span>Mascotas</span>
+                                <input type="hidden" name="mascotas" id="inputCrearMascotas" value="false">
+                            </button>
+                            <button type="button" class="toggle-pill inactive" id="toggleCrearPareja" onclick="toggleCrearFilter('pareja')">
+                                <i class="fas fa-heart"></i>
+                                <span>Pareja</span>
+                                <input type="hidden" name="pareja" id="inputCrearPareja" value="false">
+                            </button>
+                        </div>
+                    </div>
                     <div class="modal-actions">
                         <button type="button" class="btn btn-secondary" id="cancelModal">Cancelar</button>
                         <button type="submit" class="btn btn-primary">Guardar anuncio</button>
