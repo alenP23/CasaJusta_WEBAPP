@@ -50,6 +50,12 @@ public class Vivienda {
     @Column(name = "pareja", nullable = false)
     private Boolean pareja;
 
+    @Column(name = "latitud")
+    private Double latitud;
+
+    @Column(name = "longitud")
+    private Double longitud;
+
     public Vivienda() {
     }
 
@@ -157,5 +163,21 @@ public class Vivienda {
 
     public void setPareja(Boolean pareja) {
         this.pareja = pareja;
+    }
+
+     public Double getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+
+    public Double getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
     }
 }
