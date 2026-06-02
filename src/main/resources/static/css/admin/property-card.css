@@ -87,10 +87,6 @@ body {
     background: var(--primary-dark);
 }
 
-.btn-share i {
-    font-size: 12px;
-}
-
 .user-icon {
     font-size: 32px;
     color: var(--text-muted);
@@ -122,6 +118,7 @@ body {
     margin-bottom: 32px;
     box-shadow: var(--shadow);
     background: #f3f4f6;
+    position: relative;
 }
 
 .property-hero img {
@@ -130,11 +127,49 @@ body {
     object-fit: cover;
 }
 
-/* Imagen por defecto */
-.property-hero img[src*="casa_default"] {
-    object-fit: contain;
-    padding: 40px;
-    opacity: 0.6;
+/* ========== NO IMAGE PLACEHOLDER ========== */
+.no-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f6;
+    min-height: 400px;
+}
+
+.add-image-overlay-full {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-add-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    transition: all 0.2s;
+}
+
+.btn-add-image:hover {
+    transform: scale(1.1);
+    background: var(--primary-dark);
+}
+
+.no-image-icon {
+    font-size: 64px;
+    color: #d1d5db;
 }
 
 /* ========== LAYOUT DOS COLUMNAS ========== */
@@ -146,8 +181,6 @@ body {
 }
 
 /* ========== COLUMNA IZQUIERDA ========== */
-
-/* Tipo de operación */
 .operation-type {
     margin-bottom: 24px;
 }
@@ -167,11 +200,6 @@ body {
     color: var(--primary-dark);
 }
 
-.back-link i {
-    font-size: 14px;
-}
-
-/* Título de propiedad */
 .property-title {
     font-size: 28px;
     font-weight: 800;
@@ -197,25 +225,6 @@ body {
     margin-bottom: 16px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-}
-
-.prices-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-}
-
-.price-box {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.price-label {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 500;
-    text-transform: capitalize;
 }
 
 .price-value {
@@ -274,18 +283,6 @@ body {
     font-size: 20px;
 }
 
-.feature-label {
-    font-size: 12px;
-    color: var(--text-muted);
-    font-weight: 500;
-}
-
-.feature-value {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text-dark);
-}
-
 /* Filtros de convivencia */
 .filters-section {
     background: var(--white);
@@ -313,11 +310,6 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.2s;
-}
-
-.filter-pill i {
-    font-size: 14px;
 }
 
 .filter-pill.allowed {
@@ -338,12 +330,6 @@ body {
     border-radius: var(--radius);
     padding: 24px;
     box-shadow: var(--shadow);
-}
-
-.address-text {
-    font-size: 15px;
-    color: var(--text-dark);
-    line-height: 1.6;
 }
 
 /* ========== COLUMNA DERECHA: PROPIETARIO ========== */
@@ -370,19 +356,6 @@ body {
     margin-bottom: 8px;
 }
 
-.owner-label {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-dark);
-}
-
-.owner-role {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 500;
-}
-
-/* Botón contactar/editar */
 .btn-contact {
     width: 100%;
     margin-top: 16px;
@@ -398,8 +371,6 @@ body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    transition: background 0.2s;
-    text-decoration: none;
 }
 
 .btn-contact:hover {
@@ -417,40 +388,11 @@ body {
         order: -1;
     }
     
-    .owner-card {
-        flex-direction: row;
-        justify-content: flex-start;
-        padding: 16px;
-        gap: 16px;
-        text-align: left;
-    }
-    
-    .owner-avatar {
-        font-size: 48px;
-        margin-bottom: 0;
-    }
-    
     .property-hero {
         height: 250px;
     }
     
     .property-title {
         font-size: 22px;
-    }
-    
-    .price-value {
-        font-size: 24px;
-    }
-    
-    .features-grid {
-        justify-content: center;
-    }
-    
-    .btn-share span {
-        display: none;
-    }
-    
-    .btn-share {
-        padding: 8px 12px;
     }
 }

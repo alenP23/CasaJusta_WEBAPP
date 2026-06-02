@@ -9,10 +9,8 @@
 </head>
 <body>
 
-    <!-- ========== HEADER ========== -->
     <header class="detail-header">
         <div class="header-content">
-            <!-- Enlace de vuelta según rol -->
             <a th:href="@{${esAdmin != null and esAdmin} ? '/admin' : '/vista_casas_usuario'}" class="logo">
                 <i class="fas fa-home"></i>
                 <span>CasaJusta</span>
@@ -30,31 +28,48 @@
         </div>
     </header>
 
-    <!-- ========== MAIN CONTENT ========== -->
     <main class="detail-container">
         
-        <!-- Imagen principal -->
-        <div class="property-hero">
-            <img th:src="@{/images/casa_default.jpg}" 
-                 th:alt="${vivienda.titulo}">
+        <!-- IMAGEN PRINCIPAL -->
+        <div class="property-hero" id="propertyHero">
+            <!-- SI HAY IMAGEN -->
+            <img th:if="${fotoPortada != null}" 
+                 th:src="@{${fotoPortada.urlImagen}}" 
+                 th:alt="${vivienda.titulo}"
+                 class="property-image">
+            
+            <!-- SI NO HAY IMAGEN: solo placeholder con + (admin) o vacío (usuario) -->
+            <div th:if="${fotoPortada == null}" class="no-image-placeholder">
+                <div th:if="${esAdmin}" class="add-image-overlay-full">
+                    <button class="btn-add-image" id="btnAddImage" title="Añadir imagen">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div th:unless="${esAdmin}" class="no-image-icon">
+                    <i class="fas fa-image"></i>
+                </div>
+            </div>
         </div>
 
-        <!-- Layout de dos columnas -->
+        <!-- Formulario oculto para subir imagen (solo admin) -->
+        <form th:if="${esAdmin}" id="uploadImageForm" 
+              th:action="@{/admin/anuncio/{id}/imagen(id=${vivienda.viviendaID})}" 
+              method="post" 
+              enctype="multipart/form-data"
+              style="display: none;">
+            <input type="file" id="inputSubirImagen" name="imagen" accept="image/*">
+        </form>
+
         <div class="detail-layout">
-            
-            <!-- Columna izquierda: Info -->
             <div class="detail-left">
-                
-                <!-- Tipo de operación + título -->
                 <div class="operation-type">
                     <a th:href="@{${esAdmin} ? '/admin' : '/vista_casas_usuario'}" class="back-link">
                         <i class="fas fa-arrow-left"></i>
                         <span th:text="${vivienda.tipoOperacion}">Alquiler</span>
                     </a>
-                    <h1 class="property-title" th:text="${vivienda.titulo}">Título de la propiedad</h1>
+                    <h1 class="property-title" th:text="${vivienda.titulo}">Título</h1>
                 </div>
 
-                <!-- Precio -->
                 <div class="prices-section">
                     <h3 class="prices-title">Precio</h3>
                     <div class="prices-grid">
@@ -66,42 +81,32 @@
                     </div>
                 </div>
 
-                <!-- Características principales -->
                 <div class="features-section">
                     <h3 class="section-label">Características</h3>
                     <div class="features-grid">
                         <div class="feature-item" th:if="${vivienda.habitaciones != null}">
-                            <div class="feature-icon">
-                                <i class="fas fa-bed"></i>
-                            </div>
+                            <div class="feature-icon"><i class="fas fa-bed"></i></div>
                             <span class="feature-label">Habitaciones</span>
                             <span class="feature-value" th:text="${vivienda.habitaciones}">3</span>
                         </div>
                         <div class="feature-item" th:if="${vivienda.banos != null}">
-                            <div class="feature-icon">
-                                <i class="fas fa-bath"></i>
-                            </div>
+                            <div class="feature-icon"><i class="fas fa-bath"></i></div>
                             <span class="feature-label">Baños</span>
                             <span class="feature-value" th:text="${vivienda.banos}">2</span>
                         </div>
                         <div class="feature-item" th:if="${vivienda.metrosCuadrados != null}">
-                            <div class="feature-icon">
-                                <i class="fas fa-ruler-combined"></i>
-                            </div>
+                            <div class="feature-icon"><i class="fas fa-ruler-combined"></i></div>
                             <span class="feature-label">Metros²</span>
                             <span class="feature-value" th:text="${vivienda.metrosCuadrados}">80</span>
                         </div>
                         <div class="feature-item" th:if="${vivienda.cupoPersonas != null}">
-                            <div class="feature-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
+                            <div class="feature-icon"><i class="fas fa-users"></i></div>
                             <span class="feature-label">Capacidad</span>
                             <span class="feature-value" th:text="${vivienda.cupoPersonas}">4</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Preferencias de convivencia -->
                 <div class="filters-section" th:if="${vivienda.fumador != null || vivienda.mascotas != null || vivienda.pareja != null}">
                     <h3 class="section-label">Preferencias de convivencia</h3>
                     <div class="filters-row">
@@ -120,15 +125,12 @@
                     </div>
                 </div>
 
-                <!-- Dirección -->
                 <div class="address-section">
                     <h3 class="section-label">Dirección</h3>
                     <p class="address-text" th:text="${vivienda.direccion}">Calle Ejemplo, 123</p>
                 </div>
-
             </div>
 
-            <!-- Columna derecha: Usuario propietario -->
             <div class="detail-right">
                 <div class="owner-card">
                     <div class="owner-avatar">
@@ -137,20 +139,17 @@
                     <span class="owner-label" th:text="${propietario != null} ? ${propietario.nombre + ' ' + propietario.apellido} : 'Usuario'">Usuario</span>
                     <span class="owner-role">Propietario</span>
                     
-                    <!-- Botón contactar (solo para usuarios, no admin) -->
                     <button th:if="${!esAdmin}" class="btn-contact">
                         <i class="fas fa-envelope"></i>
                         Contactar
                     </button>
                     
-                    <!-- Botón editar (solo admin) -->
                     <button th:if="${esAdmin}" class="btn-contact" th:onclick="|window.location.href='@{/admin/anuncio/editar/}' + ${vivienda.viviendaID}|">
                         <i class="fas fa-pen"></i>
                         Editar anuncio
                     </button>
                 </div>
             </div>
-
         </div>
 
     </main>

@@ -76,6 +76,72 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ========== SUBIDA DE IMAGEN EN MODAL CREAR ==========
+    const imageUploadArea = document.getElementById('imageUploadArea');
+    const propImage = document.getElementById('propImage');
+    const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+    const uploadPreview = document.getElementById('uploadPreview');
+    const previewImg = document.getElementById('previewImg');
+    const removeImage = document.getElementById('removeImage');
+
+    if (imageUploadArea && propImage) {
+        // Click en el área abre el input file
+        imageUploadArea.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-image')) return;
+            propImage.click();
+        });
+
+        // Arrastrar y soltar
+        imageUploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'var(--primary)';
+        });
+
+        imageUploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '';
+        });
+
+        imageUploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '';
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                propImage.files = files;
+                mostrarPreview(files[0]);
+            }
+        });
+
+        // Selección normal
+        propImage.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                mostrarPreview(this.files[0]);
+            }
+        });
+    }
+
+    function mostrarPreview(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            uploadPlaceholder.style.display = 'none';
+            uploadPreview.style.display = 'block';
+            imageUploadArea.classList.add('has-image');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    if (removeImage) {
+        removeImage.addEventListener('click', function(e) {
+            e.stopPropagation();
+            propImage.value = '';
+            previewImg.src = '';
+            uploadPreview.style.display = 'none';
+            uploadPlaceholder.style.display = 'flex';
+            imageUploadArea.classList.remove('has-image');
+        });
+    }
+
     // ========== MODAL ELIMINAR ANUNCIO ==========
     const deleteModalOverlay = document.getElementById('deleteModalOverlay');
     const closeDeleteModal = document.getElementById('closeDeleteModal');
