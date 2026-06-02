@@ -69,7 +69,7 @@ public class VistaPisosController {
 
         // ===== OBTENER VIVIENDAS ACTIVAS =====
         List<Vivienda> viviendas = viviendaService.findAll().stream()
-                .filter(v -> v.getEstado() != null && v.getEstado())
+                .filter(v -> v.getEstado() == null || !v.getEstado())
                 .collect(Collectors.toList());
 
         // ===== FILTRO: TIPO DE OPERACIÓN =====

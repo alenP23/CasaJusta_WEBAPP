@@ -1,4 +1,4 @@
-/* ========== MAPA DE PROPIEDADES ========== */
+/* ========== MAPA ========== */
 
 #mapa-propiedades {
     width: 100%;
@@ -7,27 +7,83 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-/* Popup de Leaflet personalizado */
-.popup-content h3 {
+/* Popup minimalista */
+.popup-minimal .leaflet-popup-content-wrapper {
+    border-radius: 10px;
+    padding: 0;
+}
+
+.popup-minimal .leaflet-popup-content {
+    margin: 0;
+    width: 240px !important;
+}
+
+/* Contenido del popup */
+.popup-simple {
+    padding: 16px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.popup-simple h3 {
     margin: 0 0 8px 0;
     font-size: 1rem;
     color: #1a1a2e;
+    font-weight: 600;
 }
 
-.popup-content .precio {
-    color: #0066ff;
-    font-weight: 700;
-    font-size: 1.1rem;
+.popup-dir {
+    margin: 0 0 10px 0;
+    color: #6b7280;
+    font-size: 0.85rem;
 }
 
-.popup-content a {
+.popup-dir i {
+    color: #dc2626;
+    margin-right: 4px;
+}
+
+.popup-tipo {
     display: inline-block;
-    margin-top: 8px;
-    color: #0066ff;
-    text-decoration: none;
-    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 10px;
 }
 
-.popup-content a:hover {
-    text-decoration: underline;
+.tipo-alquiler {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.tipo-compra {
+    background: #e8f5e9;
+    color: #388e3c;
+}
+
+.popup-precio {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0066ff;
+    margin: 0 0 12px 0;
+}
+
+.popup-btn {
+    display: block;
+    text-align: center;
+    background: #ffffff;
+    color: #0066ff;
+    border: 2px solid #0066ff;
+    padding: 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.popup-btn:hover {
+    background: #0066ff;
+    color: #ffffff;
 }

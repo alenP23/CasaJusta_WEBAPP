@@ -3,13 +3,10 @@ package edu.mondragon.webengl.CasaJusta.controllers;
 import edu.mondragon.webengl.CasaJusta.model.FotoVivienda;
 import edu.mondragon.webengl.CasaJusta.model.Usuario;
 import edu.mondragon.webengl.CasaJusta.model.Vivienda;
-import edu.mondragon.webengl.CasaJusta.repository.FotoViviendaRepository;
-import edu.mondragon.webengl.CasaJusta.repository.ImagenStorageService;
 import edu.mondragon.webengl.CasaJusta.service.UsuarioService;
 import edu.mondragon.webengl.CasaJusta.service.ViviendaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,6 +30,9 @@ public class AdminController {
     
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private PrecioPrediccionService precioPrediccionService;
 
     @Autowired
     private ImagenStorageService imagenStorageService;
@@ -89,12 +88,9 @@ public class AdminController {
         return "admin_usuarios";
     }
 
-        // ========== ANUNCIOS CRUD ==========
-    
-        @PostMapping("/anuncios/crear")
-        public String crearAnuncio(@ModelAttribute Vivienda vivienda,
-                               @RequestParam(value = "imagen", required = false) MultipartFile imagen,
-                               RedirectAttributes redirectAttrs) {
+    // ========== ANUNCIOS CRUD ==========
+    @PostMapping("/anuncios/crear")
+    public String crearAnuncio(@ModelAttribute Vivienda vivienda) {
         vivienda.setEstado(false);
         Vivienda guardada = viviendaService.save(vivienda);
                             
@@ -125,6 +121,14 @@ public class AdminController {
         }
 
         return "redirect:/admin";
+    }
+
+    @GetMapping("/anuncios/precio-estimado")
+    @ResponseBody
+    public Map<String, BigDecimal> estimarPrecio(@RequestParam Integer metros) {
+        BigDecimal precioMiles = precioPrediccionService.predecirPrecioEnMiles(metros);
+        BigDecimal precioEuros = precioPrediccionService.predecirPrecioEnEuros(metros);
+        return Map.of("precioMiles", precioMiles, "precioEuros", precioEuros);
     }
 
         @PostMapping("/anuncios/eliminar")
