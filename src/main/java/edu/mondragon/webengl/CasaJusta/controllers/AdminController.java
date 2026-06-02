@@ -2,17 +2,19 @@ package edu.mondragon.webengl.CasaJusta.controllers;
 
 import edu.mondragon.webengl.CasaJusta.model.Usuario;
 import edu.mondragon.webengl.CasaJusta.model.Vivienda;
+import edu.mondragon.webengl.CasaJusta.service.PrecioPrediccionService;
 import edu.mondragon.webengl.CasaJusta.service.UsuarioService;
 import edu.mondragon.webengl.CasaJusta.service.ViviendaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
+import java.util.Map;
 import java.util.List;
 
 @Controller
@@ -27,6 +29,9 @@ public class AdminController {
     
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private PrecioPrediccionService precioPrediccionService;
 
     // ========== MÉTODO AUXILIAR: detectar si es admin ==========
     private boolean esAdmin(Authentication authentication) {
@@ -70,9 +75,19 @@ public class AdminController {
     // ========== ANUNCIOS CRUD ==========
     @PostMapping("/anuncios/crear")
     public String crearAnuncio(@ModelAttribute Vivienda vivienda) {
+        BigDecimal precioCalculado = precioPrediccionService.predecirPrecioEnEuros(vivienda.getMetrosCuadrados());
+        vivienda.setPrecio(precioCalculado);
         vivienda.setEstado(false);
         viviendaService.save(vivienda);
         return "redirect:/admin";
+    }
+
+    @GetMapping("/anuncios/precio-estimado")
+    @ResponseBody
+    public Map<String, BigDecimal> estimarPrecio(@RequestParam Integer metros) {
+        BigDecimal precioMiles = precioPrediccionService.predecirPrecioEnMiles(metros);
+        BigDecimal precioEuros = precioPrediccionService.predecirPrecioEnEuros(metros);
+        return Map.of("precioMiles", precioMiles, "precioEuros", precioEuros);
     }
 
     @PostMapping("/anuncios/eliminar")

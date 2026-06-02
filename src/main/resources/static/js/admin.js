@@ -28,6 +28,48 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalOverlay = document.getElementById('modalOverlay');
     const closeModal = document.getElementById('closeModal');
     const cancelModal = document.getElementById('cancelModal');
+    const propMetersInput = document.getElementById('propMeters');
+    const propPriceMilesInput = document.getElementById('propPriceMiles');
+    const propPriceEurosInfo = document.getElementById('propPriceEurosInfo');
+
+    function actualizarPrecioEstimado() {
+        if (!propMetersInput || !propPriceMilesInput || !propPriceEurosInfo) return;
+
+        const metros = parseInt(propMetersInput.value, 10);
+
+        if (!Number.isFinite(metros) || metros <= 0) {
+            propPriceMilesInput.value = '';
+            propPriceEurosInfo.textContent = 'Equivalente en euros: -';
+            return;
+        }
+
+        fetch(`/admin/anuncios/precio-estimado?metros=${metros}`)
+            .then(response => {
+                if (!response.ok) throw new Error('No se pudo estimar el precio');
+                return response.json();
+            })
+            .then(data => {
+                const precioMiles = Number(data.precioMiles);
+                const precioEuros = Number(data.precioEuros);
+
+                propPriceMilesInput.value = Number.isFinite(precioMiles)
+                    ? `${precioMiles.toFixed(2)} mil €`
+                    : '';
+
+                propPriceEurosInfo.textContent = Number.isFinite(precioEuros)
+                    ? `Equivalente en euros: ${precioEuros.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`
+                    : 'Equivalente en euros: -';
+            })
+            .catch(() => {
+                propPriceMilesInput.value = '';
+                propPriceEurosInfo.textContent = 'Equivalente en euros: -';
+            });
+    }
+
+    if (propMetersInput) {
+        propMetersInput.addEventListener('input', actualizarPrecioEstimado);
+        propMetersInput.addEventListener('change', actualizarPrecioEstimado);
+    }
 
     if (addPropertyBtn) {
         addPropertyBtn.addEventListener('click', function(e) {
@@ -66,6 +108,10 @@ document.addEventListener('DOMContentLoaded', function() {
             modalOverlay.classList.remove('active');
             document.body.style.overflow = '';
         }
+
+        if (propMetersInput) propMetersInput.value = '';
+        if (propPriceMilesInput) propPriceMilesInput.value = '';
+        if (propPriceEurosInfo) propPriceEurosInfo.textContent = 'Equivalente en euros: -';
     }
 
     if (closeModal) closeModal.addEventListener('click', closeAddModal);
