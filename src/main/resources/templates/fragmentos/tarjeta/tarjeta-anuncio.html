@@ -19,14 +19,23 @@
         
         <!-- IMAGEN -->
         <div class="property-image">
-            <img th:src="@{/images/casa_default.jpg}" alt="Imagen vivienda">
+            <!-- SI TIENE FOTO -->
+            <img th:if="${fotosPortada != null && fotosPortada[vivienda.viviendaID] != null}" 
+                 th:src="@{${fotosPortada[vivienda.viviendaID]}}" 
+                 alt="Imagen vivienda">
             
-            <!-- Badge sobre la imagen -->
+            <!-- SI NO TIENE FOTO - PLACEHOLDER -->
+            <div th:unless="${fotosPortada != null && fotosPortada[vivienda.viviendaID] != null}" 
+                 class="no-image-placeholder">
+                <div class="add-image-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </div>
+            
             <span class="property-badge" 
                   th:classappend="${vivienda.tipoOperacion == 'alquiler'} ? 'badge-alquiler' : 'badge-compra'" 
                   th:text="${vivienda.tipoOperacion}">Alquiler</span>
             
-            <!-- Botones de acción -->
             <div class="property-actions" onclick="event.stopPropagation();">
                 <button class="action-btn edit" type="button" 
                         th:onclick="|openEditModal(${vivienda.viviendaID})|" title="Editar">
@@ -39,7 +48,6 @@
             </div>
         </div>
         
-        <!-- DETALLES -->
         <div class="property-details">
             <h3 th:text="${vivienda.titulo}">villa playa</h3>
             <div class="property-meta">
@@ -47,7 +55,6 @@
                 <span class="property-price" th:text="${#numbers.formatDecimal(vivienda.precio, 0, 'POINT', 0, 'COMMA')} + ' €'">100.000 €</span>
             </div>
             
-            <!-- FILTROS DE CONVIVENCIA (solo informativos, sin onclick) -->
             <div class="convivencia-filters" onclick="event.stopPropagation();">
                 <span class="conv-pill" 
                       th:classappend="${vivienda.fumador} ? 'conv-allowed' : 'conv-not-allowed'">
@@ -70,11 +77,22 @@
 
     <!-- FRAGMENTO USUARIO -->
     <div th:fragment="tarjeta-usuario(vivienda)" class="admin-property-card" 
-         th:onclick="|window.location.href='@{/anuncio/}' + ${vivienda.viviendaID}|"
+         th:onclick="|window.location.href='@{/property-detail/}' + ${vivienda.viviendaID}|"
          th:data-id="${vivienda.viviendaID}">
         
         <div class="property-image">
-            <img th:src="@{/images/casa_default.jpg}" alt="Imagen vivienda">
+            <!-- SI TIENE FOTO -->
+            <img th:if="${fotosPortada != null && fotosPortada[vivienda.viviendaID] != null}" 
+                 th:src="@{${fotosPortada[vivienda.viviendaID]}}" 
+                 alt="Imagen vivienda">
+            
+            <!-- SI NO TIENE FOTO - PLACEHOLDER -->
+            <div th:unless="${fotosPortada != null && fotosPortada[vivienda.viviendaID] != null}" 
+                 class="no-image-placeholder">
+                <div class="add-image-icon">
+                    <i class="fas fa-image"></i>
+                </div>
+            </div>
             
             <span class="property-badge" 
                   th:classappend="${vivienda.tipoOperacion == 'alquiler'} ? 'badge-alquiler' : 'badge-compra'" 
@@ -88,7 +106,6 @@
                 <span class="property-price" th:text="${#numbers.formatDecimal(vivienda.precio, 0, 'POINT', 0, 'COMMA')} + ' €'">100.000 €</span>
             </div>
             
-            <!-- FILTROS DE CONVIVENCIA (solo informativos) -->
             <div class="convivencia-filters" onclick="event.stopPropagation();">
                 <span class="conv-pill" 
                       th:classappend="${vivienda.fumador} ? 'conv-allowed' : 'conv-not-allowed'">
