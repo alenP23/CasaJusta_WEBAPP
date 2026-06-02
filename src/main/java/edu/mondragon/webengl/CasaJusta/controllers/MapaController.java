@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class MapaController {
@@ -17,8 +18,11 @@ public class MapaController {
 
     @GetMapping("/mapa")
     public String verMapa(Model model) {
-        List<Vivienda> viviendas = viviendaService.findAll();
-        model.addAttribute("viviendas", viviendas);
-        return "mapa";
+    List<Vivienda> viviendas = viviendaService.findAll().stream()
+            .filter(v -> v.getEstado() == null || !v.getEstado())  // ← Solo disponibles
+            .collect(Collectors.toList());
+    
+    model.addAttribute("viviendas", viviendas);
+    return "mapa";
     }
 }
