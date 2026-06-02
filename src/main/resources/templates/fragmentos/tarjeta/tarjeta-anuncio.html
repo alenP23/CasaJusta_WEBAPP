@@ -75,56 +75,5 @@
         </div>
     </div>
 
-    <!-- FRAGMENTO USUARIO -->
-    <div th:fragment="tarjeta-usuario(vivienda)" class="admin-property-card" 
-         th:onclick="|window.location.href='@{/property-detail/}' + ${vivienda.viviendaID}|"
-         th:data-id="${vivienda.viviendaID}">
-        
-        <div class="property-image">
-            <!-- SI TIENE FOTO -->
-            <img th:if="${fotosPortada != null && fotosPortada[vivienda.viviendaID] != null}" 
-                 th:src="@{${fotosPortada[vivienda.viviendaID]}}" 
-                 alt="Imagen vivienda">
-            
-            <!-- SI NO TIENE FOTO - PLACEHOLDER -->
-            <div th:unless="${fotosPortada != null && fotosPortada[vivienda.viviendaID] != null}" 
-                 class="no-image-placeholder">
-                <div class="add-image-icon">
-                    <i class="fas fa-image"></i>
-                </div>
-            </div>
-            
-            <span class="property-badge" 
-                  th:classappend="${vivienda.tipoOperacion == 'alquiler'} ? 'badge-alquiler' : 'badge-compra'" 
-                  th:text="${vivienda.tipoOperacion}">Alquiler</span>
-        </div>
-        
-        <div class="property-details">
-            <h3 th:text="${vivienda.titulo}">villa playa</h3>
-            <div class="property-meta">
-                <span class="property-type" th:text="${vivienda.tipoOperacion}">alquiler</span>
-                <span class="property-price" th:text="${#numbers.formatDecimal(vivienda.precio, 0, 'POINT', 0, 'COMMA')} + ' €'">100.000 €</span>
-            </div>
-            
-            <div class="convivencia-filters" onclick="event.stopPropagation();">
-                <span class="conv-pill" 
-                      th:classappend="${vivienda.fumador} ? 'conv-allowed' : 'conv-not-allowed'">
-                    <i class="fas fa-smoking"></i>
-                    <span th:text="${vivienda.fumador} ? 'Fumador' : 'No fumador'">No fumador</span>
-                </span>
-                <span class="conv-pill" 
-                      th:classappend="${vivienda.mascotas} ? 'conv-allowed' : 'conv-not-allowed'">
-                    <i class="fas fa-paw"></i>
-                    <span th:text="${vivienda.mascotas} ? 'Mascotas' : 'No mascotas'">No mascotas</span>
-                </span>
-                <span class="conv-pill" 
-                      th:classappend="${vivienda.pareja} ? 'conv-allowed' : 'conv-not-allowed'">
-                    <i class="fas fa-heart"></i>
-                    <span th:text="${vivienda.pareja} ? 'Pareja' : 'No pareja'">No pareja</span>
-                </span>
-            </div>
-        </div>
-    </div>
-
 </body>
 </html>

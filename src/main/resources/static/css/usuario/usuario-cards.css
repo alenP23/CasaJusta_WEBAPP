@@ -1,185 +1,221 @@
-/* ========== TARJETAS DE PROPIEDAD ========== */
+/* ========== ESTILOS ESPECÍFICOS USUARIO ========== */
 
-.property-card {
-    background: #fff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: transform 0.2s, box-shadow 0.2s;
-    display: flex;
-    flex-direction: column;
-}
-
-.property-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-}
-
-.property-image {
-    position: relative;
-    height: 180px;
-    overflow: hidden;
-}
-
-.property-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Badges */
-.property-badge {
+/* ========== BADGE CUPO COMPLETADO ========== */
+.cupo-badge {
     position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 4px 12px;
+    top: 12px;
+    right: 12px;
+    padding: 6px 14px;
     border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 800;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 2;
+    background: #dc2626;
+    color: white;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
 }
 
-.badge-alquiler {
-    background: #e3f2fd;
-    color: #1976d2;
-}
-
-.badge-compra {
-    background: #e8f5e9;
-    color: #388e3c;
-}
-
+/* ========== BADGE DE COMPATIBILIDAD ========== */
 .compatibility-badge {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 4px 10px;
+    bottom: 12px;
+    left: 12px;
+    padding: 6px 14px;
     border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
+    z-index: 2;
+    backdrop-filter: blur(4px);
 }
 
 .compatibility-badge.compatible {
-    background: #d4edda;
-    color: #155724;
+    background: rgba(22, 163, 74, 0.9);
+    color: white;
 }
 
 .compatibility-badge.partial {
-    background: #fff3cd;
-    color: #856404;
+    background: rgba(245, 158, 11, 0.9);
+    color: white;
 }
 
-/* Info */
-.property-details {
-    padding: 15px;
-    flex-grow: 1;
-}
-
-.property-details h3 {
-    margin: 0 0 8px 0;
-    font-size: 1.1rem;
-    color: #333;
-}
-
+/* ========== DIRECCIÓN ========== */
 .property-location {
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 12px;
+    font-size: 13px;
+    color: #6b7280;
+    margin: 4px 0 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
+.property-location i {
+    color: #ef4444;
+    font-size: 12px;
+}
+
+/* ========== CARACTERÍSTICAS ========== */
 .property-features {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 12px;
-    font-size: 0.85rem;
-    color: #555;
+    margin: 8px 0;
+    padding: 8px 0;
+    border-top: 1px solid #f3f4f6;
+    border-bottom: 1px solid #f3f4f6;
 }
 
 .property-features span {
+    font-size: 12px;
+    color: #4b5563;
     display: flex;
     align-items: center;
     gap: 4px;
 }
 
-/* Iconos convivencia */
-.property-convivencia {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
+.property-features i {
+    color: #9ca3af;
+    font-size: 12px;
 }
 
-.property-convivencia span {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
+/* ========== CONTADOR INSCRITOS ========== */
+.inscritos-counter {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    background: #f3f4f6;
+    color: #4b5563;
+    width: fit-content;
+    margin-top: 8px;
+}
+
+.inscritos-counter i {
+    color: #1e5bc6;
+}
+
+.inscritos-counter.completo {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.inscritos-counter.completo i {
+    color: #dc2626;
+}
+
+/* ========== BOTÓN APUNTARSE ========== */
+.apuntarse-btn {
+    margin-top: 10px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.85rem;
-    transition: all 0.2s;
+    gap: 8px;
+    width: 100%;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.property-convivencia span.active {
-    background: #e3f2fd;
-    color: #1976d2;
+.apuntarse-btn.apuntar {
+    background: linear-gradient(135deg, #1e5bc6 0%, #3b82f6 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(30, 91, 198, 0.3);
 }
 
-.property-convivencia span.inactive {
-    background: #f5f5f5;
-    color: #bbb;
+.apuntarse-btn.apuntar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 91, 198, 0.4);
 }
 
-.property-price {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #0066ff;
-    margin: 0;
+.apuntarse-btn.apuntado {
+    background: #dcfce7;
+    color: #16a34a;
+    border: 2px solid #86efac;
+    cursor: default;
 }
 
-/* Acciones */
-.property-actions {
+.apuntarse-btn.completo {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 2px solid #fca5a5;
+    cursor: default;
+}
+
+.apuntarse-btn i {
+    font-size: 14px;
+}
+
+/* ========== ACCIONES USUARIO (Contactar / Favorito) ========== */
+.property-actions-user {
     display: flex;
-    gap: 10px;
-    padding: 15px;
-    border-top: 1px solid #f0f0f0;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f3f4f6;
 }
 
 .btn-contact {
     flex: 1;
-    padding: 10px;
-    background: #0066ff;
-    color: white;
+    padding: 10px 16px;
+    border-radius: 10px;
     border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.2s;
-}
-
-.btn-contact:hover {
-    background: #0052cc;
-}
-
-.btn-favorite {
-    width: 40px;
-    height: 40px;
-    border: 1px solid #ddd;
-    background: white;
-    border-radius: 8px;
+    background: linear-gradient(135deg, #1e5bc6 0%, #3b82f6 100%);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
+    gap: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(30, 91, 198, 0.3);
 }
 
-.btn-favorite:hover,
+.btn-contact:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 91, 198, 0.4);
+}
+
+.btn-favorite {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    border: 2px solid #e5e7eb;
+    background: white;
+    color: #9ca3af;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-favorite:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+    transform: scale(1.05);
+}
+
 .btn-favorite.active {
-    background: #ffebee;
-    border-color: #ef5350;
-    color: #ef5350;
+    background: #fef2f2;
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.btn-favorite.active i {
+    font-weight: 900;
 }

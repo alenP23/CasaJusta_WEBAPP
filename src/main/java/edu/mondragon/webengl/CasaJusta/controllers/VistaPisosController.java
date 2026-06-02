@@ -1,9 +1,11 @@
 package edu.mondragon.webengl.CasaJusta.controllers;
 
 import edu.mondragon.webengl.CasaJusta.model.FotoVivienda;
+import edu.mondragon.webengl.CasaJusta.model.Solicitud;
 import edu.mondragon.webengl.CasaJusta.model.Usuario;
 import edu.mondragon.webengl.CasaJusta.model.Vivienda;
 import edu.mondragon.webengl.CasaJusta.repository.FotoViviendaRepository;
+import edu.mondragon.webengl.CasaJusta.service.SolicitudService;
 import edu.mondragon.webengl.CasaJusta.service.UsuarioService;
 import edu.mondragon.webengl.CasaJusta.service.ViviendaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -111,6 +114,30 @@ public class VistaPisosController {
 
         model.addAttribute("viviendas", viviendas);
 
+        // ===== MAPA: viviendaID -> contador de inscritos =====
+        Map<Integer, Long> contadorInscritos = new HashMap<>();
+        Map<Integer, Boolean> usuarioApuntado = new HashMap<>();
+
+        Usuario usuarioActual = null;
+        if (authentication != null) {
+            usuarioActual = usuarioService.findByNombreUsuario(authentication.getName());
+        }
+
+        for (Vivienda v : viviendas) {
+            long count = solicitudService.countByViviendaId(v.getViviendaID());
+            contadorInscritos.put(v.getViviendaID(), count);
+
+            if (usuarioActual != null) {
+                boolean apuntado = solicitudService.usuarioYaApuntado(usuarioActual.getUsuarioId(), v.getViviendaID());
+                usuarioApuntado.put(v.getViviendaID(), apuntado);
+            } else {
+                usuarioApuntado.put(v.getViviendaID(), false);
+            }
+        }
+
+        model.addAttribute("contadorInscritos", contadorInscritos);
+        model.addAttribute("usuarioApuntado", usuarioApuntado);
+
         // ===== MAPA: viviendaID -> url de foto portada =====
         Map<Integer, String> fotosPortada = new HashMap<>();
         for (Vivienda v : viviendas) {
@@ -143,5 +170,57 @@ public class VistaPisosController {
         model.addAttribute("fotoPortada", fotoPortada.orElse(null));
         
         return "property-detail";
+    }
+
+    @Autowired
+private SolicitudService solicitudService;
+
+    // ========== APUNTARSE A UN ANUNCIO ==========
+    @PostMapping("/anuncio/{id}/apuntarse")
+    public String apuntarseAnuncio(@PathVariable Integer id,
+                                    Authentication authentication,
+                                    RedirectAttributes redirectAttrs) {
+                                    
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+
+        String username = authentication.getName();
+        Usuario usuario = usuarioService.findByNombreUsuario(username);
+        Vivienda vivienda = viviendaService.findById(id);
+
+        if (usuario == null || vivienda == null) {
+            redirectAttrs.addFlashAttribute("error", "Error al procesar la solicitud");
+            return "redirect:/vista_casas_usuario";
+        }
+
+        // Verificar si ya está apuntado
+        if (solicitudService.usuarioYaApuntado(usuario.getUsuarioId(), id)) {
+            redirectAttrs.addFlashAttribute("info", "Ya estás apuntado a este anuncio");
+            return "redirect:/vista_casas_usuario";
+        }
+
+        // Verificar si hay cupo
+        long inscritos = solicitudService.countByViviendaId(id);
+        if (inscritos >= vivienda.getCupoPersonas()) {
+            redirectAttrs.addFlashAttribute("error", "Este anuncio ya está completo");
+            return "redirect:/vista_casas_usuario";
+        }
+
+        // Crear solicitud
+        Solicitud solicitud = new Solicitud();
+        solicitud.setUsuario(usuario);
+        solicitud.setVivienda(vivienda);
+        solicitudService.save(solicitud);
+
+        // Verificar si se completó el cupo → crear chat (futuro)
+        long nuevosInscritos = solicitudService.countByViviendaId(id);
+        if (nuevosInscritos >= vivienda.getCupoPersonas()) {
+            // TODO: Crear chat_grupal automáticamente
+            System.out.println(">>> CUPO COMPLETADO para vivienda " + id + " - Crear chat");
+        }
+
+        redirectAttrs.addFlashAttribute("success", "Te has apuntado correctamente");
+        return "redirect:/vista_casas_usuario";
     }
 }

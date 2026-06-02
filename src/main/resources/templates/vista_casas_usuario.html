@@ -143,71 +143,9 @@
                 <a th:href="@{/vista_casas_usuario}" class="btn-limpiar">Ver todos</a>
             </div>
 
-            <!-- Tarjeta de vivienda -->
-            <div th:each="vivienda : ${viviendas}" class="property-card" 
-                 th:data-id="${vivienda.viviendaID}"
-                 th:data-tipo="${vivienda.tipoOperacion}"
-                 th:data-precio="${vivienda.precio}">
-                
-                <div class="property-image">
-                    <img th:src="@{/images/casa_default.jpg}" alt="Imagen vivienda">
-                    <span class="property-badge" 
-                          th:classappend="${vivienda.tipoOperacion == 'alquiler'} ? 'badge-alquiler' : 'badge-compra'" 
-                          th:text="${vivienda.tipoOperacion}">Alquiler</span>
-                    
-                    <!-- Badge de compatibilidad -->
-                    <div th:if="${perfilConvivencia != null}" class="compatibility-badge"
-                         th:classappend="${(perfilConvivencia.mascotas == vivienda.mascotas) && 
-                                          (perfilConvivencia.fumador == vivienda.fumador) && 
-                                          (perfilConvivencia.pareja == vivienda.pareja)} ? 'compatible' : 'partial'">
-                        <i class="fas fa-user-check"></i>
-                        <span th:text="${(perfilConvivencia.mascotas == vivienda.mascotas) && 
-                                       (perfilConvivencia.fumador == vivienda.fumador) && 
-                                       (perfilConvivencia.pareja == vivienda.pareja)} ? '100% compatible' : 'Ver compatibilidad'">
-                            Compatible
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="property-details">
-                    <h3 th:text="${vivienda.titulo}">Título del anuncio</h3>
-                    <p class="property-location"><i class="fas fa-map-marker-alt"></i> 
-                        <span th:text="${vivienda.direccion}">Dirección</span>
-                    </p>
-                    
-                    <div class="property-features">
-                        <span><i class="fas fa-bed"></i> <span th:text="${vivienda.habitaciones}">3</span> hab.</span>
-                        <span><i class="fas fa-bath"></i> <span th:text="${vivienda.banos}">2</span> baños</span>
-                        <span><i class="fas fa-ruler-combined"></i> <span th:text="${vivienda.metrosCuadrados}">85</span> m²</span>
-                        <span><i class="fas fa-users"></i> <span th:text="${vivienda.cupoPersonas}">4</span> pers.</span>
-                    </div>
-                    
-                    <div class="property-convivencia">
-                        <span th:classappend="${vivienda.mascotas} ? 'active' : 'inactive'" title="Mascotas">
-                            <i class="fas fa-paw"></i>
-                        </span>
-                        <span th:classappend="${vivienda.fumador} ? 'active' : 'inactive'" title="Fumador">
-                            <i class="fas fa-smoking"></i>
-                        </span>
-                        <span th:classappend="${vivienda.pareja} ? 'active' : 'inactive'" title="Pareja">
-                            <i class="fas fa-heart"></i>
-                        </span>
-                    </div>
-                    
-                    <p class="property-price" 
-                       th:text="${#numbers.formatDecimal(vivienda.precio, 0, 'POINT', 0, 'COMMA')} + ' €'">
-                        1.200 €
-                    </p>
-                </div>
-                
-                <div class="property-actions">
-                    <button class="btn-contact" type="button" th:onclick="|contactarAnunciante(${vivienda.viviendaID})|">
-                        <i class="fas fa-envelope"></i> Contactar
-                    </button>
-                    <button class="btn-favorite" type="button" th:onclick="|toggleFavorito(${vivienda.viviendaID})|">
-                        <i class="far fa-heart"></i>
-                    </button>
-                </div>
+            <!-- Tarjeta de vivienda - USA EL FRAGMENTO -->
+            <div th:each="vivienda : ${viviendas}">
+                <div th:replace="~{tarjeta-usuario :: tarjeta-usuario(vivienda=${vivienda})}"></div>
             </div>
 
         </div>
