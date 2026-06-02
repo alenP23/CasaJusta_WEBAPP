@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-usuario}">
+<head>
+    <title>Mapa de Propiedades</title>
+    
+    <!-- CSS de Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- CSS propio del mapa -->
+    <link rel="stylesheet" th:href="@{/css/usuario/mapa.css}" />
+</head>
+<body>
+
+    <div layout:fragment="content">
+        <div class="section-header">
+            <h1 class="section-title">Mapa de Propiedades</h1>
+        </div>
+        
+        <div id="mapa-propiedades"></div>
+    </div>
+
+    <th:block layout:fragment="scripts-extra">
+        <!-- JS de Leaflet -->
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        
+        <!-- Variable de datos desde Thymeleaf -->
+        <script th:inline="javascript">
+            var viviendas = /*[[${viviendas}]]*/ [];
+        </script>
+        
+        <!-- JS propio del mapa -->
+        <script th:src="@{/js/mapa.js}"></script>
+    </th:block>
+
+</body>
+</html>
