@@ -1,0 +1,106 @@
+/* ========== VARIABLES ========== */
+:root {
+    --primary: #1e5bc6;
+    --primary-dark: #164a9e;
+    --secondary: #f8f9fc;
+    --text-dark: #1a1a2e;
+    --text-muted: #6b7280;
+    --white: #ffffff;
+    --border: #e5e7eb;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+/* ========== LAYOUT GLOBAL ========== */
+html, body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--secondary);
+    color: var(--text-dark);
+    line-height: 1.5;
+}
+
+.main-container {
+    flex: 1 0 auto;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 16px;
+}
+
+.footer-container {
+    flex-shrink: 0;
+    background-color: #003d7a;
+    padding: 20px 0 12px;
+    width: 100%;
+}
+
+/* ========== SECCIÓN ANUNCIOS ========== */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.filter-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: var(--shadow);
+}
+
+.filter-btn:hover {
+    background: var(--primary);
+    color: var(--white);
+}
+
+/* ========== GRID DE PROPIEDADES ========== */
+.properties-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+/* ========== MENSAJE SIN RESULTADOS ========== */
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+}
+
+.no-results i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: var(--border);
+}
+
+.no-results h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
