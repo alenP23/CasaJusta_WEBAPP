@@ -9,4 +9,5 @@ public class CasaJustaApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CasaJustaApplication.class, args);
 	}
+	
 }
