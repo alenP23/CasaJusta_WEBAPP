@@ -16,8 +16,12 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Integer> {
     // Verificar si un usuario ya está apuntado
     Optional<Solicitud> findByUsuario_UsuarioIdAndVivienda_ViviendaID(Integer usuarioId, Integer viviendaId);
     
-    // Listar solicitudes de una vivienda
+    // Listar solicitudes de una vivienda (con estado)
     List<Solicitud> findByVivienda_ViviendaIDAndEstado(Integer viviendaId, String estado);
+    
+    // ===== NUEVO: Listar TODAS las solicitudes de una vivienda =====
+    List<Solicitud> findByVivienda_ViviendaID(Integer viviendaId);
+    // =============================================================
     
     // Listar solicitudes de un usuario
     List<Solicitud> findByUsuario_UsuarioId(Integer usuarioId);
