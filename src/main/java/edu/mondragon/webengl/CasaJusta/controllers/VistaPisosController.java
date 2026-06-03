@@ -1,9 +1,12 @@
 package edu.mondragon.webengl.CasaJusta.controllers;
 
+
 import edu.mondragon.webengl.CasaJusta.model.FotoVivienda;
+import edu.mondragon.webengl.CasaJusta.model.Solicitud;
 import edu.mondragon.webengl.CasaJusta.model.Usuario;
 import edu.mondragon.webengl.CasaJusta.model.Vivienda;
 import edu.mondragon.webengl.CasaJusta.repository.FotoViviendaRepository;
+import edu.mondragon.webengl.CasaJusta.service.SolicitudService;
 import edu.mondragon.webengl.CasaJusta.service.UsuarioService;
 import edu.mondragon.webengl.CasaJusta.service.ViviendaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -33,6 +38,9 @@ public class VistaPisosController {
     @Autowired
     private FotoViviendaRepository fotoViviendaRepository;
 
+    @Autowired
+    private SolicitudService solicitudService;
+
     private boolean esAdmin(Authentication authentication) {
         if (authentication == null) return false;
         return authentication.getAuthorities().stream()
@@ -50,6 +58,7 @@ public class VistaPisosController {
             Model model) {
 
         // ===== DATOS DEL USUARIO LOGUEADO =====
+        Usuario usuarioActual = null;
         if (authentication != null && authentication.isAuthenticated()) {
             String username = authentication.getName();
             model.addAttribute("username", username);
@@ -57,10 +66,10 @@ public class VistaPisosController {
             String rol = authentication.getAuthorities().iterator().next().getAuthority();
             model.addAttribute("rol", rol);
 
-            Usuario usuario = usuarioService.findByNombreUsuario(username);
-            if (usuario != null) {
-                model.addAttribute("usuario", usuario);
-                model.addAttribute("perfilConvivencia", usuario.getPerfilConvivencia());
+            usuarioActual = usuarioService.findByNombreUsuario(username);
+            if (usuarioActual != null) {
+                model.addAttribute("usuario", usuarioActual);
+                model.addAttribute("perfilConvivencia", usuarioActual.getPerfilConvivencia());
             }
         }
 
@@ -119,9 +128,102 @@ public class VistaPisosController {
             foto.ifPresent(f -> fotosPortada.put(v.getViviendaID(), f.getUrlImagen()));
         }
         model.addAttribute("fotosPortada", fotosPortada);
-        // ===================================================
+
+        // ===== DATOS DE SOLICITUDES (para el botón apuntarse) =====
+        if (usuarioActual != null) {
+            Map<Integer, Boolean> usuarioApuntado = new HashMap<>();
+            Map<Integer, Long> contadorInscritos = new HashMap<>();
+
+            for (Vivienda v : viviendas) {
+                boolean apuntado = solicitudService.usuarioYaApuntado(
+                    usuarioActual.getUsuarioId(), v.getViviendaID());
+                long inscritos = solicitudService.countByViviendaId(v.getViviendaID());
+
+                usuarioApuntado.put(v.getViviendaID(), apuntado);
+                contadorInscritos.put(v.getViviendaID(), inscritos);
+            }
+
+            model.addAttribute("usuarioApuntado", usuarioApuntado);
+            model.addAttribute("contadorInscritos", contadorInscritos);
+        }
 
         return "vista_casas_usuario";
+    }
+
+    // ===== POST: APUNTARSE A UNA VIVIENDA =====
+    @PostMapping("/anuncio/{id}/apuntarse")
+    public String apuntarseAVivienda(@PathVariable Integer id,
+                                      Authentication authentication,
+                                      RedirectAttributes redirectAttrs) {
+        
+        if (authentication == null || !authentication.isAuthenticated()) {
+            redirectAttrs.addFlashAttribute("error", "Debes iniciar sesión para apuntarte");
+            return "redirect:/login";
+        }
+
+        String username = authentication.getName();
+        Usuario usuario = usuarioService.findByNombreUsuario(username);
+        Vivienda vivienda = viviendaService.findById(id);
+
+        if (usuario == null || vivienda == null) {
+            redirectAttrs.addFlashAttribute("error", "Error al procesar la solicitud");
+            return "redirect:/vista_casas_usuario";
+        }
+
+        // Verificar si ya está apuntado
+        if (solicitudService.usuarioYaApuntado(usuario.getUsuarioId(), id)) {
+            redirectAttrs.addFlashAttribute("info", "Ya estás apuntado a esta vivienda");
+            return "redirect:/vista_casas_usuario";
+        }
+
+        // Verificar si hay cupo
+        long inscritos = solicitudService.countByViviendaId(id);
+        if (inscritos >= vivienda.getCupoPersonas()) {
+            redirectAttrs.addFlashAttribute("error", "El cupo de esta vivienda está completo");
+            return "redirect:/vista_casas_usuario";
+        }
+
+        // Crear solicitud
+        Solicitud solicitud = new Solicitud();
+        solicitud.setUsuario(usuario);
+        solicitud.setVivienda(vivienda);
+        solicitudService.save(solicitud);
+
+        redirectAttrs.addFlashAttribute("success", "¡Te has apuntado correctamente!");
+        return "redirect:/vista_casas_usuario";
+    }
+
+    // ===== POST: DESAPUNTARSE DE UNA VIVIENDA =====
+    @PostMapping("/anuncio/{id}/desapuntarse")
+    public String desapuntarseDeVivienda(@PathVariable Integer id,
+                                          Authentication authentication,
+                                          RedirectAttributes redirectAttrs) {
+        
+        if (authentication == null || !authentication.isAuthenticated()) {
+            redirectAttrs.addFlashAttribute("error", "Debes iniciar sesión");
+            return "redirect:/login";
+        }
+
+        String username = authentication.getName();
+        Usuario usuario = usuarioService.findByNombreUsuario(username);
+
+        if (usuario == null) {
+            redirectAttrs.addFlashAttribute("error", "Error al procesar la solicitud");
+            return "redirect:/vista_casas_usuario";
+        }
+
+        // Buscar la solicitud del usuario para esta vivienda
+        Optional<Solicitud> solicitudOpt = solicitudService.findByUsuarioAndVivienda(
+            usuario.getUsuarioId(), id);
+
+        if (solicitudOpt.isPresent()) {
+            solicitudService.deleteById(solicitudOpt.get().getSolicitudId());
+            redirectAttrs.addFlashAttribute("success", "Te has desapuntado correctamente");
+        } else {
+            redirectAttrs.addFlashAttribute("info", "No estabas apuntado a esta vivienda");
+        }
+
+        return "redirect:/vista_casas_usuario";
     }
 
     @GetMapping("/property-detail/{id}")

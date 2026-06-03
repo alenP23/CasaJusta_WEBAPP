@@ -140,14 +140,16 @@
     margin: 0;
 }
 
-/* Acciones */
+/* ========== ACCIONES (botones inferiores) ========== */
 .property-actions {
     display: flex;
     gap: 10px;
     padding: 15px;
     border-top: 1px solid #f0f0f0;
+    align-items: center;
 }
 
+/* Botón Contactar */
 .btn-contact {
     flex: 1;
     padding: 10px;
@@ -158,12 +160,94 @@
     cursor: pointer;
     font-weight: 600;
     transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
 .btn-contact:hover {
     background: #0052cc;
 }
 
+/* Botón Apuntarse (estilo similar al favorito) */
+.btn-apuntarse-wrapper {
+    display: inline-flex;
+}
+
+.btn-apuntarse-wrapper form {
+    margin: 0;
+    display: inline-flex;
+}
+
+.btn-apuntarse {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    position: relative;
+    color: #0066ff;
+    font-size: 0.9rem;
+    padding: 0;
+}
+
+.btn-apuntarse:hover:not(:disabled) {
+    background: #e3f2fd;
+    border-color: #0066ff;
+    transform: scale(1.05);
+}
+
+/* Número de inscritos (badge circular pequeño) */
+.apuntarse-numero {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #dc2626;
+    color: white;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Estado apuntado (verde) */
+.btn-apuntarse.apuntado {
+    background: #e8f5e9;
+    border-color: #4caf50;
+    color: #2e7d32;
+    cursor: default;
+}
+
+.btn-apuntarse.apuntado .apuntarse-numero {
+    background: #4caf50;
+}
+
+/* Estado completo (rojo) */
+.btn-apuntarse.completo {
+    background: #ffebee;
+    border-color: #ef5350;
+    color: #c62828;
+    cursor: default;
+}
+
+.btn-apuntarse.completo .apuntarse-numero {
+    background: #c62828;
+}
+
+/* Botón Favorito */
 .btn-favorite {
     width: 40px;
     height: 40px;
@@ -175,6 +259,8 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
+    color: #666;
+    font-size: 0.9rem;
 }
 
 .btn-favorite:hover,
@@ -183,67 +269,4 @@
     border-color: #ef5350;
     color: #ef5350;
 }
-
-/* ========== BOTÓN APUNTARSE ========== */
-.btn-apuntarse {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.2s;
-    margin-bottom: 10px;
-}
-
-/* Estado normal - disponible para apuntarse */
-.btn-apuntarse:not(.apuntado):not(.completo) {
-    background: #0066ff;
-    color: white;
-}
-
-.btn-apuntarse:not(.apuntado):not(.completo):hover {
-    background: #0052cc;
-}
-
-/* Estado apuntado */
-.btn-apuntarse.apuntado {
-    background: #e8f5e9;
-    color: #2e7d32;
-    cursor: default;
-}
-
-/* Estado completo */
-.btn-apuntarse.completo {
-    background: #ffebee;
-    color: #c62828;
-    cursor: default;
-}
-
-/* Número de apuntados - badge rojo */
-.apuntarse-numero {
-    background: #dc2626;
-    color: white;
-    min-width: 20px;
-    height: 20px;
-    padding: 0 6px;
-    border-radius: 50%;
-    font-size: 0.75rem;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-apuntarse.apuntado .apuntarse-numero {
-    background: #2e7d32;
-}
-
-.btn-apuntarse.completo .apuntarse-numero {
-    background: #c62828;
-}
+   
