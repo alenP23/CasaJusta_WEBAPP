@@ -3,35 +3,16 @@
 <body>
 
     <!-- FRAGMENTO USUARIO -->
-    <div th:fragment="tarjeta-usuario(vivienda)" class="user-property-card" 
+    <div th:fragment="tarjeta-usuario(vivienda)" class="property-card" 
          th:data-id="${vivienda.viviendaID}">
         
-        <div class="property-image" th:onclick="|window.location.href='@{/property-detail/}' + ${vivienda.viviendaID}|" style="cursor: pointer;">
-            <!-- SI TIENE FOTO -->
-            <img th:if="${fotosPortada != null && fotosPortada[vivienda.viviendaID] != null}" 
-                 th:src="@{${fotosPortada[vivienda.viviendaID]}}" 
-                 alt="Imagen vivienda">
-            
-            <!-- SI NO TIENE FOTO - PLACEHOLDER -->
-            <div th:unless="${fotosPortada != null && fotosPortada[vivienda.viviendaID] != null}" 
-                 class="no-image-placeholder">
-                <div class="add-image-icon">
-                    <i class="fas fa-image"></i>
-                </div>
-            </div>
-            
-            <!-- BADGE TIPO OPERACIÓN -->
+        <div class="property-image">
+            <img th:src="@{/images/casa_default.jpg}" alt="Imagen vivienda">
             <span class="property-badge" 
                   th:classappend="${vivienda.tipoOperacion == 'alquiler'} ? 'badge-alquiler' : 'badge-compra'" 
                   th:text="${vivienda.tipoOperacion}">Alquiler</span>
             
-            <!-- BADGE CUPO COMPLETADO -->
-            <span th:if="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null && contadorInscritos[vivienda.viviendaID] >= vivienda.cupoPersonas}" 
-                  class="cupo-badge">
-                <i class="fas fa-check-circle"></i> Completo
-            </span>
-            
-            <!-- BADGE DE COMPATIBILIDAD -->
+            <!-- Badge de compatibilidad -->
             <div th:if="${perfilConvivencia != null}" class="compatibility-badge"
                  th:classappend="${(perfilConvivencia.mascotas == vivienda.mascotas) && 
                                   (perfilConvivencia.fumador == vivienda.fumador) && 
@@ -46,19 +27,11 @@
         </div>
         
         <div class="property-details">
-            <h3 th:text="${vivienda.titulo}" th:onclick="|window.location.href='@{/property-detail/}' + ${vivienda.viviendaID}|" style="cursor: pointer;">villa playa</h3>
-            
-            <!-- DIRECCIÓN -->
+            <h3 th:text="${vivienda.titulo}">Título del anuncio</h3>
             <p class="property-location"><i class="fas fa-map-marker-alt"></i> 
                 <span th:text="${vivienda.direccion}">Dirección</span>
             </p>
             
-            <div class="property-meta">
-                <span class="property-type" th:text="${vivienda.tipoOperacion}">alquiler</span>
-                <span class="property-price" th:text="${#numbers.formatDecimal(vivienda.precio, 0, 'POINT', 0, 'COMMA')} + ' €'">100.000 €</span>
-            </div>
-            
-            <!-- CARACTERÍSTICAS -->
             <div class="property-features">
                 <span><i class="fas fa-bed"></i> <span th:text="${vivienda.habitaciones}">3</span> hab.</span>
                 <span><i class="fas fa-bath"></i> <span th:text="${vivienda.banos}">2</span> baños</span>
@@ -66,71 +39,75 @@
                 <span><i class="fas fa-users"></i> <span th:text="${vivienda.cupoPersonas}">4</span> pers.</span>
             </div>
             
-            <!-- CONTADOR DE INSCRITOS -->
-            <div th:if="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null}" 
-                 class="inscritos-counter"
-                 th:classappend="${contadorInscritos[vivienda.viviendaID] >= vivienda.cupoPersonas} ? 'completo' : ''">
-                <i class="fas fa-users"></i>
-                <span th:text="${contadorInscritos[vivienda.viviendaID]} + ' / ' + ${vivienda.cupoPersonas} + ' apuntados'">0 / 3 apuntados</span>
-            </div>
-            
-            <div class="convivencia-filters" onclick="event.stopPropagation();">
-                <span class="conv-pill" 
-                      th:classappend="${vivienda.fumador} ? 'conv-allowed' : 'conv-not-allowed'">
-                    <i class="fas fa-smoking"></i>
-                    <span th:text="${vivienda.fumador} ? 'Fumador' : 'No fumador'">No fumador</span>
-                </span>
-                <span class="conv-pill" 
-                      th:classappend="${vivienda.mascotas} ? 'conv-allowed' : 'conv-not-allowed'">
+            <!-- Convivencia con iconos circulares -->
+            <div class="property-convivencia">
+                <span th:classappend="${vivienda.mascotas} ? 'active' : 'inactive'" title="Mascotas">
                     <i class="fas fa-paw"></i>
-                    <span th:text="${vivienda.mascotas} ? 'Mascotas' : 'No mascotas'">No mascotas</span>
                 </span>
-                <span class="conv-pill" 
-                      th:classappend="${vivienda.pareja} ? 'conv-allowed' : 'conv-not-allowed'">
+                <span th:classappend="${vivienda.fumador} ? 'active' : 'inactive'" title="Fumador">
+                    <i class="fas fa-smoking"></i>
+                </span>
+                <span th:classappend="${vivienda.pareja} ? 'active' : 'inactive'" title="Pareja">
                     <i class="fas fa-heart"></i>
-                    <span th:text="${vivienda.pareja} ? 'Pareja' : 'No pareja'">No pareja</span>
                 </span>
             </div>
             
-            <!-- BOTÓN APUNTARSE (solo si hay usuario logueado) -->
-            <div th:if="${username != null}" onclick="event.stopPropagation();">
-                <!-- Ya está apuntado -->
-                <button th:if="${usuarioApuntado != null && usuarioApuntado[vivienda.viviendaID]}"
-                        class="apuntarse-btn apuntado" disabled>
-                    <i class="fas fa-check"></i> Ya estás apuntado
+            <p class="property-price" 
+               th:text="${#numbers.formatDecimal(vivienda.precio, 0, 'POINT', 0, 'COMMA')} + ' €'">
+                1.200 €
+            </p>
+        </div>
+        
+        <!-- ===== BOTÓN APUNTARSE ===== -->
+        <div th:if="${username != null}" onclick="event.stopPropagation();" style="padding: 0 15px;">
+            <!-- Disponible para apuntarse -->
+            <form th:if="${usuarioApuntado != null && !usuarioApuntado[vivienda.viviendaID] && (contadorInscritos == null || contadorInscritos[vivienda.viviendaID] == null || contadorInscritos[vivienda.viviendaID] < vivienda.cupoPersonas)}"
+                  th:action="@{/anuncio/} + ${vivienda.viviendaID} + '/apuntarse'" method="post" style="margin: 0;">
+                <button type="submit" class="btn-apuntarse">
+                    <i class="fas fa-user-plus"></i>
+                    <span th:if="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null}" 
+                          class="apuntarse-numero" 
+                          th:text="${contadorInscritos[vivienda.viviendaID]}">2</span>
+                    Apuntarme
                 </button>
-                
-                <!-- Cupo completado y no está apuntado -->
-                <button th:if="${usuarioApuntado != null && !usuarioApuntado[vivienda.viviendaID] && contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null && contadorInscritos[vivienda.viviendaID] >= vivienda.cupoPersonas}"
-                        class="apuntarse-btn completo" disabled>
-                    <i class="fas fa-lock"></i> Cupo completado
-                </button>
-                
-                <!-- Disponible para apuntarse -->
-                <form th:if="${usuarioApuntado != null && !usuarioApuntado[vivienda.viviendaID] && (contadorInscritos == null || contadorInscritos[vivienda.viviendaID] == null || contadorInscritos[vivienda.viviendaID] < vivienda.cupoPersonas)}"
-                      th:action="@{/anuncio/} + ${vivienda.viviendaID} + '/apuntarse'" method="post" style="margin: 0;">
-                    <button type="submit" class="apuntarse-btn apuntar">
-                        <i class="fas fa-user-plus"></i> Apuntarme
-                    </button>
-                </form>
-            </div>
+            </form>
             
-            <!-- Mensaje para usuarios no logueados -->
-            <div th:if="${username == null}" style="margin-top: 10px;">
-                <a th:href="@{/login}" class="apuntarse-btn apuntar" style="text-decoration: none; text-align: center;">
-                    <i class="fas fa-sign-in-alt"></i> Inicia sesión para apuntarte
-                </a>
-            </div>
+            <!-- Ya está apuntado -->
+            <button th:if="${usuarioApuntado != null && usuarioApuntado[vivienda.viviendaID]}"
+                    class="btn-apuntarse apuntado" disabled>
+                <i class="fas fa-check"></i>
+                <span th:if="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null}" 
+                      class="apuntarse-numero" 
+                      th:text="${contadorInscritos[vivienda.viviendaID]}">3</span>
+                Apuntado
+            </button>
             
-            <!-- ACCIONES: Contactar y Favorito -->
-            <div class="property-actions-user" onclick="event.stopPropagation();">
-                <button class="btn-contact" type="button" th:onclick="|contactarAnunciante(${vivienda.viviendaID})|">
-                    <i class="fas fa-envelope"></i> Contactar
-                </button>
-                <button class="btn-favorite" type="button" th:onclick="|toggleFavorito(${vivienda.viviendaID})|">
-                    <i class="far fa-heart"></i>
-                </button>
-            </div>
+            <!-- Cupo completado -->
+            <button th:if="${usuarioApuntado != null && !usuarioApuntado[vivienda.viviendaID] && contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null && contadorInscritos[vivienda.viviendaID] >= vivienda.cupoPersonas}"
+                    class="btn-apuntarse completo" disabled>
+                <i class="fas fa-lock"></i>
+                <span th:if="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null}" 
+                      class="apuntarse-numero" 
+                      th:text="${contadorInscritos[vivienda.viviendaID]}">4</span>
+                Completo
+            </button>
+        </div>
+        
+        <!-- Login para no autenticados -->
+        <div th:if="${username == null}" style="padding: 0 15px;">
+            <a th:href="@{/login}" class="btn-apuntarse" style="text-decoration: none; text-align: center; display: block;">
+                <i class="fas fa-sign-in-alt"></i> Inicia sesión para apuntarte
+            </a>
+        </div>
+        <!-- ===== FIN BOTÓN APUNTARSE ===== -->
+
+        <div class="property-actions">
+            <button class="btn-contact" type="button" th:onclick="|contactarAnunciante(${vivienda.viviendaID})|">
+                <i class="fas fa-envelope"></i> Contactar
+            </button>
+            <button class="btn-favorite" type="button" th:onclick="|toggleFavorito(${vivienda.viviendaID})|">
+                <i class="far fa-heart"></i>
+            </button>
         </div>
     </div>
 

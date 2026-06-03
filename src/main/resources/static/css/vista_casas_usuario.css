@@ -87,115 +87,6 @@ body {
     gap: 16px;
 }
 
-/* ========== TARJETA DE PROPIEDAD ========== */
-.property-card {
-    background: var(--white);
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-}
-
-.property-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-}
-
-.property-image {
-    position: relative;
-    height: 180px;
-    overflow: hidden;
-}
-
-.property-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s;
-}
-
-.property-card:hover .property-image img {
-    transform: scale(1.05);
-}
-
-.property-badge {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--white);
-    background-color: var(--primary);
-}
-
-.property-info {
-    padding: 14px;
-}
-
-.property-title {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    color: var(--text-dark);
-}
-
-.property-address {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.property-address i {
-    font-size: 12px;
-}
-
-.property-features {
-    display: flex;
-    gap: 12px;
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-}
-
-.property-features span {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.property-price-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.property-price {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--primary);
-}
-
-.btn-ver-mas {
-    background: var(--primary);
-    color: var(--white);
-    padding: 6px 14px;
-    border-radius: var(--radius-sm);
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 500;
-    transition: background 0.2s;
-}
-
-.btn-ver-mas:hover {
-    background: var(--primary-dark);
-}
-
 /* ========== MENSAJE SIN RESULTADOS ========== */
 .no-results {
     grid-column: 1 / -1;
@@ -220,14 +111,17 @@ body {
 .filters-sidebar {
     position: fixed;
     top: 0;
-    right: -100%;
+    right: -100vw;
     width: 100%;
+    max-width: 380px;
     height: 100vh;
-    background: var(--white);
+    background: #fff;
     box-shadow: -4px 0 16px rgba(0,0,0,0.1);
     z-index: 200;
     transition: right 0.3s ease;
     overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .filters-sidebar.open {
@@ -332,154 +226,7 @@ body {
     visibility: visible;
 }
 
-/* ========== DESKTOP (desde 769px) ========== */
-@media (min-width: 769px) {
-    .main-container {
-        padding: 32px 24px;
-    }
-    
-    .section-title {
-        font-size: 24px;
-    }
-    
-    .filter-btn {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .properties-grid {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 24px;
-    }
-    
-    .property-image {
-        height: 200px;
-    }
-    
-    .property-badge {
-        font-size: 12px;
-        padding: 4px 12px;
-    }
-    
-    .property-info {
-        padding: 16px;
-    }
-    
-    .property-title {
-        font-size: 16px;
-    }
-    
-    .property-price {
-        font-size: 18px;
-    }
-    
-    .btn-ver-mas {
-        padding: 8px 16px;
-        font-size: 14px;
-    }
-    
-    .filters-sidebar {
-        width: 360px;
-        right: -400px;
-    }
-    
-    .footer-container {
-        padding: 25px 0 15px;
-    }
-}
-/* ========== SIDEBAR FILTROS (única definición, sin duplicados) ========== */
-.filters-sidebar {
-    position: fixed;
-    top: 0;
-    right: -100vw; /* CAMBIO: usar viewport width en lugar de porcentaje del sidebar */
-    width: 100%;
-    max-width: 380px; /* Limitar ancho máximo */
-    height: 100vh;
-    background: #fff;
-    box-shadow: -4px 0 16px rgba(0,0,0,0.1);
-    z-index: 200;
-    transition: right 0.3s ease;
-    overflow-y: auto;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-.filters-sidebar.open {
-    right: 0;
-}
-
-/* Desktop: sidebar más ancho con más padding */
-@media (min-width: 769px) {
-    .filters-sidebar {
-        width: 360px;
-        right: -360px;
-        padding: 24px 28px; /* Más padding en desktop */
-    }
-}
-
-/* ========== BOTONES DE ACCIÓN ========== */
-.filters-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-    /* No necesita margin-bottom porque el sidebar ya tiene padding */
-}
-
-.btn-aplicar {
-    width: 100%;
-    padding: 14px;
-    background: #0066ff;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background 0.2s, transform 0.1s;
-    box-sizing: border-box; /* Asegurar que el padding no desborde */
-}
-
-.btn-aplicar:hover {
-    background: #0052cc;
-}
-
-.btn-aplicar:active {
-    transform: scale(0.98);
-}
-
-.btn-limpiar {
-    width: 100%;
-    padding: 14px;
-    background: #fff;
-    color: #0066ff;
-    border: 1.5px solid #e0e0e0;
-    border-radius: 10px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    text-decoration: none;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.2s;
-    cursor: pointer;
-    box-sizing: border-box; /* Asegurar que el padding no desborde */
-}
-
-.btn-limpiar:hover {
-    border-color: #0066ff;
-    background: #f0f7ff;
-}
-
-/* ========== TIPO DE OPERACIÓN: CARDS (mismo patrón que admin) ========== */
+/* ========== TIPO DE OPERACIÓN: CARDS ========== */
 .tipo-cards {
     display: flex;
     gap: 12px;
@@ -556,13 +303,11 @@ body {
     color: #0066ff;
 }
 
-/* ========== SLIDER DE PRECIO (mismo patrón que admin: id="precioMaximo") ========== */
-/* ========== SLIDER CUSTOM (control pixel-perfect) ========== */
-
+/* ========== SLIDER CUSTOM ========== */
 .slider-custom {
     position: relative;
-    padding: 8px 0; /* Reducido para que el thumb no se desplace */
-    margin: 0 8px; /* Margen para que el thumb no se corte en los extremos */
+    padding: 8px 0;
+    margin: 0 8px;
 }
 
 .slider-track {
@@ -571,7 +316,7 @@ body {
     height: 4px;
     background: #e0e0e0;
     border-radius: 2px;
-    top: 0; /* Asegurar que esté arriba */
+    top: 0;
 }
 
 .slider-fill {
@@ -587,27 +332,26 @@ body {
 
 .slider-thumb {
     position: absolute;
-    top: 2px; /* Centro exacto del track de 4px: (4px/2) = 2px, menos (16px/2) = 8px → top: -6px */
-    /* CORRECCIÓN: El thumb debe estar centrado en el eje vertical del track */
+    top: 2px;
     width: 16px;
     height: 16px;
     background: #0066ff;
     border: 2px solid #fff;
     border-radius: 50%;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    transform: translateX(-50%); /* Solo horizontal, el vertical ya está calculado */
+    transform: translateX(-50%);
     left: 100%;
     pointer-events: none;
     z-index: 2;
-    margin-top: -2px; /* -(16px/2) + (4px/2) = -8px + 2px = -6px */
+    margin-top: -2px;
 }
 
 .slider-input {
     position: absolute;
-    top: -2px; /* Mismo offset que el thumb para que el área clickeable esté centrada */
+    top: -2px;
     left: 0;
     width: 100%;
-    height: 16px; /* Igual que el thumb */
+    height: 16px;
     opacity: 0;
     cursor: pointer;
     z-index: 3;
@@ -618,10 +362,10 @@ body {
     justify-content: space-between;
     font-size: 0.8rem;
     color: #888;
-    margin-top: 12px; /* Más espacio porque el thumb sobresale arriba */
+    margin-top: 12px;
 }
 
-/* ========== CONVIVENCIA: Lista con checkbox a la derecha ========== */
+/* ========== CONVIVENCIA: Lista con checkbox ========== */
 .convivencia-list {
     display: flex;
     flex-direction: column;
@@ -669,13 +413,12 @@ body {
     border-radius: 4px;
 }
 
-/* ========== BOTONES DE ACCIÓN (mismo patrón que admin) ========== */
+/* ========== BOTONES DE ACCIÓN ========== */
 .filters-actions {
     display: flex;
     flex-direction: column;
     gap: 12px;
     margin-top: 40px;
-    margin-bottom: 20px;
     padding-top: 20px;
     border-top: 1px solid #eee;
 }
@@ -695,6 +438,7 @@ body {
     justify-content: center;
     gap: 8px;
     transition: background 0.2s, transform 0.1s;
+    box-sizing: border-box;
 }
 
 .btn-aplicar:hover {
@@ -722,6 +466,7 @@ body {
     gap: 8px;
     transition: all 0.2s;
     cursor: pointer;
+    box-sizing: border-box;
 }
 
 .btn-limpiar:hover {
@@ -729,246 +474,38 @@ body {
     background: #f0f7ff;
 }
 
-/* ========== TARJETAS DE PROPIEDAD ========== */
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
+/* ========== DESKTOP (desde 769px) ========== */
+@media (min-width: 769px) {
+    .main-container {
+        padding: 32px 24px;
+    }
+    
+    .section-title {
+        font-size: 24px;
+    }
+    
+    .filter-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .properties-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
+    }
+    
+    .filters-sidebar {
+        width: 360px;
+        right: -360px;
+        padding: 24px 28px;
+    }
+    
+    .footer-container {
+        padding: 25px 0 15px;
+    }
 }
 
-.section-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin: 0;
-}
-
-.filter-btn {
-    width: 40px;
-    height: 40px;
-    border: 1px solid #e0e0e0;
-    background: #fff;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #555;
-    transition: all 0.2s;
-}
-
-.filter-btn:hover {
-    border-color: #0066ff;
-    color: #0066ff;
-}
-
-.properties-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-}
-
-.property-card {
-    background: #fff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: transform 0.2s, box-shadow 0.2s;
-    display: flex;
-    flex-direction: column;
-}
-
-.property-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-}
-
-.property-image {
-    position: relative;
-    height: 180px;
-    overflow: hidden;
-}
-
-.property-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.property-badge {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.badge-alquiler {
-    background: #e3f2fd;
-    color: #1976d2;
-}
-
-.badge-compra {
-    background: #e8f5e9;
-    color: #388e3c;
-}
-
-.compatibility-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.compatibility-badge.compatible {
-    background: #d4edda;
-    color: #155724;
-}
-
-.compatibility-badge.partial {
-    background: #fff3cd;
-    color: #856404;
-}
-
-.property-details {
-    padding: 15px;
-    flex-grow: 1;
-}
-
-.property-details h3 {
-    margin: 0 0 8px 0;
-    font-size: 1.1rem;
-    color: #333;
-}
-
-.property-location {
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 12px;
-}
-
-.property-features {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 12px;
-    font-size: 0.85rem;
-    color: #555;
-}
-
-.property-features span {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.property-convivencia {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-}
-
-.property-convivencia span {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-}
-
-.property-convivencia span.active {
-    background: #e3f2fd;
-    color: #1976d2;
-}
-
-.property-convivencia span.inactive {
-    background: #f5f5f5;
-    color: #bbb;
-}
-
-.property-price {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #0066ff;
-    margin: 0;
-}
-
-.property-actions {
-    display: flex;
-    gap: 10px;
-    padding: 15px;
-    border-top: 1px solid #f0f0f0;
-}
-
-.btn-contact {
-    flex: 1;
-    padding: 10px;
-    background: #0066ff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.2s;
-}
-
-.btn-contact:hover {
-    background: #0052cc;
-}
-
-.btn-favorite {
-    width: 40px;
-    height: 40px;
-    border: 1px solid #ddd;
-    background: white;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-}
-
-.btn-favorite:hover,
-.btn-favorite.active {
-    background: #ffebee;
-    border-color: #ef5350;
-    color: #ef5350;
-}
-
-/* ========== NO RESULTS ========== */
-.no-results {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 60px 20px;
-    color: #666;
-}
-
-.no-results i {
-    font-size: 3rem;
-    color: #ddd;
-    margin-bottom: 15px;
-}
-
-.no-results p {
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-}
-
-/* ========== RESPONSIVE ========== */
+/* ========== RESPONSIVE MÓVIL ========== */
 @media (max-width: 480px) {
     .filters-sidebar {
         width: 100%;
