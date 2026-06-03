@@ -129,17 +129,18 @@ public class AdminController {
 
         @PostMapping("/anuncios/eliminar")
         public String eliminarAnuncio(@RequestParam Integer id) {
-        // Primero borrar de BD (las fotos se borran por cascade o manual)
+        // Las fotos y solicitudes se borran automáticamente por cascade
+        
+        // Borrar archivos físicos de las fotos
         List<FotoVivienda> fotos = fotoViviendaRepository.findByVivienda_ViviendaID(id);
         for (FotoVivienda foto : fotos) {
             imagenStorageService.eliminarImagen(foto.getUrlImagen());
         }
-        fotoViviendaRepository.deleteAll(fotos);
 
-        // Luego borrar la vivienda
+        // Borrar la vivienda (cascade borra fotos y solicitudes en BD)
         viviendaService.deleteById(id);
 
-        // Finalmente intentar borrar la carpeta (si queda vacía)
+        // Intentar borrar carpeta
         try {
             imagenStorageService.eliminarCarpetaAnuncio(id);
         } catch (Exception e) {

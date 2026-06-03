@@ -228,7 +228,12 @@
     background: #e8f5e9;
     border-color: #4caf50;
     color: #2e7d32;
-    cursor: default;
+    cursor: pointer;
+}
+
+.btn-apuntarse.apuntado:hover {
+    background: #c8e6c9;
+    border-color: #388e3c;
 }
 
 .btn-apuntarse.apuntado .apuntarse-numero {
@@ -269,4 +274,3 @@
     border-color: #ef5350;
     color: #ef5350;
 }
-   
