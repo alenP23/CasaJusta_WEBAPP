@@ -128,17 +128,25 @@ public class VistaPisosController {
         model.addAttribute("fotosPortada", fotosPortada);
 
         // ===== DATOS DE SOLICITUDES (para el botón apuntarse) =====
+        // CORRECCIÓN: Asegurar que TODAS las viviendas tienen entrada en los mapas
         if (usuarioActual != null) {
             Map<Integer, Boolean> usuarioApuntado = new HashMap<>();
             Map<Integer, Long> contadorInscritos = new HashMap<>();
 
             for (Vivienda v : viviendas) {
+                // Inicializar SIEMPRE ambos mapas para cada vivienda
                 boolean apuntado = solicitudService.usuarioYaApuntado(
                     usuarioActual.getUsuarioId(), v.getViviendaID());
                 long inscritos = solicitudService.countByViviendaId(v.getViviendaID());
 
                 usuarioApuntado.put(v.getViviendaID(), apuntado);
                 contadorInscritos.put(v.getViviendaID(), inscritos);
+                
+                // DEBUG: Imprimir en consola para verificar
+                System.out.println("DEBUG Vivienda " + v.getViviendaID() + 
+                    ": apuntado=" + apuntado + 
+                    ", inscritos=" + inscritos + 
+                    "/" + v.getCupoPersonas());
             }
 
             model.addAttribute("usuarioApuntado", usuarioApuntado);

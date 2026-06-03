@@ -7,11 +7,23 @@
          th:data-id="${vivienda.viviendaID}">
         
         <div class="property-image">
-            <img th:src="@{${fotosPortada[vivienda.viviendaID]}}">
+            <img th:src="@{/images/casa_default.jpg}" alt="Imagen vivienda">
             <span class="property-badge" 
                   th:classappend="${vivienda.tipoOperacion == 'alquiler'} ? 'badge-alquiler' : 'badge-compra'" 
                   th:text="${vivienda.tipoOperacion}">Alquiler</span>
             
+            <!-- Badge de compatibilidad -->
+            <div th:if="${perfilConvivencia != null}" class="compatibility-badge"
+                 th:classappend="${(perfilConvivencia.mascotas == vivienda.mascotas) && 
+                                  (perfilConvivencia.fumador == vivienda.fumador) && 
+                                  (perfilConvivencia.pareja == vivienda.pareja)} ? 'compatible' : 'partial'">
+                <i class="fas fa-user-check"></i>
+                <span th:text="${(perfilConvivencia.mascotas == vivienda.mascotas) && 
+                               (perfilConvivencia.fumador == vivienda.fumador) && 
+                               (perfilConvivencia.pareja == vivienda.pareja)} ? '100% compatible' : 'Ver compatibilidad'">
+                    Compatible
+                </span>
+            </div>
         </div>
         
         <div class="property-details">
@@ -56,38 +68,41 @@
             <div th:if="${username != null}" class="btn-apuntarse-wrapper">
                 
                 <!-- PRIORIDAD 1: Ya estoy apuntado → tick verde SIEMPRE (puedo desapuntarme) -->
+                <!-- CORRECCIÓN: Usar ?: false para manejar null correctamente -->
                 <button type="button"
-                        th:if="${usuarioApuntado != null && usuarioApuntado[vivienda.viviendaID] != null && usuarioApuntado[vivienda.viviendaID]}"
+                        th:if="${(usuarioApuntado != null) && (usuarioApuntado[vivienda.viviendaID] ?: false)}"
                         class="btn-apuntarse btn-desapuntar apuntado" 
                         th:data-id="${vivienda.viviendaID}"
                         th:data-cupo="${vivienda.cupoPersonas}"
                         title="Desapuntarme">
                     <i class="fas fa-check"></i>
                     <span class="apuntarse-numero" 
-                          th:text="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null} ? ${contadorInscritos[vivienda.viviendaID]} : '0'">0</span>
+                          th:text="${(contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null) ? contadorInscritos[vivienda.viviendaID] : '0'}">0</span>
                 </button>
                 
                 <!-- PRIORIDAD 2: No estoy apuntado + cupo completo → candado -->
+                <!-- CORRECCIÓN: Manejar null como false y verificar cupo completo -->
                 <button type="button" disabled
-                        th:if="${usuarioApuntado != null && usuarioApuntado[vivienda.viviendaID] != null && !usuarioApuntado[vivienda.viviendaID] && contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null && contadorInscritos[vivienda.viviendaID] >= vivienda.cupoPersonas}"
+                        th:if="${!(usuarioApuntado != null && (usuarioApuntado[vivienda.viviendaID] ?: false)) && (contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null && contadorInscritos[vivienda.viviendaID] >= vivienda.cupoPersonas)}"
                         class="btn-apuntarse completo" 
                         th:data-id="${vivienda.viviendaID}"
                         title="Cupo completo">
                     <i class="fas fa-lock"></i>
                     <span class="apuntarse-numero" 
-                          th:text="${contadorInscritos[vivienda.viviendaID]}">0</span>
+                          th:text="${(contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null) ? contadorInscritos[vivienda.viviendaID] : '0'}">0</span>
                 </button>
                 
                 <!-- PRIORIDAD 3: No estoy apuntado + cupo disponible → apuntarme -->
+                <!-- CORRECCIÓN: Manejar null como false y verificar cupo disponible -->
                 <button type="button"
-                        th:if="${usuarioApuntado != null && usuarioApuntado[vivienda.viviendaID] != null && !usuarioApuntado[vivienda.viviendaID] && (contadorInscritos == null || contadorInscritos[vivienda.viviendaID] == null || contadorInscritos[vivienda.viviendaID] < vivienda.cupoPersonas)}"
+                        th:if="${!(usuarioApuntado != null && (usuarioApuntado[vivienda.viviendaID] ?: false)) && (contadorInscritos == null || contadorInscritos[vivienda.viviendaID] == null || contadorInscritos[vivienda.viviendaID] < vivienda.cupoPersonas)}"
                         class="btn-apuntarse btn-apuntar" 
                         th:data-id="${vivienda.viviendaID}"
                         th:data-cupo="${vivienda.cupoPersonas}"
                         title="Apuntarme">
                     <i class="fas fa-user-plus"></i>
                     <span class="apuntarse-numero" 
-                          th:text="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null} ? ${contadorInscritos[vivienda.viviendaID]} : '0'">0</span>
+                          th:text="${(contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null) ? contadorInscritos[vivienda.viviendaID] : '0'}">0</span>
                 </button>
             </div>
             
