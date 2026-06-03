@@ -1,4 +1,6 @@
-/* ========== TARJETA ADMIN ========== */
+/* ========== ADMIN-CARDS.CSS - TARJETAS ADMIN COMPLETAS ========== */
+
+/* ========== TARJETA BASE ADMIN ========== */
 .admin-property-card {
     background: #fff;
     border-radius: 16px;
@@ -16,11 +18,11 @@
     box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
 
-/* ========== IMAGEN (60% de altura) ========== */
+/* ========== IMAGEN ========== */
 .property-image {
     position: relative;
     width: 100%;
-    height: 200px; /* o 60% si el padre tiene altura fija */
+    height: 200px;
     min-height: 200px;
     background: #f3f4f6;
     overflow: hidden;
@@ -103,7 +105,7 @@
     color: #dc2626;
 }
 
-/* ========== DETALLES (parte inferior) ========== */
+/* ========== DETALLES ========== */
 .property-details {
     padding: 16px;
     flex: 1;
@@ -234,12 +236,6 @@
 }
 
 /* ========== PLACEHOLDER SIN IMAGEN ========== */
-.property-image {
-    position: relative;
-    overflow: hidden;
-    background: #f3f4f6;
-}
-
 .no-image-placeholder {
     width: 100%;
     height: 100%;
