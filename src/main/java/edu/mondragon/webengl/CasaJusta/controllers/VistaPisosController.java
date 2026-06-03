@@ -10,13 +10,11 @@ import edu.mondragon.webengl.CasaJusta.service.SolicitudService;
 import edu.mondragon.webengl.CasaJusta.service.UsuarioService;
 import edu.mondragon.webengl.CasaJusta.service.ViviendaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
@@ -150,7 +148,7 @@ public class VistaPisosController {
         return "vista_casas_usuario";
     }
 
-    // ===== POST: APUNTARSE A UNA VIVIENDA =====
+    // ===== POST: APUNTARSE A UNA VIVIENDA (redirección normal) =====
     @PostMapping("/anuncio/{id}/apuntarse")
     public String apuntarseAVivienda(@PathVariable Integer id,
                                       Authentication authentication,
@@ -170,20 +168,17 @@ public class VistaPisosController {
             return "redirect:/vista_casas_usuario";
         }
 
-        // Verificar si ya está apuntado
         if (solicitudService.usuarioYaApuntado(usuario.getUsuarioId(), id)) {
             redirectAttrs.addFlashAttribute("info", "Ya estás apuntado a esta vivienda");
             return "redirect:/vista_casas_usuario";
         }
 
-        // Verificar si hay cupo
         long inscritos = solicitudService.countByViviendaId(id);
         if (inscritos >= vivienda.getCupoPersonas()) {
             redirectAttrs.addFlashAttribute("error", "El cupo de esta vivienda está completo");
             return "redirect:/vista_casas_usuario";
         }
 
-        // Crear solicitud
         Solicitud solicitud = new Solicitud();
         solicitud.setUsuario(usuario);
         solicitud.setVivienda(vivienda);
@@ -193,7 +188,7 @@ public class VistaPisosController {
         return "redirect:/vista_casas_usuario";
     }
 
-    // ===== POST: DESAPUNTARSE DE UNA VIVIENDA =====
+    // ===== POST: DESAPUNTARSE DE UNA VIVIENDA (redirección normal) =====
     @PostMapping("/anuncio/{id}/desapuntarse")
     public String desapuntarseDeVivienda(@PathVariable Integer id,
                                           Authentication authentication,
@@ -212,7 +207,6 @@ public class VistaPisosController {
             return "redirect:/vista_casas_usuario";
         }
 
-        // Buscar la solicitud del usuario para esta vivienda
         Optional<Solicitud> solicitudOpt = solicitudService.findByUsuarioAndVivienda(
             usuario.getUsuarioId(), id);
 
@@ -224,6 +218,105 @@ public class VistaPisosController {
         }
 
         return "redirect:/vista_casas_usuario";
+    }
+
+    // ===== ENDPOINTS AJAX PARA APUNTARSE/DESAPUNTARSE (sin refrescar página) =====
+
+    @PostMapping("/api/anuncio/{id}/apuntarse")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> apuntarseAjax(@PathVariable Integer id,
+                                                              Authentication authentication) {
+        
+        Map<String, Object> response = new HashMap<>();
+        
+        if (authentication == null || !authentication.isAuthenticated()) {
+            response.put("success", false);
+            response.put("message", "Debes iniciar sesión");
+            return ResponseEntity.status(401).body(response);
+        }
+
+        String username = authentication.getName();
+        Usuario usuario = usuarioService.findByNombreUsuario(username);
+        Vivienda vivienda = viviendaService.findById(id);
+
+        if (usuario == null || vivienda == null) {
+            response.put("success", false);
+            response.put("message", "Error al procesar");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        if (solicitudService.usuarioYaApuntado(usuario.getUsuarioId(), id)) {
+            response.put("success", false);
+            response.put("message", "Ya estás apuntado");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        long inscritos = solicitudService.countByViviendaId(id);
+        if (inscritos >= vivienda.getCupoPersonas()) {
+            response.put("success", false);
+            response.put("message", "Cupo completo");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        Solicitud solicitud = new Solicitud();
+        solicitud.setUsuario(usuario);
+        solicitud.setVivienda(vivienda);
+        solicitudService.save(solicitud);
+
+        long nuevosInscritos = solicitudService.countByViviendaId(id);
+        
+        response.put("success", true);
+        response.put("message", "¡Apuntado!");
+        response.put("inscritos", nuevosInscritos);
+        response.put("apuntado", true);
+        response.put("completo", nuevosInscritos >= vivienda.getCupoPersonas());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/api/anuncio/{id}/desapuntarse")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> desapuntarseAjax(@PathVariable Integer id,
+                                                               Authentication authentication) {
+        
+        Map<String, Object> response = new HashMap<>();
+        
+        if (authentication == null || !authentication.isAuthenticated()) {
+            response.put("success", false);
+            response.put("message", "Debes iniciar sesión");
+            return ResponseEntity.status(401).body(response);
+        }
+
+        String username = authentication.getName();
+        Usuario usuario = usuarioService.findByNombreUsuario(username);
+
+        if (usuario == null) {
+            response.put("success", false);
+            response.put("message", "Error al procesar");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        Optional<Solicitud> solicitudOpt = solicitudService.findByUsuarioAndVivienda(
+            usuario.getUsuarioId(), id);
+
+        if (solicitudOpt.isPresent()) {
+            solicitudService.deleteById(solicitudOpt.get().getSolicitudId());
+            
+            long nuevosInscritos = solicitudService.countByViviendaId(id);
+            Vivienda vivienda = viviendaService.findById(id);
+            
+            response.put("success", true);
+            response.put("message", "Desapuntado");
+            response.put("inscritos", nuevosInscritos);
+            response.put("apuntado", false);
+            response.put("completo", vivienda != null && nuevosInscritos >= vivienda.getCupoPersonas());
+            
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "No estabas apuntado");
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @GetMapping("/property-detail/{id}")

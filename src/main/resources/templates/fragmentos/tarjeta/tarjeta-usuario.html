@@ -52,38 +52,42 @@
                 <i class="fas fa-envelope"></i> Contactar
             </button>
             
-            <!-- Botón Apuntarse / Desapuntarse -->
-            <div th:if="${username != null}" class="btn-apuntarse-wrapper" onclick="event.stopPropagation();">
+            <!-- Botón Apuntarse / Desapuntarse (AJAX) -->
+            <div th:if="${username != null}" class="btn-apuntarse-wrapper">
                 
-                <!-- Disponible para apuntarse -->
-                <form th:if="${usuarioApuntado != null && usuarioApuntado[vivienda.viviendaID] != null && !usuarioApuntado[vivienda.viviendaID] && (contadorInscritos == null || contadorInscritos[vivienda.viviendaID] == null || contadorInscritos[vivienda.viviendaID] < vivienda.cupoPersonas)}"
-                      th:action="@{/anuncio/} + ${vivienda.viviendaID} + '/apuntarse'" method="post" style="margin: 0;">
-                    <button type="submit" class="btn-apuntarse" title="Apuntarme">
-                        <i class="fas fa-user-plus"></i>
-                        <span th:if="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null}" 
-                              class="apuntarse-numero" 
-                              th:text="${contadorInscritos[vivienda.viviendaID]}">2</span>
-                    </button>
-                </form>
+                <!-- PRIORIDAD 1: Ya estoy apuntado → tick verde SIEMPRE (puedo desapuntarme) -->
+                <button type="button"
+                        th:if="${usuarioApuntado != null && usuarioApuntado[vivienda.viviendaID] != null && usuarioApuntado[vivienda.viviendaID]}"
+                        class="btn-apuntarse btn-desapuntar apuntado" 
+                        th:data-id="${vivienda.viviendaID}"
+                        th:data-cupo="${vivienda.cupoPersonas}"
+                        title="Desapuntarme">
+                    <i class="fas fa-check"></i>
+                    <span class="apuntarse-numero" 
+                          th:text="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null} ? ${contadorInscritos[vivienda.viviendaID]} : '0'">0</span>
+                </button>
                 
-                <!-- Ya está apuntado → Botón para desapuntarse -->
-                <form th:if="${usuarioApuntado != null && usuarioApuntado[vivienda.viviendaID] != null && usuarioApuntado[vivienda.viviendaID]}"
-                      th:action="@{/anuncio/} + ${vivienda.viviendaID} + '/desapuntarse'" method="post" style="margin: 0;">
-                    <button type="submit" class="btn-apuntarse apuntado" title="Desapuntarme">
-                        <i class="fas fa-check"></i>
-                        <span th:if="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null}" 
-                              class="apuntarse-numero" 
-                              th:text="${contadorInscritos[vivienda.viviendaID]}">3</span>
-                    </button>
-                </form>
-                
-                <!-- Cupo completado -->
-                <button th:if="${usuarioApuntado != null && usuarioApuntado[vivienda.viviendaID] != null && !usuarioApuntado[vivienda.viviendaID] && contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null && contadorInscritos[vivienda.viviendaID] >= vivienda.cupoPersonas}"
-                        class="btn-apuntarse completo" disabled title="Cupo completo">
+                <!-- PRIORIDAD 2: No estoy apuntado + cupo completo → candado -->
+                <button type="button" disabled
+                        th:if="${usuarioApuntado != null && usuarioApuntado[vivienda.viviendaID] != null && !usuarioApuntado[vivienda.viviendaID] && contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null && contadorInscritos[vivienda.viviendaID] >= vivienda.cupoPersonas}"
+                        class="btn-apuntarse completo" 
+                        th:data-id="${vivienda.viviendaID}"
+                        title="Cupo completo">
                     <i class="fas fa-lock"></i>
-                    <span th:if="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null}" 
-                          class="apuntarse-numero" 
-                          th:text="${contadorInscritos[vivienda.viviendaID]}">4</span>
+                    <span class="apuntarse-numero" 
+                          th:text="${contadorInscritos[vivienda.viviendaID]}">0</span>
+                </button>
+                
+                <!-- PRIORIDAD 3: No estoy apuntado + cupo disponible → apuntarme -->
+                <button type="button"
+                        th:if="${usuarioApuntado != null && usuarioApuntado[vivienda.viviendaID] != null && !usuarioApuntado[vivienda.viviendaID] && (contadorInscritos == null || contadorInscritos[vivienda.viviendaID] == null || contadorInscritos[vivienda.viviendaID] < vivienda.cupoPersonas)}"
+                        class="btn-apuntarse btn-apuntar" 
+                        th:data-id="${vivienda.viviendaID}"
+                        th:data-cupo="${vivienda.cupoPersonas}"
+                        title="Apuntarme">
+                    <i class="fas fa-user-plus"></i>
+                    <span class="apuntarse-numero" 
+                          th:text="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null} ? ${contadorInscritos[vivienda.viviendaID]} : '0'">0</span>
                 </button>
             </div>
             

@@ -18,27 +18,22 @@ public class SecurityConfig {
     private PasswordEncoder passwordEncoder;
     
     @Autowired
-    private CustomSuccessHandler customSuccessHandler;  // ← NUEVO
+    private CustomSuccessHandler customSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                // PÚBLICAS: login, registro y recursos estáticos
-                .requestMatchers("/login", "/registro", "/css/**", "/js/**", "/images/**").permitAll()
-                
-                // ADMIN: solo usuarios con rol ADMIN
+                .requestMatchers("/login", "/registro", "/css/**", "/js/**", "/images/**","/ws/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                
-                // USER: usuarios logueados
+                .requestMatchers("/api/**").authenticated()
                 .requestMatchers("/vista_casas_usuario").authenticated()
-                
-                // Todo lo demás requiere login
                 .anyRequest().authenticated()
             )
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
             .formLogin(form -> form
                 .loginPage("/login")
-                .successHandler(customSuccessHandler)  // ← CAMBIO: usa handler personalizado
+                .successHandler(customSuccessHandler)
                 .permitAll()
             )
             .logout(logout -> logout
