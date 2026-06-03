@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SolicitudServiceImpl implements SolicitudService {
@@ -33,6 +34,11 @@ public class SolicitudServiceImpl implements SolicitudService {
     @Override
     public List<Solicitud> findByViviendaId(Integer viviendaId) {
         return solicitudRepository.findByVivienda_ViviendaIDAndEstado(viviendaId, "pendiente");
+    }
+
+    @Override
+    public Optional<Solicitud> findByUsuarioAndVivienda(Integer usuarioId, Integer viviendaId) {
+        return solicitudRepository.findByUsuario_UsuarioIdAndVivienda_ViviendaID(usuarioId, viviendaId);
     }
 
     @Override

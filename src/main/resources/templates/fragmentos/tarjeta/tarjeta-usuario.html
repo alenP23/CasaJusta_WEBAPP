@@ -58,54 +58,54 @@
             </p>
         </div>
         
-        <!-- ===== BOTÓN APUNTARSE ===== -->
-        <div th:if="${username != null}" onclick="event.stopPropagation();" style="padding: 0 15px;">
-            <!-- Disponible para apuntarse -->
-            <form th:if="${usuarioApuntado != null && !usuarioApuntado[vivienda.viviendaID] && (contadorInscritos == null || contadorInscritos[vivienda.viviendaID] == null || contadorInscritos[vivienda.viviendaID] < vivienda.cupoPersonas)}"
-                  th:action="@{/anuncio/} + ${vivienda.viviendaID} + '/apuntarse'" method="post" style="margin: 0;">
-                <button type="submit" class="btn-apuntarse">
-                    <i class="fas fa-user-plus"></i>
-                    <span th:if="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null}" 
-                          class="apuntarse-numero" 
-                          th:text="${contadorInscritos[vivienda.viviendaID]}">2</span>
-                    Apuntarme
-                </button>
-            </form>
-            
-            <!-- Ya está apuntado -->
-            <button th:if="${usuarioApuntado != null && usuarioApuntado[vivienda.viviendaID]}"
-                    class="btn-apuntarse apuntado" disabled>
-                <i class="fas fa-check"></i>
-                <span th:if="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null}" 
-                      class="apuntarse-numero" 
-                      th:text="${contadorInscritos[vivienda.viviendaID]}">3</span>
-                Apuntado
-            </button>
-            
-            <!-- Cupo completado -->
-            <button th:if="${usuarioApuntado != null && !usuarioApuntado[vivienda.viviendaID] && contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null && contadorInscritos[vivienda.viviendaID] >= vivienda.cupoPersonas}"
-                    class="btn-apuntarse completo" disabled>
-                <i class="fas fa-lock"></i>
-                <span th:if="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null}" 
-                      class="apuntarse-numero" 
-                      th:text="${contadorInscritos[vivienda.viviendaID]}">4</span>
-                Completo
-            </button>
-        </div>
-        
-        <!-- Login para no autenticados -->
-        <div th:if="${username == null}" style="padding: 0 15px;">
-            <a th:href="@{/login}" class="btn-apuntarse" style="text-decoration: none; text-align: center; display: block;">
-                <i class="fas fa-sign-in-alt"></i> Inicia sesión para apuntarte
-            </a>
-        </div>
-        <!-- ===== FIN BOTÓN APUNTARSE ===== -->
-
         <div class="property-actions">
+            <!-- Botón Contactar -->
             <button class="btn-contact" type="button" th:onclick="|contactarAnunciante(${vivienda.viviendaID})|">
                 <i class="fas fa-envelope"></i> Contactar
             </button>
-            <button class="btn-favorite" type="button" th:onclick="|toggleFavorito(${vivienda.viviendaID})|">
+            
+            <!-- Botón Apuntarse / Desapuntarse -->
+            <div th:if="${username != null}" class="btn-apuntarse-wrapper" onclick="event.stopPropagation();">
+                
+                <!-- Disponible para apuntarse -->
+                <form th:if="${usuarioApuntado != null && usuarioApuntado[vivienda.viviendaID] != null && !usuarioApuntado[vivienda.viviendaID] && (contadorInscritos == null || contadorInscritos[vivienda.viviendaID] == null || contadorInscritos[vivienda.viviendaID] < vivienda.cupoPersonas)}"
+                      th:action="@{/anuncio/} + ${vivienda.viviendaID} + '/apuntarse'" method="post" style="margin: 0;">
+                    <button type="submit" class="btn-apuntarse" title="Apuntarme">
+                        <i class="fas fa-user-plus"></i>
+                        <span th:if="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null}" 
+                              class="apuntarse-numero" 
+                              th:text="${contadorInscritos[vivienda.viviendaID]}">2</span>
+                    </button>
+                </form>
+                
+                <!-- Ya está apuntado → Botón para desapuntarse -->
+                <form th:if="${usuarioApuntado != null && usuarioApuntado[vivienda.viviendaID] != null && usuarioApuntado[vivienda.viviendaID]}"
+                      th:action="@{/anuncio/} + ${vivienda.viviendaID} + '/desapuntarse'" method="post" style="margin: 0;">
+                    <button type="submit" class="btn-apuntarse apuntado" title="Desapuntarme">
+                        <i class="fas fa-check"></i>
+                        <span th:if="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null}" 
+                              class="apuntarse-numero" 
+                              th:text="${contadorInscritos[vivienda.viviendaID]}">3</span>
+                    </button>
+                </form>
+                
+                <!-- Cupo completado -->
+                <button th:if="${usuarioApuntado != null && usuarioApuntado[vivienda.viviendaID] != null && !usuarioApuntado[vivienda.viviendaID] && contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null && contadorInscritos[vivienda.viviendaID] >= vivienda.cupoPersonas}"
+                        class="btn-apuntarse completo" disabled title="Cupo completo">
+                    <i class="fas fa-lock"></i>
+                    <span th:if="${contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null}" 
+                          class="apuntarse-numero" 
+                          th:text="${contadorInscritos[vivienda.viviendaID]}">4</span>
+                </button>
+            </div>
+            
+            <!-- Login para no autenticados -->
+            <a th:if="${username == null}" th:href="@{/login}" class="btn-apuntarse" title="Inicia sesión para apuntarte">
+                <i class="fas fa-sign-in-alt"></i>
+            </a>
+            
+            <!-- Botón Favorito -->
+            <button class="btn-favorite" type="button" th:onclick="|toggleFavorito(${vivienda.viviendaID})|" title="Favorito">
                 <i class="far fa-heart"></i>
             </button>
         </div>
