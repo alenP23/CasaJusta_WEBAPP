@@ -14,10 +14,16 @@
 <body>
 
     <div layout:fragment="content">
-        <div class="section-header">
-            <h1 class="section-title">Mapa de Propiedades</h1>
-        </div>
-        
+    <div class="section-header">
+        <h1 class="section-title">Mapa de Propiedades</h1>
+        <button class="filter-btn" id="filterToggle" type="button" aria-label="Abrir filtros">
+            <i class="fas fa-filter"></i>
+        </button>
+    </div>
+    
+        <!-- Sidebar de filtros (fragmento reutilizable) -->
+        <div th:replace="~{fragmentos/filtros/sidebar-filtros :: sidebar-filtros(actionUrl=${'/mapa'})}"></div>
+    
         <div id="mapa-propiedades"></div>
     </div>
 

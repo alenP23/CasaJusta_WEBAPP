@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <!-- FRAGMENTO: Sidebar de filtros reutilizable -->
+    <!-- Uso: <div th:replace="~{fragmentos/filtros/sidebar-filtros :: sidebar-filtros(actionUrl=${'/mapa'})}"></div> -->
+    
+    <th:block th:fragment="sidebar-filtros(actionUrl)">
+        
+        <!-- Overlay -->
+        <div class="overlay" id="overlay"></div>
+        
+        <!-- Sidebar -->
+        <aside class="filters-sidebar" id="filtersSidebar" aria-hidden="true">
+            <div class="filters-header">
+                <h3>Filtros</h3>
+                <button class="close-filters" id="closeFilters" type="button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Formulario que envía a la URL pasada como parámetro -->
+            <form id="filtersForm" th:action="${actionUrl}" method="get">
+                
+                <!-- ===== TIPO DE OPERACIÓN ===== -->
+                <div class="filter-group">
+                    <label class="filter-label">Tipo de operación</label>
+                    <div class="tipo-cards">
+                        <label class="tipo-card" th:classappend="${tipoOperacionSeleccionado == 'todos'} ? 'selected'">
+                            <input type="radio" name="tipoOperacion" value="todos" 
+                                   th:checked="${tipoOperacionSeleccionado == 'todos'}">
+                            <span class="radio-indicator"></span>
+                            <div class="tipo-icon"><i class="fas fa-globe"></i></div>
+                            <span class="tipo-text">Todos</span>
+                        </label>
+                        <label class="tipo-card" th:classappend="${tipoOperacionSeleccionado == 'alquiler'} ? 'selected'">
+                            <input type="radio" name="tipoOperacion" value="alquiler"
+                                   th:checked="${tipoOperacionSeleccionado == 'alquiler'}">
+                            <span class="radio-indicator"></span>
+                            <div class="tipo-icon"><i class="fas fa-key"></i></div>
+                            <span class="tipo-text">Alquiler</span>
+                        </label>
+                        <label class="tipo-card" th:classappend="${tipoOperacionSeleccionado == 'compra'} ? 'selected'">
+                            <input type="radio" name="tipoOperacion" value="compra"
+                                   th:checked="${tipoOperacionSeleccionado == 'compra'}">
+                            <span class="radio-indicator"></span>
+                            <div class="tipo-icon"><i class="fas fa-home"></i></div>
+                            <span class="tipo-text">Compra</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- ===== PRECIO MÁXIMO ===== -->
+                <div class="filter-group">
+                    <label class="filter-label">
+                        Precio máximo: <span id="precioValor" class="precio-valor-destacado"
+                            th:text="${#numbers.formatDecimal(precioMaxSeleccionado, 0, 'POINT', 0, 'COMMA')} + ' €'">
+                            5.000.000 €
+                        </span>
+                    </label>
+                    <div class="slider-custom">
+                        <div class="slider-track">
+                            <div class="slider-fill" id="sliderFill"></div>
+                        </div>
+                        <div class="slider-thumb" id="sliderThumb"></div>
+                        <input type="range" id="precioMaximo" name="precioMax" min="0" max="5000000" step="1000" 
+                            th:value="${precioMaxSeleccionado}" class="slider-input">
+                        <div class="slider-rango">
+                            <span>0 €</span>
+                            <span>5.000.000 €</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== CONVIVENCIA ===== -->
+                <div class="filter-group">
+                    <label class="filter-label">Convivencia</label>
+                    <div class="convivencia-list">
+                        <label class="convivencia-item">
+                            <div class="convivencia-info">
+                                <i class="fas fa-paw"></i>
+                                <span>Mascotas permitidas</span>
+                            </div>
+                            <input type="checkbox" name="filtroMascotas" value="true"
+                                   th:checked="${filtroMascotasActivo}">
+                        </label>
+                        <label class="convivencia-item">
+                            <div class="convivencia-info">
+                                <i class="fas fa-smoking"></i>
+                                <span>Fumador/a</span>
+                            </div>
+                            <input type="checkbox" name="filtroFumador" value="true"
+                                   th:checked="${filtroFumadorActivo}">
+                        </label>
+                        <label class="convivencia-item">
+                            <div class="convivencia-info">
+                                <i class="fas fa-heart"></i>
+                                <span>Pareja</span>
+                            </div>
+                            <input type="checkbox" name="filtroPareja" value="true"
+                                   th:checked="${filtroParejaActivo}">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- ===== BOTONES ===== -->
+                <div class="filters-actions">
+                    <button type="submit" class="btn-aplicar">
+                        <i class="fas fa-check"></i> Aplicar filtros
+                    </button>
+                    <a th:href="${actionUrl}" class="btn-limpiar">
+                        <i class="fas fa-redo-alt"></i> Limpiar
+                    </a>
+                </div>
+            </form>
+        </aside>
+    </th:block>
+
+</body>
+</html>
