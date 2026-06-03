@@ -1,10 +1,17 @@
 package edu.mondragon.webengl.CasaJusta.controllers;
 
 import edu.mondragon.webengl.CasaJusta.model.FotoVivienda;
+import edu.mondragon.webengl.CasaJusta.model.Mensaje;
+import edu.mondragon.webengl.CasaJusta.model.Pertenece;
+import edu.mondragon.webengl.CasaJusta.model.Solicitud;
 import edu.mondragon.webengl.CasaJusta.model.Usuario;
 import edu.mondragon.webengl.CasaJusta.model.Vivienda;
+import edu.mondragon.webengl.CasaJusta.repository.ChatGrupalRepository;
 import edu.mondragon.webengl.CasaJusta.repository.FotoViviendaRepository;
 import edu.mondragon.webengl.CasaJusta.repository.ImagenStorageService;
+import edu.mondragon.webengl.CasaJusta.repository.MensajeRepository;
+import edu.mondragon.webengl.CasaJusta.repository.PerteneceRepository;
+import edu.mondragon.webengl.CasaJusta.repository.SolicitudRepository;
 import edu.mondragon.webengl.CasaJusta.service.UsuarioService;
 import edu.mondragon.webengl.CasaJusta.service.ViviendaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +47,20 @@ public class AdminController {
     
     @Autowired
     private FotoViviendaRepository fotoViviendaRepository;
+
+    // ===== NUEVOS REPOSITORIOS PARA BORRADO EN CASCADA =====
+    @Autowired
+    private SolicitudRepository solicitudRepository;
+
+    @Autowired
+    private ChatGrupalRepository chatGrupalRepository;
+
+    @Autowired
+    private PerteneceRepository perteneceRepository;
+
+    @Autowired
+    private MensajeRepository mensajeRepository;
+    // =======================================================
 
     private boolean esAdmin(Authentication authentication) {
         if (authentication == null) return false;
@@ -89,12 +110,12 @@ public class AdminController {
         return "admin_usuarios";
     }
 
-        // ========== ANUNCIOS CRUD ==========
+    // ========== ANUNCIOS CRUD ==========
     
-        @PostMapping("/anuncios/crear")
-        public String crearAnuncio(@ModelAttribute Vivienda vivienda,
-                               @RequestParam(value = "imagen", required = false) MultipartFile imagen,
-                               RedirectAttributes redirectAttrs) {
+    @PostMapping("/anuncios/crear")
+    public String crearAnuncio(@ModelAttribute Vivienda vivienda,
+                           @RequestParam(value = "imagen", required = false) MultipartFile imagen,
+                           RedirectAttributes redirectAttrs) {
         vivienda.setEstado(false);
         Vivienda guardada = viviendaService.save(vivienda);
                             
@@ -127,20 +148,44 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-        @PostMapping("/anuncios/eliminar")
-        public String eliminarAnuncio(@RequestParam Integer id) {
-        // Las fotos y solicitudes se borran automáticamente por cascade
+    // ===== MÉTODO ELIMINAR CORREGIDO =====
+    @PostMapping("/anuncios/eliminar")
+    public String eliminarAnuncio(@RequestParam Integer id) {
         
-        // Borrar archivos físicos de las fotos
+        // 1. BORRAR CHAT Y MENSAJES (si existen)
+        chatGrupalRepository.findByVivienda_ViviendaID(id).ifPresent(chat -> {
+            // Borrar mensajes del chat
+            List<Mensaje> mensajes = mensajeRepository.findByChat_ChatId(chat.getChatId());
+            if (!mensajes.isEmpty()) {
+                mensajeRepository.deleteAll(mensajes);
+            }
+            
+            // Borrar pertenencias
+            List<Pertenece> pertenencias = perteneceRepository.findByChat_ChatId(chat.getChatId());
+            if (!pertenencias.isEmpty()) {
+                perteneceRepository.deleteAll(pertenencias);
+            }
+            
+            // Borrar chat
+            chatGrupalRepository.delete(chat);
+        });
+        
+        // 2. BORRAR SOLICITUDES (inscripciones)
+        List<Solicitud> solicitudes = solicitudRepository.findByVivienda_ViviendaID(id);
+        if (!solicitudes.isEmpty()) {
+            solicitudRepository.deleteAll(solicitudes);
+        }
+        
+        // 3. BORRAR FOTOS FÍSICAS
         List<FotoVivienda> fotos = fotoViviendaRepository.findByVivienda_ViviendaID(id);
         for (FotoVivienda foto : fotos) {
             imagenStorageService.eliminarImagen(foto.getUrlImagen());
         }
 
-        // Borrar la vivienda (cascade borra fotos y solicitudes en BD)
+        // 4. BORRAR VIVIENDA (cascade borra fotos en BD)
         viviendaService.deleteById(id);
 
-        // Intentar borrar carpeta
+        // 5. BORRAR CARPETA
         try {
             imagenStorageService.eliminarCarpetaAnuncio(id);
         } catch (Exception e) {
@@ -149,6 +194,7 @@ public class AdminController {
 
         return "redirect:/admin";
     }
+    // =====================================
 
     @PostMapping("/usuarios/eliminar")
     public String eliminarUsuario(@RequestParam Integer id) {

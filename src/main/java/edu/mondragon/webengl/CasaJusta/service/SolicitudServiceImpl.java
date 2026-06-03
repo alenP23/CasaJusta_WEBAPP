@@ -1,6 +1,7 @@
 package edu.mondragon.webengl.CasaJusta.service;
 
 import edu.mondragon.webengl.CasaJusta.controllers.WebSocketSolicitudController;
+import edu.mondragon.webengl.CasaJusta.model.ChatGrupal;
 import edu.mondragon.webengl.CasaJusta.model.Solicitud;
 import edu.mondragon.webengl.CasaJusta.model.Vivienda;
 import edu.mondragon.webengl.CasaJusta.repository.SolicitudRepository;
@@ -24,31 +25,52 @@ public class SolicitudServiceImpl implements SolicitudService {
     @Autowired
     private WebSocketSolicitudController webSocketController;
 
+    @Autowired
+    private ChatService chatService;
+
     @Override
     public Solicitud save(Solicitud solicitud) {
-        Solicitud guardada = solicitudRepository.save(solicitud);
-        
+    Solicitud guardada = solicitudRepository.save(solicitud);
+
+        // Unir usuario al chat de la vivienda
+        try {
+            ChatGrupal chat = chatService.crearChat(solicitud.getVivienda().getViviendaID());
+            chatService.unirUsuarioAlChat(chat.getChatId(), solicitud.getUsuario().getDni());
+        } catch (Exception e) {
+            System.err.println("Error al unir usuario al chat: " + e.getMessage());
+        }
+
         // Emitir actualización WebSocket
         notificarCambio(solicitud.getVivienda().getViviendaID());
-        
+
         return guardada;
     }
 
     @Override
     public void deleteById(Integer id) {
-        // Obtener la solicitud antes de borrar para saber la vivienda
         Optional<Solicitud> solicitudOpt = solicitudRepository.findById(id);
-        Integer viviendaId = null;
-        
+
         if (solicitudOpt.isPresent()) {
-            viviendaId = solicitudOpt.get().getVivienda().getViviendaID();
-        }
-        
-        solicitudRepository.deleteById(id);
-        
-        // Emitir actualización WebSocket
-        if (viviendaId != null) {
+            Solicitud solicitud = solicitudOpt.get();
+            Integer viviendaId = solicitud.getVivienda().getViviendaID();
+            String dniUsuario = solicitud.getUsuario().getDni();
+
+            solicitudRepository.deleteById(id);
+
+            // Eliminar usuario del chat
+            if (viviendaId != null && dniUsuario != null) {
+                try {
+                    chatService.obtenerChatPorVivienda(viviendaId).ifPresent(chat -> {
+                        chatService.eliminarUsuarioDelChat(chat.getChatId(), dniUsuario);
+                    });
+                } catch (Exception e) {
+                    System.err.println("Error al eliminar usuario del chat: " + e.getMessage());
+                }
+            }
+
             notificarCambio(viviendaId);
+        } else {
+            solicitudRepository.deleteById(id);
         }
     }
 

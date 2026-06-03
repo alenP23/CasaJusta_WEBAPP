@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/head/head-chat :: head-chat}">
+    
+</head>
+<body>
+
+    <!-- ===== HEADER (fragmento tuyo) ===== -->
+    <div th:replace="~{fragmentos/header/header :: header-principal}"></div>
+
+    <!-- ===== CONTENEDOR DEL CHAT ===== -->
+    <div class="chat-page-wrapper">
+
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <a th:href="@{/vista_casas_usuario}" class="btn-volver" title="Volver">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="chat-header-info">
+                <h2 th:text="${vivienda.titulo}">Título</h2>
+                <span class="chat-status">
+                    <i class="fas fa-users"></i>
+                    <span th:text="${totalMiembros + ' inscritos'}">3 inscritos</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Mensajes -->
+        <div class="chat-messages" id="chatMessages">
+            <div th:each="msg : ${mensajes}" 
+                 th:class="${msg.dniUsuario == usuario.dni} ? 'message message-own' : 'message'"
+                 th:data-tipo="${msg.tipo}">
+                <div class="message-bubble">
+                    <span class="message-author" th:text="${msg.nombreUsuario}">Usuario</span>
+                    <p class="message-text" th:text="${msg.contenido}">Contenido</p>
+                    <span class="message-time" th:text="${msg.fechaEnvio}">12:30</span>
+                </div>
+            </div>
+            
+            <div th:if="${chatCerrado}" class="message message-system">
+                <div class="message-bubble">
+                    <p>🎉 ¡Todos han aceptado! El piso ha sido asignado.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de votación -->
+        <div th:if="${!chatCerrado}" class="votacion-panel" id="votacionPanel">
+            <div class="votacion-info">
+                <span>¿Aceptáis el piso?</span>
+                <span class="votos-contador" id="votosContador" 
+                      th:text="${votosSi + '/' + totalMiembros + ' sí'}">2/3 sí</span>
+            </div>
+            <div class="votacion-botones" th:if="${!yaVoto}">
+                <button class="btn-voto btn-voto-si" onclick="votar(true)">
+                    <i class="fas fa-check"></i> Sí
+                </button>
+                <button class="btn-voto btn-voto-no" onclick="votar(false)">
+                    <i class="fas fa-times"></i> No
+                </button>
+            </div>
+            <div class="votacion-ya-voto" th:if="${yaVoto}">
+                <i class="fas fa-check-circle"></i> Ya has votado
+            </div>
+        </div>
+
+        <!-- Input de mensaje -->
+        <div th:if="${!chatCerrado}" class="chat-input-area">
+            <input type="text" id="mensajeInput" placeholder="Escribe un mensaje..." maxlength="1000" autocomplete="off">
+            <button id="btnEnviar" onclick="enviarMensaje()" title="Enviar">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+        
+        <!-- Chat cerrado -->
+        <div th:if="${chatCerrado}" class="chat-cerrado">
+            <i class="fas fa-lock"></i> Chat cerrado - Piso asignado
+        </div>
+
+    </div>
+
+    <!-- ===== FOOTER (fragmento tuyo) ===== -->
+    <div th:replace="~{fragmentos/footer/footer :: footer-principal}"></div>
+
+    <!-- Variables para JS -->
+    <script th:inline="javascript">
+        const CHAT_ID = /*[[${chatId}]]*/ 0;
+        const DNI_USUARIO = /*[[${usuario.dni}]]*/ '';
+        const USERNAME = /*[[${username}]]*/ '';
+    </script>
+    
+    <!-- JS del chat -->
+    <script th:src="@{/js/chat.js}"></script>
+
+</body>
+</html>

@@ -68,12 +68,12 @@
             <div th:if="${username != null}" class="btn-apuntarse-wrapper">
                 
                 <!-- PRIORIDAD 1: Ya estoy apuntado → tick verde SIEMPRE (puedo desapuntarme) -->
-                <!-- CORRECCIÓN: Usar ?: false para manejar null correctamente -->
                 <button type="button"
                         th:if="${(usuarioApuntado != null) && (usuarioApuntado[vivienda.viviendaID] ?: false)}"
                         class="btn-apuntarse btn-desapuntar apuntado" 
                         th:data-id="${vivienda.viviendaID}"
                         th:data-cupo="${vivienda.cupoPersonas}"
+                        th:data-usuario-id="${usuarioId}"
                         title="Desapuntarme">
                     <i class="fas fa-check"></i>
                     <span class="apuntarse-numero" 
@@ -81,7 +81,6 @@
                 </button>
                 
                 <!-- PRIORIDAD 2: No estoy apuntado + cupo completo → candado -->
-                <!-- CORRECCIÓN: Manejar null como false y verificar cupo completo -->
                 <button type="button" disabled
                         th:if="${!(usuarioApuntado != null && (usuarioApuntado[vivienda.viviendaID] ?: false)) && (contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null && contadorInscritos[vivienda.viviendaID] >= vivienda.cupoPersonas)}"
                         class="btn-apuntarse completo" 
@@ -93,7 +92,6 @@
                 </button>
                 
                 <!-- PRIORIDAD 3: No estoy apuntado + cupo disponible → apuntarme -->
-                <!-- CORRECCIÓN: Manejar null como false y verificar cupo disponible -->
                 <button type="button"
                         th:if="${!(usuarioApuntado != null && (usuarioApuntado[vivienda.viviendaID] ?: false)) && (contadorInscritos == null || contadorInscritos[vivienda.viviendaID] == null || contadorInscritos[vivienda.viviendaID] < vivienda.cupoPersonas)}"
                         class="btn-apuntarse btn-apuntar" 
@@ -115,6 +113,15 @@
             <button class="btn-favorite" type="button" th:onclick="|toggleFavorito(${vivienda.viviendaID})|" title="Favorito">
                 <i class="far fa-heart"></i>
             </button>
+            
+            <!-- ===== BOTÓN CHAT (NUEVO) ===== -->
+            <!-- Solo aparece si estás apuntado a esta vivienda -->
+            <a th:if="${(usuarioApuntado != null) && (usuarioApuntado[vivienda.viviendaID] ?: false)}"
+               th:href="@{/chat/{id}(id=${vivienda.viviendaID})}"
+               class="btn-chat" title="Abrir chat">
+                <i class="fas fa-comments"></i>
+            </a>
+            <!-- ============================== -->
         </div>
     </div>
 
