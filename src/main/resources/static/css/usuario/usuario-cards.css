@@ -49,29 +49,6 @@
     color: #388e3c;
 }
 
-.compatibility-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.compatibility-badge.compatible {
-    background: #d4edda;
-    color: #155724;
-}
-
-.compatibility-badge.partial {
-    background: #fff3cd;
-    color: #856404;
-}
-
 /* Info */
 .property-details {
     padding: 15px;
