@@ -7,23 +7,10 @@
          th:data-id="${vivienda.viviendaID}">
         
         <div class="property-image">
-            <img th:src="@{/images/casa_default.jpg}" alt="Imagen vivienda">
+            <img th:src="@{${fotosPortada[vivienda.viviendaID]}}">
             <span class="property-badge" 
                   th:classappend="${vivienda.tipoOperacion == 'alquiler'} ? 'badge-alquiler' : 'badge-compra'" 
                   th:text="${vivienda.tipoOperacion}">Alquiler</span>
-            
-            <!-- Badge de compatibilidad -->
-            <div th:if="${perfilConvivencia != null}" class="compatibility-badge"
-                 th:classappend="${(perfilConvivencia.mascotas == vivienda.mascotas) && 
-                                  (perfilConvivencia.fumador == vivienda.fumador) && 
-                                  (perfilConvivencia.pareja == vivienda.pareja)} ? 'compatible' : 'partial'">
-                <i class="fas fa-user-check"></i>
-                <span th:text="${(perfilConvivencia.mascotas == vivienda.mascotas) && 
-                               (perfilConvivencia.fumador == vivienda.fumador) && 
-                               (perfilConvivencia.pareja == vivienda.pareja)} ? '100% compatible' : 'Ver compatibilidad'">
-                    Compatible
-                </span>
-            </div>
         </div>
         
         <div class="property-details">
