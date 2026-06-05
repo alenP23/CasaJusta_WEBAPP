@@ -60,3 +60,25 @@
     border-color: #0066ff;
     background: #f0f7ff;
 }
+
+.btn-comprar {
+    background-color: #16a34a; /* verde */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.2s;
+}
+
+.btn-comprar:hover {
+    background-color: #15803d;
+}
+
+.btn-comprar i {
+    font-size: 14px;
+}
