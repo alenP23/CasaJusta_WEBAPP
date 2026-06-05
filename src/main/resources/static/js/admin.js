@@ -4,9 +4,9 @@ function toggleEdicion() {
     const modoLectura = document.getElementById('modoLectura');
     const modoEdicion = document.getElementById('modoEdicion');
     const btn = document.getElementById('btnEditarPerfil');
-    
+
     if (!modoLectura || !modoEdicion || !btn) return;
-    
+
     if (modoEdicion.style.display === 'none') {
         modoLectura.style.display = 'none';
         modoEdicion.style.display = 'block';
@@ -22,7 +22,120 @@ function toggleEdicion() {
 
 // ========== DOMContentLoaded (todo lo demás) ==========
 document.addEventListener('DOMContentLoaded', function() {
-    
+
+    // ============================================================
+    // CÁLCULO AUTOMÁTICO DE PRECIO (NUEVO)
+    // ============================================================
+
+    // Constantes de las rectas de regresión
+    const PRECIO_COMPRA = { intercepto: -29276.88, pendiente: 2825.89 };
+    const PRECIO_ALQUILER = { intercepto: 307.72, pendiente: 7.42 };
+
+    /**
+     * Calcula el precio estimado según tipo de operación y metros cuadrados
+     * @param {string} tipo - "alquiler" o "compra"
+     * @param {number} metros - metros cuadrados
+     * @returns {number|null} - precio calculado o null si no se puede calcular
+     */
+    function calcularPrecio(tipo, metros) {
+        if (!tipo || !metros || metros <= 0) return null;
+
+        let precio;
+        if (tipo === 'compra') {
+            precio = PRECIO_COMPRA.intercepto + (PRECIO_COMPRA.pendiente * metros);
+        } else if (tipo === 'alquiler') {
+            precio = PRECIO_ALQUILER.intercepto + (PRECIO_ALQUILER.pendiente * metros);
+        } else {
+            return null;
+        }
+
+        // Redondear a 2 decimales
+        return Math.round(precio * 100) / 100;
+    }
+
+    /**
+     * Formatea un número como moneda española
+     */
+    function formatearPrecio(valor) {
+        if (valor === null || valor === undefined) return '';
+        return valor.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    /**
+     * Actualiza el campo de precio en el modal de crear
+     */
+    function actualizarPrecioCrear() {
+        const tipo = document.getElementById('propType')?.value;
+        const metros = parseFloat(document.getElementById('propMeters')?.value);
+        const precioInput = document.getElementById('propPrice');
+        const precioInfo = document.getElementById('precioInfo');
+
+        if (!precioInput) return;
+
+        const precio = calcularPrecio(tipo, metros);
+
+        if (precio !== null && precio > 0) {
+            precioInput.value = precio;
+            precioInfo.textContent = `Precio estimado: ${formatearPrecio(precio)} € (${tipo === 'compra' ? 'compra' : 'alquiler'}, ${metros} m²)`;
+            precioInfo.style.color = '#16a34a'; // verde
+        } else {
+            precioInput.value = '';
+            precioInput.placeholder = 'Selecciona tipo y metros';
+            precioInfo.textContent = 'Se calcula automáticamente según tipo y m²';
+            precioInfo.style.color = '#666';
+        }
+    }
+
+    /**
+     * Actualiza el campo de precio en el modal de editar
+     */
+    function actualizarPrecioEditar() {
+        const tipo = document.getElementById('editType')?.value;
+        const metros = parseFloat(document.getElementById('editMeters')?.value);
+        const precioInput = document.getElementById('editPrice');
+        const precioInfo = document.getElementById('editPrecioInfo');
+
+        if (!precioInput) return;
+
+        const precio = calcularPrecio(tipo, metros);
+
+        if (precio !== null && precio > 0) {
+            precioInput.value = precio;
+            precioInfo.textContent = `Precio estimado: ${formatearPrecio(precio)} € (${tipo === 'compra' ? 'compra' : 'alquiler'}, ${metros} m²)`;
+            precioInfo.style.color = '#16a34a'; // verde
+        } else {
+            precioInput.value = '';
+            precioInfo.textContent = 'Se calcula automáticamente según tipo y m²';
+            precioInfo.style.color = '#666';
+        }
+    }
+
+    // Event listeners para el modal CREAR
+    const propType = document.getElementById('propType');
+    const propMeters = document.getElementById('propMeters');
+
+    if (propType) {
+        propType.addEventListener('change', actualizarPrecioCrear);
+    }
+    if (propMeters) {
+        propMeters.addEventListener('input', actualizarPrecioCrear);
+    }
+
+    // Event listeners para el modal EDITAR
+    const editType = document.getElementById('editType');
+    const editMeters = document.getElementById('editMeters');
+
+    if (editType) {
+        editType.addEventListener('change', actualizarPrecioEditar);
+    }
+    if (editMeters) {
+        editMeters.addEventListener('input', actualizarPrecioEditar);
+    }
+
+    // ============================================================
+    // FIN CÁLCULO AUTOMÁTICO DE PRECIO
+    // ============================================================
+
     // ========== MODAL AGREGAR ANUNCIO ==========
     const addPropertyBtn = document.getElementById('addPropertyBtn');
     const modalOverlay = document.getElementById('modalOverlay');
@@ -44,14 +157,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const capitalized = nombre.charAt(0).toUpperCase() + nombre.slice(1);
         const pill = document.getElementById('toggleCrear' + capitalized);
         const input = document.getElementById('inputCrear' + capitalized);
-        
+
         if (!pill || !input) return;
-        
+
         const actual = input.value === 'true';
         const nuevo = !actual;
-        
+
         input.value = nuevo ? 'true' : 'false';
-        
+
         if (nuevo) {
             pill.classList.add('active');
             pill.classList.remove('inactive');
@@ -66,6 +179,10 @@ document.addEventListener('DOMContentLoaded', function() {
             modalOverlay.classList.remove('active');
             document.body.style.overflow = '';
         }
+        // Resetear formulario y precio
+        const form = document.getElementById('addPropertyForm');
+        if (form) form.reset();
+        actualizarPrecioCrear();
     }
 
     if (closeModal) closeModal.addEventListener('click', closeAddModal);
@@ -185,14 +302,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', function(e) {
         const btn = e.target.closest('.btn-eliminar-usuario');
         if (!btn) return;
-        
+
         e.stopPropagation();
         const id = btn.getAttribute('data-id');
         const nombre = btn.getAttribute('data-nombre');
-        
+
         if (deleteUserIdInput) deleteUserIdInput.value = id;
         if (deleteUserName) deleteUserName.textContent = nombre;
-        
+
         if (deleteUserModalOverlay) {
             deleteUserModalOverlay.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -224,21 +341,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.openEditModal = function(id) {
         const card = document.querySelector(`.admin-property-card[data-id="${id}"]`);
-        
+
         if (!card) {
             console.error('No se encontró la tarjeta con ID:', id);
             return;
         }
-        
+
         const titulo = card.querySelector('.property-details h3')?.textContent || '';
         const tipo = card.dataset.tipo || 'alquiler';
         const precio = card.dataset.precio || '';
-        
+
         document.getElementById('editId').value = id;
         document.getElementById('editTitle').value = titulo;
         document.getElementById('editType').value = tipo;
         document.getElementById('editPrice').value = precio;
-        
+
         fetch(`/admin/anuncio/${id}/datos`)
             .then(response => {
                 if (!response.ok) throw new Error('Error al cargar datos');
@@ -250,10 +367,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('editBathrooms').value = data.banos || 0;
                 document.getElementById('editMeters').value = data.metrosCuadrados || 0;
                 document.getElementById('editPersons').value = data.cupoPersonas || 0;
-                
+
                 setToggle('fumador', data.fumador);
                 setToggle('mascotas', data.mascotas);
                 setToggle('pareja', data.pareja);
+
+                // Actualizar precio automático con los datos cargados
+                actualizarPrecioEditar();
             })
             .catch(err => {
                 console.error('Error cargando datos completos:', err);
@@ -265,8 +385,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 setToggle('fumador', false);
                 setToggle('mascotas', false);
                 setToggle('pareja', false);
+                actualizarPrecioEditar();
             });
-        
+
         if (editModalOverlay) {
             editModalOverlay.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -277,23 +398,23 @@ document.addEventListener('DOMContentLoaded', function() {
     window.filtrarPorConvivencia = function(tipo, valor) {
         // Evitar que se propague el click a la tarjeta
         event.stopPropagation();
-        
+
         const cards = document.querySelectorAll('.admin-property-card[data-id]');
-        
+
         cards.forEach(card => {
             const cardValor = card.dataset[tipo] === 'true';
-            
+
             if (cardValor === valor) {
                 card.style.display = 'flex';
             } else {
                 card.style.display = 'none';
             }
         });
-        
+
         // Ocultar también la tarjeta de "Agregar"
         const addCard = document.getElementById('addPropertyBtn');
         if (addCard) addCard.style.display = 'none';
-        
+
         console.log(`Filtrado por ${tipo}: ${valor}`);
     };
 
@@ -301,12 +422,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const capitalized = nombre.charAt(0).toUpperCase() + nombre.slice(1);
         const pill = document.getElementById('toggle' + capitalized);
         const input = document.getElementById('input' + capitalized);
-        
+
         if (!pill || !input) return;
-        
+
         const boolValor = valor === true || valor === 'true' || valor === 1;
         input.value = boolValor ? 'true' : 'false';
-        
+
         if (boolValor) {
             pill.classList.add('active');
             pill.classList.remove('inactive');
@@ -320,14 +441,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const capitalized = nombre.charAt(0).toUpperCase() + nombre.slice(1);
         const pill = document.getElementById('toggle' + capitalized);
         const input = document.getElementById('input' + capitalized);
-        
+
         if (!pill || !input) return;
-        
+
         const actual = input.value === 'true';
         const nuevo = !actual;
-        
+
         input.value = nuevo ? 'true' : 'false';
-        
+
         if (nuevo) {
             pill.classList.add('active');
             pill.classList.remove('inactive');
@@ -346,6 +467,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setToggle('fumador', false);
         setToggle('mascotas', false);
         setToggle('pareja', false);
+        actualizarPrecioEditar();
     }
 
     if (closeEditModal) closeEditModal.addEventListener('click', closeEditModalFunc);
@@ -374,18 +496,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    console.log('✅ Admin JS cargado correctamente');
+    console.log('✅ Admin JS cargado correctamente (con cálculo automático de precio)');
 
     // ========== MARCAR PESTAÑA ACTIVA EN SIDEBAR ==========
     function marcarPestanaActiva() {
         const path = window.location.pathname;
         const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
-        
+
         navItems.forEach(item => item.classList.remove('active'));
-        
+
         let mejorCoincidencia = null;
         let mejorLongitud = 0;
-        
+
         navItems.forEach(item => {
             const href = item.getAttribute('href');
             if (!href) return;
@@ -398,7 +520,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 mejorLongitud = href.length;
             }
         });
-        
+
         if (mejorCoincidencia) {
             mejorCoincidencia.classList.add('active');
         }

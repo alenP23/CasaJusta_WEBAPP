@@ -13,31 +13,35 @@
             <div class="modal-body">
                 <form id="editPropertyForm" th:action="@{/admin/anuncios/editar}" method="post">
                     <input type="hidden" id="editId" name="id">
-                    
+
                     <div class="form-group">
                         <label for="editTitle">Título del anuncio</label>
                         <input type="text" id="editTitle" name="titulo" required>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="editType">Tipo de operación</label>
+                            <label for="editType">Tipo de operación *</label>
                             <select id="editType" name="tipoOperacion" required>
                                 <option value="alquiler">Alquiler</option>
                                 <option value="compra">Compra</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="editPrice">Precio</label>
-                            <input type="number" id="editPrice" name="precio" required>
+                            <label for="editPrice">Precio estimado (€)</label>
+                            <input type="number" id="editPrice" name="precio" readonly 
+                                   style="background-color: #f0f0f0; cursor: not-allowed;" step="0.01">
+                            <small id="editPrecioInfo" style="color: #666; font-size: 0.8em; display: block; margin-top: 4px;">
+                                Se calcula automáticamente según tipo y m²
+                            </small>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="editLocation">Dirección</label>
                         <input type="text" id="editLocation" name="direccion" required>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="editRooms">Habitaciones</label>
@@ -48,18 +52,18 @@
                             <input type="number" id="editBathrooms" name="banos" min="0">
                         </div>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="editMeters">Metros cuadrados</label>
-                            <input type="number" id="editMeters" name="metrosCuadrados" min="0">
+                            <label for="editMeters">Metros cuadrados *</label>
+                            <input type="number" id="editMeters" name="metrosCuadrados" min="1" required>
                         </div>
                         <div class="form-group">
                             <label for="editPersons">Cupo personas</label>
                             <input type="number" id="editPersons" name="cupoPersonas" min="0">
                         </div>
                     </div>
-                    
+
                     <!-- TOGGLES DE CONVIVENCIA -->
                     <div class="form-group">
                         <label>Preferencias de convivencia</label>
@@ -81,7 +85,7 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     <div class="modal-actions">
                         <button type="button" class="btn btn-secondary" id="cancelEdit">Cancelar</button>
                         <button type="submit" class="btn btn-primary">Guardar cambios</button>
