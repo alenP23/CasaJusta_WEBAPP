@@ -11,6 +11,7 @@ services:
 
   mysql:
     image: mysql:lts
+    container_name: mu-mysql 
     ports:
       - "3306:3306"
     environment:
