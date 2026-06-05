@@ -4,7 +4,8 @@
 
     <!-- FRAGMENTO USUARIO -->
     <div th:fragment="tarjeta-usuario(vivienda)" class="property-card" 
-         th:data-id="${vivienda.viviendaID}">
+         th:data-id="${vivienda.viviendaID}"
+         th:onclick="|window.location.href='@{/property-detail/}' + ${vivienda.viviendaID}|">
         
         <div class="property-image">
             <img th:src="@{${fotosPortada[vivienda.viviendaID]}}">
@@ -45,7 +46,9 @@
             </p>
         </div>
         
-        <div class="property-actions">
+        <!-- property-actions con stopPropagation para que los botones no naveguen -->
+        <div class="property-actions" onclick="event.stopPropagation();">
+            
             <!-- Botón Contactar -->
             <button class="btn-contact" type="button" th:onclick="|contactarAnunciante(${vivienda.viviendaID})|">
                 <i class="fas fa-envelope"></i> Contactar
