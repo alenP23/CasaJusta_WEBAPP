@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <!-- FRAGMENTO USUARIO -->
+    <div th:fragment="tarjeta-usuario(vivienda)" class="property-card" 
+         th:data-id="${vivienda.viviendaID}">
+        
+        <div class="property-image">
+            <img th:src="@{${fotosPortada[vivienda.viviendaID]}}">
+            <span class="property-badge" 
+                  th:classappend="${vivienda.tipoOperacion == 'alquiler'} ? 'badge-alquiler' : 'badge-compra'" 
+                  th:text="${vivienda.tipoOperacion}">Alquiler</span>
+        </div>
+        
+        <div class="property-details">
+            <h3 th:text="${vivienda.titulo}">Título del anuncio</h3>
+            <p class="property-location"><i class="fas fa-map-marker-alt"></i> 
+                <span th:text="${vivienda.direccion}">Dirección</span>
+            </p>
+            
+            <div class="property-features">
+                <span><i class="fas fa-bed"></i> <span th:text="${vivienda.habitaciones}">3</span> hab.</span>
+                <span><i class="fas fa-bath"></i> <span th:text="${vivienda.banos}">2</span> baños</span>
+                <span><i class="fas fa-ruler-combined"></i> <span th:text="${vivienda.metrosCuadrados}">85</span> m²</span>
+                <span><i class="fas fa-users"></i> <span th:text="${vivienda.cupoPersonas}">4</span> pers.</span>
+            </div>
+            
+            <!-- Convivencia con iconos circulares -->
+            <div class="property-convivencia">
+                <span th:classappend="${vivienda.mascotas} ? 'active' : 'inactive'" title="Mascotas">
+                    <i class="fas fa-paw"></i>
+                </span>
+                <span th:classappend="${vivienda.fumador} ? 'active' : 'inactive'" title="Fumador">
+                    <i class="fas fa-smoking"></i>
+                </span>
+                <span th:classappend="${vivienda.pareja} ? 'active' : 'inactive'" title="Pareja">
+                    <i class="fas fa-heart"></i>
+                </span>
+            </div>
+            
+            <p class="property-price" 
+               th:text="${#numbers.formatDecimal(vivienda.precio, 0, 'POINT', 0, 'COMMA')} + ' €'">
+                1.200 €
+            </p>
+        </div>
+        
+        <div class="property-actions">
+            <!-- Botón Contactar -->
+            <button class="btn-contact" type="button" th:onclick="|contactarAnunciante(${vivienda.viviendaID})|">
+                <i class="fas fa-envelope"></i> Contactar
+            </button>
+            
+            <!-- Botón Apuntarse / Desapuntarse (AJAX) -->
+            <div th:if="${username != null}" class="btn-apuntarse-wrapper">
+                
+                <!-- PRIORIDAD 1: Ya estoy apuntado → tick verde SIEMPRE (puedo desapuntarme) -->
+                <button type="button"
+                        th:if="${(usuarioApuntado != null) && (usuarioApuntado[vivienda.viviendaID] ?: false)}"
+                        class="btn-apuntarse btn-desapuntar apuntado" 
+                        th:data-id="${vivienda.viviendaID}"
+                        th:data-cupo="${vivienda.cupoPersonas}"
+                        th:data-usuario-id="${usuarioId}"
+                        title="Desapuntarme">
+                    <i class="fas fa-check"></i>
+                    <span class="apuntarse-numero" 
+                          th:text="${(contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null) ? contadorInscritos[vivienda.viviendaID] : '0'}">0</span>
+                </button>
+                
+                <!-- PRIORIDAD 2: No estoy apuntado + cupo completo → candado -->
+                <button type="button" disabled
+                        th:if="${!(usuarioApuntado != null && (usuarioApuntado[vivienda.viviendaID] ?: false)) && (contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null && contadorInscritos[vivienda.viviendaID] >= vivienda.cupoPersonas)}"
+                        class="btn-apuntarse completo" 
+                        th:data-id="${vivienda.viviendaID}"
+                        title="Cupo completo">
+                    <i class="fas fa-lock"></i>
+                    <span class="apuntarse-numero" 
+                          th:text="${(contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null) ? contadorInscritos[vivienda.viviendaID] : '0'}">0</span>
+                </button>
+                
+                <!-- PRIORIDAD 3: No estoy apuntado + cupo disponible → apuntarme -->
+                <button type="button"
+                        th:if="${!(usuarioApuntado != null && (usuarioApuntado[vivienda.viviendaID] ?: false)) && (contadorInscritos == null || contadorInscritos[vivienda.viviendaID] == null || contadorInscritos[vivienda.viviendaID] < vivienda.cupoPersonas)}"
+                        class="btn-apuntarse btn-apuntar" 
+                        th:data-id="${vivienda.viviendaID}"
+                        th:data-cupo="${vivienda.cupoPersonas}"
+                        title="Apuntarme">
+                    <i class="fas fa-user-plus"></i>
+                    <span class="apuntarse-numero" 
+                          th:text="${(contadorInscritos != null && contadorInscritos[vivienda.viviendaID] != null) ? contadorInscritos[vivienda.viviendaID] : '0'}">0</span>
+                </button>
+            </div>
+            
+            <!-- Login para no autenticados -->
+            <a th:if="${username == null}" th:href="@{/login}" class="btn-apuntarse" title="Inicia sesión para apuntarte">
+                <i class="fas fa-sign-in-alt"></i>
+            </a>
+            
+            <!-- Botón Favorito -->
+            <button class="btn-favorite" type="button" th:onclick="|toggleFavorito(${vivienda.viviendaID})|" title="Favorito">
+                <i class="far fa-heart"></i>
+            </button>
+            
+            <!-- ===== BOTÓN CHAT (NUEVO) ===== -->
+            <!-- Solo aparece si estás apuntado a esta vivienda -->
+            <a th:if="${(usuarioApuntado != null) && (usuarioApuntado[vivienda.viviendaID] ?: false)}"
+               th:href="@{/chat/{id}(id=${vivienda.viviendaID})}"
+               class="btn-chat" title="Abrir chat">
+                <i class="fas fa-comments"></i>
+            </a>
+            <!-- ============================== -->
+        </div>
+    </div>
+
+</body>
+</html>

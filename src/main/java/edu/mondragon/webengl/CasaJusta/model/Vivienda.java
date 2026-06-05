@@ -2,8 +2,9 @@ package edu.mondragon.webengl.CasaJusta.model;
 
 
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "vivienda")
@@ -50,10 +51,23 @@ public class Vivienda {
     @Column(name = "pareja", nullable = false)
     private Boolean pareja;
 
+    @Column(name = "latitud")
+    private Double latitud;
+
+    @Column(name = "longitud")
+    private Double longitud;
+
+    // Relaciones con cascade para borrado automático
+    @OneToMany(mappedBy = "vivienda", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<FotoVivienda> fotos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "vivienda", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Solicitud> solicitudes = new ArrayList<>();
+
     public Vivienda() {
     }
 
-    // Getters y Setters
+    // Getters y Setters existentes...
 
     public Integer getViviendaID() {
         return viviendaID;
@@ -157,5 +171,38 @@ public class Vivienda {
 
     public void setPareja(Boolean pareja) {
         this.pareja = pareja;
+    }
+
+    public Double getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+
+    public Double getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
+    }
+
+    // Getters y Setters para las nuevas relaciones
+    public List<FotoVivienda> getFotos() {
+        return fotos;
+    }
+
+    public void setFotos(List<FotoVivienda> fotos) {
+        this.fotos = fotos;
+    }
+
+    public List<Solicitud> getSolicitudes() {
+        return solicitudes;
+    }
+
+    public void setSolicitudes(List<Solicitud> solicitudes) {
+        this.solicitudes = solicitudes;
     }
 }
