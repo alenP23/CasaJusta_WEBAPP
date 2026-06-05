@@ -102,3 +102,78 @@ function toggleFavorito(viviendaId) {
         btn.classList.remove('active');
     }
 }
+
+// ===== NUEVO: Iniciar compra =====
+// ===== NUEVO: Iniciar compra con toast =====
+function iniciarCompra(viviendaId) {
+    console.log('Iniciar compra de vivienda:', viviendaId);
+    
+    // Aquí iría la llamada AJAX real al backend para procesar la compra
+    // Por ahora simulamos éxito:
+    
+    mostrarToast('success', '¡Compra realizada!', 'Se ha enviado tu solicitud de compra al anunciante. Te contactará pronto.');
+    
+    // Si en el futuro quieres hacer la llamada real:
+    /*
+    fetch('/api/compra/' + viviendaId, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]')?.content
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            mostrarToast('success', '¡Compra realizada!', 'Se ha enviado tu solicitud de compra al anunciante.');
+        } else {
+            mostrarToast('error', 'Error', 'No se pudo procesar la compra. Inténtalo de nuevo.');
+        }
+    })
+    .catch(error => {
+        mostrarToast('error', 'Error', 'Error de conexión. Inténtalo más tarde.');
+    });
+    */
+}
+
+// ===== FUNCIÓN TOAST =====
+function mostrarToast(tipo, titulo, mensaje) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    
+    const iconos = {
+        success: 'fa-check',
+        error: 'fa-times',
+        info: 'fa-info'
+    };
+    
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${tipo}`;
+    toast.innerHTML = `
+        <div class="toast-icon">
+            <i class="fas ${iconos[tipo] || iconos.info}"></i>
+        </div>
+        <div class="toast-content">
+            <p class="toast-title">${escapeHtml(titulo)}</p>
+            <p class="toast-message">${escapeHtml(mensaje)}</p>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    container.appendChild(toast);
+    
+    // Auto-eliminar después de 4 segundos
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.remove();
+        }
+    }, 4000);
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}

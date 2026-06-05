@@ -104,3 +104,123 @@ body {
     margin-bottom: 8px;
     color: var(--text-dark);
 }
+
+/* ========== TOAST NOTIFICATIONS ========== */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.toast {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 20px;
+    min-width: 300px;
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    animation: toastSlideIn 0.3s ease, toastFadeOut 0.3s ease 3.7s;
+    pointer-events: auto;
+    border-left: 4px solid #16a34a;
+}
+
+.toast.toast-success {
+    border-left-color: #16a34a;
+}
+
+.toast.toast-error {
+    border-left-color: #dc2626;
+}
+
+.toast.toast-info {
+    border-left-color: #0066ff;
+}
+
+.toast-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+}
+
+.toast-success .toast-icon {
+    background: #e8f5e9;
+    color: #16a34a;
+}
+
+.toast-error .toast-icon {
+    background: #ffebee;
+    color: #dc2626;
+}
+
+.toast-info .toast-icon {
+    background: #e3f2fd;
+    color: #0066ff;
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #1a1a2e;
+    margin: 0 0 4px 0;
+}
+
+.toast-message {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.toast-close:hover {
+    color: #333;
+}
+
+@keyframes toastSlideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes toastFadeOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}

@@ -20,13 +20,14 @@ document.addEventListener('DOMContentLoaded', function() {
             
             var tipoClass = v.tipoOperacion === 'alquiler' ? 'tipo-alquiler' : 'tipo-compra';
             
+            // ===== CORREGIDO: usar v.viviendaId (minúscula d) y /property-detail/ =====
             var popupContent = 
                 '<div class="popup-simple">' +
                     '<h3>' + escapeHtml(v.titulo) + '</h3>' +
                     '<p class="popup-dir"><i class="fas fa-map-marker-alt"></i> ' + escapeHtml(v.direccion) + '</p>' +
                     '<span class="popup-tipo ' + tipoClass + '">' + v.tipoOperacion + '</span>' +
                     '<p class="popup-precio">' + formatearPrecio(v.precio) + ' €</p>' +
-                    '<a href="/anuncio/' + v.viviendaID + '" class="popup-btn">Ver detalles →</a>' +
+                    '<a href="/property-detail/' + v.viviendaId + '" class="popup-btn">Ver detalles →</a>' +
                 '</div>';
             
             marker.bindPopup(popupContent, {
