@@ -46,13 +46,13 @@
         </div>
         
         <div class="property-actions">
-            <!-- Botón Contactar -->
+            <!-- Botón Contactar (siempre visible) -->
             <button class="btn-contact" type="button" th:onclick="|contactarAnunciante(${vivienda.viviendaID})|">
                 <i class="fas fa-envelope"></i> Contactar
             </button>
             
-            <!-- Botón Apuntarse / Desapuntarse (AJAX) -->
-            <div th:if="${username != null}" class="btn-apuntarse-wrapper">
+            <!-- Botón Apuntarse / Desapuntarse (AJAX) - SOLO ALQUILER + CUPO > 1 -->
+            <div th:if="${username != null && vivienda.tipoOperacion != null && vivienda.tipoOperacion.toLowerCase() == 'alquiler' && vivienda.cupoPersonas > 1}" class="btn-apuntarse-wrapper">
                 
                 <!-- PRIORIDAD 1: Ya estoy apuntado → tick verde SIEMPRE (puedo desapuntarme) -->
                 <button type="button"
@@ -91,19 +91,19 @@
                 </button>
             </div>
             
-            <!-- Login para no autenticados -->
-            <a th:if="${username == null}" th:href="@{/login}" class="btn-apuntarse" title="Inicia sesión para apuntarte">
+            <!-- Login para no autenticados - SOLO ALQUILER + CUPO > 1 -->
+            <a th:if="${username == null && vivienda.tipoOperacion != null && vivienda.tipoOperacion.toLowerCase() == 'alquiler' && vivienda.cupoPersonas > 1}" 
+               th:href="@{/login}" class="btn-apuntarse" title="Inicia sesión para apuntarte">
                 <i class="fas fa-sign-in-alt"></i>
             </a>
             
-            <!-- Botón Favorito -->
+            <!-- Botón Favorito (siempre visible) -->
             <button class="btn-favorite" type="button" th:onclick="|toggleFavorito(${vivienda.viviendaID})|" title="Favorito">
                 <i class="far fa-heart"></i>
             </button>
             
-            <!-- ===== BOTÓN CHAT (NUEVO) ===== -->
-            <!-- Solo aparece si estás apuntado a esta vivienda -->
-            <a th:if="${(usuarioApuntado != null) && (usuarioApuntado[vivienda.viviendaID] ?: false)}"
+            <!-- ===== BOTÓN CHAT - SOLO ALQUILER + CUPO > 1 ===== -->
+            <a th:if="${(usuarioApuntado != null) && (usuarioApuntado[vivienda.viviendaID] ?: false) && vivienda.tipoOperacion != null && vivienda.tipoOperacion.toLowerCase() == 'alquiler' && vivienda.cupoPersonas > 1}"
                th:href="@{/chat/{id}(id=${vivienda.viviendaID})}"
                class="btn-chat" title="Abrir chat">
                 <i class="fas fa-comments"></i>
