@@ -44,4 +44,7 @@ public interface ChatService {
     
     // Cerrar chat
     void cerrarChat(Integer chatId);
+    
+    // Asignar vivienda a todos los miembros del chat
+    void asignarViviendaAMiembros(Integer chatId);
 }

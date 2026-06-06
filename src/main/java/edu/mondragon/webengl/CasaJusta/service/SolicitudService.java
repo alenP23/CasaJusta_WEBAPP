@@ -17,4 +17,13 @@ public interface SolicitudService {
     Optional<Solicitud> findByUsuarioAndVivienda(Integer usuarioId, Integer viviendaId);
     
     void deleteById(Integer id);
+
+    List<Solicitud> findByUsuarioIdAndEstado(Integer usuarioId, String estado);
+    
+    // Buscar TODAS las solicitudes completadas (para admin)
+    List<Solicitud> findByEstado(String estado);
+    
+    // Buscar solicitud completada de una vivienda
+    Optional<Solicitud> findFirstByViviendaIdAndEstado(Integer viviendaId, String estado);
+
 }
