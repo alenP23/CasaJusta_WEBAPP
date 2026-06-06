@@ -202,9 +202,12 @@ public class ChatController {
         dtoVoto.setNombreUsuario(usuario.getNombreUsuario());
         messagingTemplate.convertAndSend("/topic/chat/" + chatId, dtoVoto);
 
-        // Si todos votaron sí, cerrar chat
+        // Si todos votaron sí, cerrar chat y ASIGNAR VIVIENDA A TODOS
         if (todosVotaronSi) {
             chatService.cerrarChat(chatId);
+            
+            // ⭐ NUEVO: Asignar vivienda a todos los miembros del chat
+            chatService.asignarViviendaAMiembros(chatId);
 
             ChatMessageDTO dtoCierre = ChatMessageDTO.sistema(chatId, 
                 "¡Todos han aceptado! El piso ha sido asignado.");

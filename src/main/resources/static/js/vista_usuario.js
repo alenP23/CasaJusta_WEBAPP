@@ -103,36 +103,56 @@ function toggleFavorito(viviendaId) {
     }
 }
 
-// ===== NUEVO: Iniciar compra =====
-// ===== NUEVO: Iniciar compra con toast =====
+// ===== COMPRAR VIVIENDA =====
 function iniciarCompra(viviendaId) {
     console.log('Iniciar compra de vivienda:', viviendaId);
     
-    // Aquí iría la llamada AJAX real al backend para procesar la compra
-    // Por ahora simulamos éxito:
-    
-    mostrarToast('success', '¡Compra realizada!', 'Se ha enviado tu solicitud de compra al anunciante. Te contactará pronto.');
-    
-    // Si en el futuro quieres hacer la llamada real:
-    /*
-    fetch('/api/compra/' + viviendaId, {
+    fetch('/api/vivienda/' + viviendaId + '/comprar', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]')?.content
+            'Content-Type': 'application/json'
         }
     })
-    .then(response => {
-        if (response.ok) {
-            mostrarToast('success', '¡Compra realizada!', 'Se ha enviado tu solicitud de compra al anunciante.');
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            mostrarToast('success', '¡Compra realizada!', 'Se ha enviado tu solicitud de compra al anunciante. Te contactará pronto.');
+            // Recargar la página después de 2 segundos para actualizar la lista
+            setTimeout(() => location.reload(), 2000);
         } else {
-            mostrarToast('error', 'Error', 'No se pudo procesar la compra. Inténtalo de nuevo.');
+            mostrarToast('error', 'Error', data.message || 'No se pudo procesar la compra');
         }
     })
     .catch(error => {
+        console.error('Error:', error);
         mostrarToast('error', 'Error', 'Error de conexión. Inténtalo más tarde.');
     });
-    */
+}
+
+// ===== ALQUILAR VIVIENDA =====
+function iniciarAlquiler(viviendaId) {
+    console.log('Iniciar alquiler de vivienda:', viviendaId);
+    
+    fetch('/api/vivienda/' + viviendaId + '/alquilar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            mostrarToast('success', '¡Alquiler realizado!', 'Se ha enviado tu solicitud de alquiler al anunciante. Te contactará pronto.');
+            // Recargar la página después de 2 segundos
+            setTimeout(() => location.reload(), 2000);
+        } else {
+            mostrarToast('error', 'Error', data.message || 'No se pudo procesar el alquiler');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        mostrarToast('error', 'Error', 'Error de conexión. Inténtalo más tarde.');
+    });
 }
 
 // ===== FUNCIÓN TOAST =====

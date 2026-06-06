@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-usuario}">
+<head>
+    <title>Mis Propiedades</title>
+</head>
+<body>
+
+    <div layout:fragment="content">
+        
+        <!-- Header de sección -->
+        <div class="section-header">
+            <h1 class="section-title">Mis Propiedades</h1>
+        </div>
+
+        <!-- Grid de propiedades -->
+        <div class="properties-grid" id="propertiesGrid">
+            
+            <!-- Sin resultados -->
+            <div th:if="${#lists.isEmpty(viviendas)}" class="no-results">
+                <i class="fas fa-home"></i>
+                <p>No tienes propiedades compradas o alquiladas.</p>
+                <a th:href="@{/vista_casas_usuario}" class="btn-limpiar">Ver anuncios disponibles</a>
+            </div>
+
+            <!-- Tarjetas de vivienda -->
+            <div th:each="vivienda : ${viviendas}" 
+                 th:insert="~{fragmentos/tarjeta/tarjeta-usuario :: tarjeta-usuario(${vivienda})}">
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin}">
+<head>
+    <title>Viviendas Vendidas/Alquiladas</title>
+</head>
+<body>
+
+    <header layout:fragment="top-header" class="top-header">
+        <div class="header-filters">
+            <h1 class="page-title">Viviendas Vendidas/Alquiladas</h1>
+        </div>
+        <div class="header-actions">
+            <div class="user-avatar">
+                <i class="fas fa-user-circle"></i>
+                <span th:if="${username != null}" th:text="${username}">Admin</span>
+            </div>
+        </div>
+    </header>
+
+    <div layout:fragment="content">
+        
+        <div class="properties-grid" id="adminPropertiesGrid">
+            
+            <div th:if="${#lists.isEmpty(viviendas)}" class="no-results">
+                <p>No hay viviendas vendidas o alquiladas.</p>
+            </div>
+
+            <th:block th:each="vivienda : ${viviendas}">
+                <div th:replace="~{fragmentos/tarjeta/tarjeta-anuncio :: tarjeta-admin(vivienda=${vivienda})}"></div>
+            </th:block>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -12,6 +12,7 @@ import edu.mondragon.webengl.CasaJusta.repository.ImagenStorageService;
 import edu.mondragon.webengl.CasaJusta.repository.MensajeRepository;
 import edu.mondragon.webengl.CasaJusta.repository.PerteneceRepository;
 import edu.mondragon.webengl.CasaJusta.repository.SolicitudRepository;
+import edu.mondragon.webengl.CasaJusta.service.SolicitudService;
 import edu.mondragon.webengl.CasaJusta.service.UsuarioService;
 import edu.mondragon.webengl.CasaJusta.service.ViviendaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -63,6 +65,9 @@ public class AdminController {
 
     @Autowired
     private MensajeRepository mensajeRepository;
+
+    @Autowired
+    private SolicitudService solicitudService;
     // =======================================================
   // ========== CONSTANTES DE REGRESIÓN LINEAL ==========
     // Precio compra: precio = -29276.88 + 2825.89 * metros
@@ -131,8 +136,12 @@ public class AdminController {
         } else {
             model.addAttribute("esAdmin", false);
         }
-
-        List<Vivienda> viviendas = viviendaService.findAll();
+    
+        // ===== SOLO VIVIENDAS LIBRES (estado = false o null) =====
+        List<Vivienda> viviendas = viviendaService.findAll().stream()
+            .filter(v -> v.getEstado() == null || !v.getEstado())
+            .collect(Collectors.toList());
+    
         model.addAttribute("viviendas", viviendas);
         
         // ===== MAPA: viviendaID -> url de foto portada =====
@@ -143,8 +152,8 @@ public class AdminController {
             foto.ifPresent(f -> fotosPortada.put(v.getViviendaID(), f.getUrlImagen()));
         }
         model.addAttribute("fotosPortada", fotosPortada);
-        // ===================================================
-      return "vista_casas_admin";
+
+        return "vista_casas_admin";
     }
        
     // ========== USUARIOS ==========
@@ -410,5 +419,49 @@ public class AdminController {
         }
         
         return "redirect:/admin/anuncio/" + id;
+    }
+
+    // ===== VISTA: VIVIENDAS VENDIDAS/ALQUILADAS (ADMIN) =====
+    @GetMapping("/vendidas")
+    public String viviendasVendidas(Authentication authentication, Model model) {
+        if (authentication != null) {
+            model.addAttribute("username", authentication.getName());
+            model.addAttribute("esAdmin", esAdmin(authentication));
+        } else {
+            model.addAttribute("esAdmin", false);
+        }
+    
+        // Buscar TODAS las solicitudes completadas
+        List<Solicitud> solicitudesCompletadas = solicitudService.findByEstado("completada");
+    
+        // Extraer las viviendas (distinct para no repetir)
+        List<Vivienda> viviendasVendidas = solicitudesCompletadas.stream()
+            .map(Solicitud::getVivienda)
+            .distinct()
+            .collect(Collectors.toList());
+    
+        model.addAttribute("viviendas", viviendasVendidas);
+    
+        // ===== MAPA: viviendaID -> nombre de usuario que la compró/alquiló =====
+        Map<Integer, String> compradorPorVivienda = new HashMap<>();
+        for (Vivienda v : viviendasVendidas) {
+            solicitudService.findFirstByViviendaIdAndEstado(v.getViviendaID(), "completada")
+                .ifPresent(solicitud -> {
+                    String nombreUsuario = solicitud.getUsuario().getNombreUsuario();
+                    compradorPorVivienda.put(v.getViviendaID(), nombreUsuario);
+                });
+        }
+        model.addAttribute("compradorPorVivienda", compradorPorVivienda);
+    
+        // Fotos portada
+        Map<Integer, String> fotosPortada = new HashMap<>();
+        for (Vivienda v : viviendasVendidas) {
+            Optional<FotoVivienda> foto = fotoViviendaRepository
+                .findByVivienda_ViviendaIDAndEsPortadaTrue(v.getViviendaID());
+            foto.ifPresent(f -> fotosPortada.put(v.getViviendaID(), f.getUrlImagen()));
+        }
+        model.addAttribute("fotosPortada", fotosPortada);
+    
+        return "admin/viviendas_vendidas";
     }
 }

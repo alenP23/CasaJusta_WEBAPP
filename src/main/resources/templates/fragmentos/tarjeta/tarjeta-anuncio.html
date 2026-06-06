@@ -4,6 +4,7 @@
 
     <!-- FRAGMENTO ADMIN -->
     <div th:fragment="tarjeta-admin(vivienda)" class="admin-property-card" 
+         th:classappend="${vivienda.estado != null && vivienda.estado} ? (${vivienda.tipoOperacion == 'compra'} ? ' vendida' : ' alquilada') : ''"
          th:onclick="|window.location.href='@{/admin/anuncio/}' + ${vivienda.viviendaID}|"
          th:data-id="${vivienda.viviendaID}" 
          th:data-tipo="${vivienda.tipoOperacion}"
@@ -30,6 +31,12 @@
                 <div class="add-image-icon">
                     <i class="fas fa-plus"></i>
                 </div>
+            </div>
+            
+            <!-- BADGE VENDIDO/ALQUILADO -->
+            <div th:if="${vivienda.estado != null && vivienda.estado}" 
+                 th:class="${vivienda.tipoOperacion == 'compra'} ? 'badge-vendido' : 'badge-alquilado'"
+                 th:text="${vivienda.tipoOperacion == 'compra'} ? 'VENDIDO' : 'ALQUILADO'">
             </div>
             
             <span class="property-badge" 
@@ -72,6 +79,18 @@
                     <span th:text="${vivienda.pareja} ? 'Pareja' : 'No pareja'">No pareja</span>
                 </span>
             </div>
+        </div>
+
+        <!-- LABEL DE COMPRADOR/ARRENDATARIO -->
+        <div th:if="${vivienda.estado != null && vivienda.estado && compradorPorVivienda != null && compradorPorVivienda[vivienda.viviendaID] != null}"
+             class="property-assignee"
+             onclick="event.stopPropagation();">
+            <i class="fas fa-user-check"></i>
+            <span th:text="${vivienda.tipoOperacion == 'compra'} 
+                ? 'Comprado por ' + ${compradorPorVivienda[vivienda.viviendaID]} 
+                : 'Alquilado por ' + ${compradorPorVivienda[vivienda.viviendaID]}">
+                Asignado a Usuario
+            </span>
         </div>
     </div>
 

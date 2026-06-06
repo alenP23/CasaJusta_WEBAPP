@@ -303,3 +303,80 @@
     border: none;
     cursor: pointer;
 }
+
+/* ===== BOTÓN COMPRAR ===== */
+.btn-comprar {
+    flex: 1;
+    padding: 10px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-comprar:hover {
+    background: #219a52;
+}
+
+/* ===== BOTÓN ALQUILAR ===== */
+.btn-alquilar {
+    flex: 1;
+    padding: 10px;
+    background: #9b59b6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-alquilar:hover {
+    background: #8e44ad;
+}
+
+/* ===== LAYOUT: Cuando NO hay apuntarse (compra o alquiler cupo=1) ===== */
+.property-actions-no-apuntarse {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 8px;
+}
+
+.property-actions-no-apuntarse .btn-contact {
+    grid-column: 1;
+}
+
+.property-actions-no-apuntarse .btn-comprar,
+.property-actions-no-apuntarse .btn-alquilar {
+    grid-column: 2;
+}
+
+.property-actions-no-apuntarse .btn-favorite {
+    grid-column: 1 / -1; /* Ocupa toda la fila de abajo */
+    width: 100%;
+    border-radius: 8px;
+    margin-top: 4px;
+}
+
+/* Enlace de la tarjeta */
+.card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    flex: 1;
+}
+
+.card-link:hover {
+    text-decoration: none;
+}

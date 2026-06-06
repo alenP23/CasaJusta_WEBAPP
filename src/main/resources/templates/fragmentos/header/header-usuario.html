@@ -15,15 +15,16 @@
                 <!-- Botones a la izquierda -->
                 <div class="nav-links">
                     <a th:href="@{/vista_casas_usuario}" class="navbar-btn">Inicio</a>
+                    <a th:href="@{/mis-propiedades}" class="navbar-btn">Mis Propiedades</a>
                     <a href="#" class="navbar-btn">Notificaciones</a>
                     <a th:href="@{/mapa}" class="navbar-btn">Mapa</a>
                 </div>
                 
                 <!-- Usuario a la derecha -->
-                <div class="user-icon" th:if="${username != null}">
+                <a th:href="@{/usuario/configuracion}" class="user-icon" th:if="${username != null}">
                     <i class="fas fa-user-circle"></i>
                     <span th:text="${username}">Usuario</span>
-                </div>
+                </a>
             </div>
         </nav>
     </div>

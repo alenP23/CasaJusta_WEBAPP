@@ -163,7 +163,7 @@ public class VistaPisosController {
                                       RedirectAttributes redirectAttrs) {
         
         if (authentication == null || !authentication.isAuthenticated()) {
-            redirectAttrs.addFlashAttribute("error", "Debes iniciar sesión para apuntarte");
+            redirectAttrs.addFlashAttribute("error", "Debes sesión para apuntarte");
             return "redirect:/login";
         }
 
@@ -346,5 +346,135 @@ public class VistaPisosController {
         model.addAttribute("fotoPortada", fotoPortada.orElse(null));
         
         return "property-detail";
+    }
+
+     // ===== COMPRAR VIVIENDA =====
+    @PostMapping("/api/vivienda/{id}/comprar")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> comprarVivienda(@PathVariable Integer id,
+                                                                Authentication authentication) {
+        Map<String, Object> response = new HashMap<>();
+        
+        if (authentication == null || !authentication.isAuthenticated()) {
+            response.put("success", false);
+            response.put("message", "Debes iniciar sesión");
+            return ResponseEntity.status(401).body(response);
+        }
+
+        String username = authentication.getName();
+        Usuario usuario = usuarioService.findByNombreUsuario(username);
+        Vivienda vivienda = viviendaService.findById(id);
+
+        if (usuario == null || vivienda == null) {
+            response.put("success", false);
+            response.put("message", "Error al procesar");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        if (vivienda.getEstado() != null && vivienda.getEstado()) {
+            response.put("success", false);
+            response.put("message", "Esta vivienda ya no está disponible");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // Marcar vivienda como vendida
+        vivienda.setEstado(true);
+        viviendaService.save(vivienda);
+
+        // Crear solicitud completada
+        Solicitud solicitud = new Solicitud();
+        solicitud.setUsuario(usuario);
+        solicitud.setVivienda(vivienda);
+        solicitud.setEstado("completada");
+        solicitudService.save(solicitud);
+
+        response.put("success", true);
+        response.put("message", "¡Compra realizada!");
+        return ResponseEntity.ok(response);
+    }
+
+    // ===== ALQUILAR VIVIENDA (cupo = 1) =====
+    @PostMapping("/api/vivienda/{id}/alquilar")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> alquilarVivienda(@PathVariable Integer id,
+                                                                 Authentication authentication) {
+        Map<String, Object> response = new HashMap<>();
+        
+        if (authentication == null || !authentication.isAuthenticated()) {
+            response.put("success", false);
+            response.put("message", "Debes iniciar sesión");
+            return ResponseEntity.status(401).body(response);
+        }
+
+        String username = authentication.getName();
+        Usuario usuario = usuarioService.findByNombreUsuario(username);
+        Vivienda vivienda = viviendaService.findById(id);
+
+        if (usuario == null || vivienda == null) {
+            response.put("success", false);
+            response.put("message", "Error al procesar");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        if (vivienda.getEstado() != null && vivienda.getEstado()) {
+            response.put("success", false);
+            response.put("message", "Esta vivienda ya no está disponible");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // Marcar vivienda como alquilada
+        vivienda.setEstado(true);
+        viviendaService.save(vivienda);
+
+        // Crear solicitud completada
+        Solicitud solicitud = new Solicitud();
+        solicitud.setUsuario(usuario);
+        solicitud.setVivienda(vivienda);
+        solicitud.setEstado("completada");
+        solicitudService.save(solicitud);
+
+        response.put("success", true);
+        response.put("message", "¡Alquiler realizado!");
+        return ResponseEntity.ok(response);
+    }
+
+    // ===== VISTA: MIS PROPIEDADES (USUARIO) =====
+    @GetMapping("/mis-propiedades")
+    public String misPropiedades(Authentication authentication, Model model) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+
+        String username = authentication.getName();
+        Usuario usuario = usuarioService.findByNombreUsuario(username);
+        
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("username", username);
+        model.addAttribute("usuario", usuario);
+
+        // Buscar solicitudes completadas del usuario
+        List<Solicitud> solicitudesCompletadas = solicitudService.findByUsuarioIdAndEstado(
+            usuario.getUsuarioId(), "completada");
+
+        // Extraer las viviendas
+        List<Vivienda> misViviendas = solicitudesCompletadas.stream()
+            .map(Solicitud::getVivienda)
+            .collect(Collectors.toList());
+
+        model.addAttribute("viviendas", misViviendas);
+
+        // Fotos portada
+        Map<Integer, String> fotosPortada = new HashMap<>();
+        for (Vivienda v : misViviendas) {
+            Optional<FotoVivienda> foto = fotoViviendaRepository
+                .findByVivienda_ViviendaIDAndEsPortadaTrue(v.getViviendaID());
+            foto.ifPresent(f -> fotosPortada.put(v.getViviendaID(), f.getUrlImagen()));
+        }
+        model.addAttribute("fotosPortada", fotosPortada);
+
+        return "mis_propiedades";
     }
 }

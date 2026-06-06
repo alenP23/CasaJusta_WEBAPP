@@ -3,11 +3,13 @@ package edu.mondragon.webengl.CasaJusta.service;
 import edu.mondragon.webengl.CasaJusta.model.ChatGrupal;
 import edu.mondragon.webengl.CasaJusta.model.Mensaje;
 import edu.mondragon.webengl.CasaJusta.model.Pertenece;
+import edu.mondragon.webengl.CasaJusta.model.Solicitud;
 import edu.mondragon.webengl.CasaJusta.model.Usuario;
 import edu.mondragon.webengl.CasaJusta.model.Vivienda;
 import edu.mondragon.webengl.CasaJusta.repository.ChatGrupalRepository;
 import edu.mondragon.webengl.CasaJusta.repository.MensajeRepository;
 import edu.mondragon.webengl.CasaJusta.repository.PerteneceRepository;
+import edu.mondragon.webengl.CasaJusta.repository.SolicitudRepository;
 import edu.mondragon.webengl.CasaJusta.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,9 @@ public class ChatServiceImpl implements ChatService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private SolicitudRepository solicitudRepository;
 
     @Autowired
     private ViviendaService viviendaService;
@@ -141,5 +146,40 @@ public class ChatServiceImpl implements ChatService {
             .orElseThrow(() -> new IllegalArgumentException("Chat no encontrado"));
         chat.setEstado(true);
         chatGrupalRepository.save(chat);
+    }
+
+    // ⭐ NUEVO: Asignar vivienda a todos los miembros del chat
+    @Override
+    public void asignarViviendaAMiembros(Integer chatId) {
+        ChatGrupal chat = chatGrupalRepository.findById(chatId)
+            .orElseThrow(() -> new IllegalArgumentException("Chat no encontrado"));
+        
+        Vivienda vivienda = chat.getVivienda();
+        
+        // 1. Marcar vivienda como asignada (estado = true)
+        vivienda.setEstado(true);
+        viviendaService.save(vivienda);
+        
+        // 2. Obtener todos los miembros del chat
+        List<Pertenece> miembros = perteneceRepository.findByChat_ChatId(chatId);
+        
+        // 3. Crear solicitud "completada" para cada miembro que no la tenga ya
+        for (Pertenece pertenece : miembros) {
+            Usuario usuario = pertenece.getUsuario();
+            
+            // Verificar si ya tiene una solicitud completada para esta vivienda
+            boolean yaTieneSolicitud = solicitudRepository
+                .findByUsuario_UsuarioIdAndVivienda_ViviendaIDAndEstado(
+                    usuario.getUsuarioId(), vivienda.getViviendaID(), "completada")
+                .isPresent();
+            
+            if (!yaTieneSolicitud) {
+                Solicitud solicitud = new Solicitud();
+                solicitud.setUsuario(usuario);
+                solicitud.setVivienda(vivienda);
+                solicitud.setEstado("completada");
+                solicitudRepository.save(solicitud);
+            }
+        }
     }
 }

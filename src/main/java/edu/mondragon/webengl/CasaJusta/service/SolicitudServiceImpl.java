@@ -98,6 +98,21 @@ public class SolicitudServiceImpl implements SolicitudService {
     /**
      * Notifica a todos los clientes conectados del cambio en el contador
      */
+    @Override
+    public List<Solicitud> findByUsuarioIdAndEstado(Integer usuarioId, String estado) {
+        return solicitudRepository.findByUsuario_UsuarioIdAndEstado(usuarioId, estado);
+    }
+
+    @Override
+    public List<Solicitud> findByEstado(String estado) {
+        return solicitudRepository.findByEstado(estado);
+    }
+
+    @Override
+    public Optional<Solicitud> findFirstByViviendaIdAndEstado(Integer viviendaId, String estado) {
+        return solicitudRepository.findFirstByVivienda_ViviendaIDAndEstado(viviendaId, estado);
+    }
+
     private void notificarCambio(Integer viviendaId) {
         long inscritos = countByViviendaId(viviendaId);
         
