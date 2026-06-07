@@ -15,10 +15,14 @@ import edu.mondragon.webengl.CasaJusta.repository.SolicitudRepository;
 import edu.mondragon.webengl.CasaJusta.service.SolicitudService;
 import edu.mondragon.webengl.CasaJusta.service.UsuarioService;
 import edu.mondragon.webengl.CasaJusta.service.ViviendaService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -334,42 +338,72 @@ public class AdminController {
     }
 
     @PostMapping("/configuracion/actualizar")
-    public String actualizarPerfil(@ModelAttribute Usuario usuarioActualizado, 
-                                   @RequestParam(required = false) String contrasena,
-                                   Authentication authentication,
-                                   RedirectAttributes redirectAttributes) {
+public String actualizarPerfil(@ModelAttribute Usuario usuarioActualizado, 
+                               @RequestParam(required = false) String contrasena,
+                               Authentication authentication,
+                               HttpServletRequest request,
+                               RedirectAttributes redirectAttributes) {
 
-        if (usuarioActualizado.getUsuarioId() == null) {
-            redirectAttributes.addFlashAttribute("error", "ID de usuario no válido");
-            return "redirect:/admin/configuracion";
-        }
-
-        Usuario usuarioExistente = usuarioService.findById(usuarioActualizado.getUsuarioId());
-
-        if (usuarioExistente == null) {
-            redirectAttributes.addFlashAttribute("error", "Usuario no encontrado");
-            return "redirect:/admin/configuracion";
-        }
-
-        usuarioExistente.setNombre(usuarioActualizado.getNombre());
-        usuarioExistente.setApellido(usuarioActualizado.getApellido());
-        usuarioExistente.setDni(usuarioActualizado.getDni());
-        usuarioExistente.setNombreUsuario(usuarioActualizado.getNombreUsuario());
-        usuarioExistente.setEmail(usuarioActualizado.getEmail());
-        usuarioExistente.setGenero(usuarioActualizado.getGenero());
-        usuarioExistente.setFechaNacimiento(usuarioActualizado.getFechaNacimiento());
-
-        if (contrasena != null && !contrasena.trim().isEmpty()) {
-            String contrasenaEncriptada = passwordEncoder.encode(contrasena);
-            usuarioExistente.setContrasena(contrasenaEncriptada);
-        }
-
-        usuarioService.save(usuarioExistente);
-        redirectAttributes.addFlashAttribute("success", "Perfil actualizado correctamente");
-
+    if (usuarioActualizado.getUsuarioId() == null) {
+        redirectAttributes.addFlashAttribute("error", "ID de usuario no válido");
         return "redirect:/admin/configuracion";
     }
 
+    Usuario usuarioExistente = usuarioService.findById(usuarioActualizado.getUsuarioId());
+
+    if (usuarioExistente == null) {
+        redirectAttributes.addFlashAttribute("error", "Usuario no encontrado");
+        return "redirect:/admin/configuracion";
+    }
+
+    // Guardar nombre anterior para comparar
+    String nombreUsuarioAnterior = usuarioExistente.getNombreUsuario();
+    String nuevoNombreUsuario = usuarioActualizado.getNombreUsuario();
+
+    // ===== VALIDACIÓN: Nombre de usuario único =====
+    if (nuevoNombreUsuario != null && !nuevoNombreUsuario.equals(nombreUsuarioAnterior)) {
+        Usuario usuarioConMismoNombre = usuarioService.findByNombreUsuario(nuevoNombreUsuario);
+        if (usuarioConMismoNombre != null && !usuarioConMismoNombre.getUsuarioId().equals(usuarioExistente.getUsuarioId())) {
+            redirectAttributes.addFlashAttribute("error", "El nombre de usuario '" + nuevoNombreUsuario + "' ya está en uso");
+            return "redirect:/admin/configuracion";
+        }
+    }
+
+    // Actualizar datos (SIN TOCAR EL DNI)
+    usuarioExistente.setNombre(usuarioActualizado.getNombre());
+    usuarioExistente.setApellido(usuarioActualizado.getApellido());
+    usuarioExistente.setNombreUsuario(nuevoNombreUsuario);
+    usuarioExistente.setEmail(usuarioActualizado.getEmail());
+    usuarioExistente.setGenero(usuarioActualizado.getGenero());
+    usuarioExistente.setFechaNacimiento(usuarioActualizado.getFechaNacimiento());
+
+    if (contrasena != null && !contrasena.trim().isEmpty()) {
+        String contrasenaEncriptada = passwordEncoder.encode(contrasena);
+        usuarioExistente.setContrasena(contrasenaEncriptada);
+    }
+
+    usuarioService.save(usuarioExistente);
+
+    // ===== ACTUALIZAR SESIÓN DE SPRING SECURITY =====
+    if (!nuevoNombreUsuario.equals(nombreUsuarioAnterior)) {
+        UsernamePasswordAuthenticationToken nuevaAuth = new UsernamePasswordAuthenticationToken(
+            nuevoNombreUsuario,
+            usuarioExistente.getContrasena(),
+            authentication.getAuthorities()
+        );
+        nuevaAuth.setDetails(authentication.getDetails());
+        SecurityContextHolder.getContext().setAuthentication(nuevaAuth);
+
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+        }
+    }
+
+    redirectAttributes.addFlashAttribute("success", "Perfil actualizado correctamente");
+    return "redirect:/admin/configuracion";
+    }
+    
     @GetMapping("/anuncio/{id}")
     public String verDetalleAnuncio(@PathVariable Integer id, 
                                      Authentication authentication, 
