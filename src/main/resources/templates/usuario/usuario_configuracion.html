@@ -1,23 +1,11 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/layout-admin}">
+      layout:decorate="~{layouts/layout-usuario}">
 <head>
     <title>Mi Perfil</title>
 </head>
 <body>
-
-    <header layout:fragment="top-header" class="top-header">
-        <div class="header-filters">
-            <h1 class="page-title">Mi usuario</h1>
-        </div>
-        <div class="header-actions">
-            <div class="user-avatar-mini">
-                <i class="fas fa-user-circle"></i>
-                <span th:if="${username != null}" th:text="${username}">Admin</span>
-            </div>
-        </div>
-    </header>
 
     <div layout:fragment="content">
         
@@ -32,7 +20,7 @@
                     <i class="fas fa-user"></i>
                 </div>
                 <h2 class="perfil-nombre" th:text="${usuario != null} ? ${usuario.nombre + ' ' + usuario.apellido} : 'Usuario'">Usuario</h2>
-                <p class="perfil-rol" th:text="${usuario != null} ? ${usuario.rol} : 'ADMIN'">ADMIN</p>
+                <p class="perfil-rol" th:text="${usuario != null} ? ${usuario.rol} : 'USER'">USER</p>
                 <button type="button" class="btn-editar-perfil" id="btnEditarPerfil" onclick="toggleEdicion()">
                     <i class="fas fa-pen"></i> Editar perfil
                 </button>
@@ -105,7 +93,7 @@
 
                 <!-- MODO EDICIÓN -->
                 <form id="modoEdicion" class="perfil-form" style="display: none;" 
-                      th:action="@{/admin/configuracion/actualizar}" method="post">
+                      th:action="@{/usuario/configuracion/actualizar}" method="post">
                     
                     <input type="hidden" name="usuarioId" th:value="${usuario != null} ? ${usuario.usuarioId} : ''">
                     
@@ -120,7 +108,6 @@
                             <input type="text" name="apellido" th:value="${usuario != null} ? ${usuario.apellido} : ''" required>
                         </div>
 
-                        <!-- DNI: SOLO LECTURA, NO EDITABLE -->
                         <div class="perfil-campo-edit">
                             <label><i class="fas fa-id-card"></i> DNI</label>
                             <input type="text" th:value="${usuario != null} ? ${usuario.dni} : ''" disabled readonly style="background-color: #e9ecef; cursor: not-allowed;">

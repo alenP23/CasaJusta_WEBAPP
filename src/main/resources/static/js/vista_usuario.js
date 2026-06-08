@@ -197,3 +197,25 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+// ============================================
+// TOGGLE EDICIÓN PERFIL (usuario_configuracion.html)
+// ============================================
+
+function toggleEdicion() {
+    const modoLectura = document.getElementById('modoLectura');
+    const modoEdicion = document.getElementById('modoEdicion');
+    const btnEditar = document.getElementById('btnEditarPerfil');
+    
+    if (!modoLectura || !modoEdicion || !btnEditar) return; // Si no estamos en la página de perfil, no hacer nada
+    
+    if (modoEdicion.style.display === 'none' || modoEdicion.style.display === '') {
+        modoLectura.style.display = 'none';
+        modoEdicion.style.display = 'block';
+        btnEditar.innerHTML = '<i class="fas fa-times"></i> Cancelar edición';
+    } else {
+        modoLectura.style.display = 'grid';
+        modoEdicion.style.display = 'none';
+        btnEditar.innerHTML = '<i class="fas fa-pen"></i> Editar perfil';
+    }
+}
