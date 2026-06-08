@@ -72,6 +72,11 @@
                             <div th:if="${param.logout}" class="alert alert-success mt-3 text-center">
                                 Has cerrado sesión correctamente.
                             </div>
+
+                            <div th:if="${param.registro != null and param.registro[0] == 'exitoso'}" 
+                                class="alert alert-success mt-3 text-center">
+                                ¡Registro exitoso! Ahora puedes iniciar sesión.
+                            </div>
                             <div class="text-center mt-3">
                                 <a th:href="@{/registro}" class="text-decoration-none">¿No tienes cuenta? Regístrate</a>
                             </div>
