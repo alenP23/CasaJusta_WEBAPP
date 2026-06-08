@@ -71,10 +71,10 @@
                 </div>
 
                 <div class="prices-section">
-                    <h3 class="prices-title">Precio</h3>
+                    <h2 class="prices-title">Precio</h2>
                     <div class="prices-grid">
                         <div class="price-box">
-                            <span class="price-label" th:text="${vivienda.tipoOperacion}">Alquiler</span>
+                            <span class="price-label">Atras</span>
                             <span class="price-value" 
                                   th:text="${#numbers.formatDecimal(vivienda.precio, 0, 'POINT', 0, 'COMMA')} + ' €'">1.200 €</span>
                         </div>
@@ -82,7 +82,7 @@
                 </div>
 
                 <div class="features-section">
-                    <h3 class="section-label">Características</h3>
+                    <h2 class="section-label">Características</h2>
                     <div class="features-grid">
                         <div class="feature-item" th:if="${vivienda.habitaciones != null}">
                             <div class="feature-icon"><i class="fas fa-bed"></i></div>

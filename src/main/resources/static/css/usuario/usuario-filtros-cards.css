@@ -77,3 +77,7 @@
 .tipo-card.selected .tipo-text {
     color: #0066ff;
 }
+
+.tipo-icon, .convivencia-info {
+    display: block;
+}

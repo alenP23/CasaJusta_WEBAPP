@@ -13,7 +13,7 @@
         <!-- Sidebar -->
         <aside class="filters-sidebar" id="filtersSidebar" aria-hidden="true">
             <div class="filters-header">
-                <h3>Filtros</h3>
+                <h2>Filtros</h2>
                 <button class="close-filters" id="closeFilters" type="button">
                     <i class="fas fa-times"></i>
                 </button>
@@ -30,21 +30,21 @@
                             <input type="radio" name="tipoOperacion" value="todos" 
                                    th:checked="${tipoOperacionSeleccionado == 'todos'}">
                             <span class="radio-indicator"></span>
-                            <div class="tipo-icon"><i class="fas fa-globe"></i></div>
+                            <span class="tipo-icon"><i class="fas fa-globe"></i></span>
                             <span class="tipo-text">Todos</span>
                         </label>
                         <label class="tipo-card" th:classappend="${tipoOperacionSeleccionado == 'alquiler'} ? 'selected'">
                             <input type="radio" name="tipoOperacion" value="alquiler"
                                    th:checked="${tipoOperacionSeleccionado == 'alquiler'}">
                             <span class="radio-indicator"></span>
-                            <div class="tipo-icon"><i class="fas fa-key"></i></div>
+                            <span class="tipo-icon"><i class="fas fa-key"></i></span>
                             <span class="tipo-text">Alquiler</span>
                         </label>
                         <label class="tipo-card" th:classappend="${tipoOperacionSeleccionado == 'compra'} ? 'selected'">
                             <input type="radio" name="tipoOperacion" value="compra"
                                    th:checked="${tipoOperacionSeleccionado == 'compra'}">
                             <span class="radio-indicator"></span>
-                            <div class="tipo-icon"><i class="fas fa-home"></i></div>
+                            <span class="tipo-icon"><i class="fas fa-home"></i></span>
                             <span class="tipo-text">Compra</span>
                         </label>
                     </div>
@@ -77,26 +77,26 @@
                     <label class="filter-label">Convivencia</label>
                     <div class="convivencia-list">
                         <label class="convivencia-item">
-                            <div class="convivencia-info">
+                            <span class="convivencia-info">
                                 <i class="fas fa-paw"></i>
                                 <span>Mascotas permitidas</span>
-                            </div>
+                            </span>
                             <input type="checkbox" name="filtroMascotas" value="true"
                                    th:checked="${filtroMascotasActivo}">
                         </label>
                         <label class="convivencia-item">
-                            <div class="convivencia-info">
+                            <span class="convivencia-info">
                                 <i class="fas fa-smoking"></i>
                                 <span>Fumador/a</span>
-                            </div>
+                            </span>
                             <input type="checkbox" name="filtroFumador" value="true"
                                    th:checked="${filtroFumadorActivo}">
                         </label>
                         <label class="convivencia-item">
-                            <div class="convivencia-info">
+                            <span class="convivencia-info">
                                 <i class="fas fa-heart"></i>
                                 <span>Pareja</span>
-                            </div>
+                            </span>
                             <input type="checkbox" name="filtroPareja" value="true"
                                    th:checked="${filtroParejaActivo}">
                         </label>

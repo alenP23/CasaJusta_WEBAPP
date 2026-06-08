@@ -9,7 +9,9 @@
         <!-- ENLACE A DETALLE: solo imagen + info -->
         <a th:href="@{/property-detail/{id}(id=${vivienda.viviendaID})}" class="card-link">
             <div class="property-image">
-                <img th:src="@{${fotosPortada[vivienda.viviendaID]}}">
+                <img th:if="${fotosPortada != null && fotosPortada[vivienda.viviendaID] != null}" 
+                    th:src="@{${fotosPortada[vivienda.viviendaID]}}" 
+                    th:alt="${vivienda.titulo}">
                 <span class="property-badge" 
                       th:classappend="${vivienda.tipoOperacion == 'alquiler'} ? 'badge-alquiler' : 'badge-compra'" 
                       th:text="${vivienda.tipoOperacion}">Alquiler</span>
