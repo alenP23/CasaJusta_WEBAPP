@@ -56,7 +56,7 @@
         </div>
         
         <div class="property-details">
-            <h3 th:text="${vivienda.titulo}">villa playa</h3>
+            <h2 th:text="${vivienda.titulo}">villa playa</h2>
             <div class="property-meta">
                 <span class="property-type" th:text="${vivienda.tipoOperacion}">alquiler</span>
                 <span class="property-price" th:text="${#numbers.formatDecimal(vivienda.precio, 0, 'POINT', 0, 'COMMA')} + ' €'">100.000 €</span>

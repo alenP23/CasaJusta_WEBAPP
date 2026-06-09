@@ -50,12 +50,24 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;        /* CRÍTICO: nunca exceder el ancho del padre */
+    box-sizing: border-box; /* CRÍTICO: padding y border incluidos en el ancho */
+    overflow: hidden;       /* CRÍTICO: evitar desbordamiento */
 }
 
 .section-title {
     font-size: 20px;
     font-weight: 600;
     color: var(--text-dark);
+    margin: 0;
+    flex: 1;
+    min-width: 0;           /* CRÍTICO: permite truncado */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: calc(100% - 48px); /* CRÍTICO: reservar espacio para el botón (36px + 12px gap) */
 }
 
 .filter-btn {
@@ -71,6 +83,9 @@ body {
     justify-content: center;
     transition: all 0.2s;
     box-shadow: var(--shadow);
+    flex-shrink: 0;
+    flex-grow: 0;           /* CRÍTICO: no crecer */
+    flex-basis: 36px;       /* CRÍTICO: tamaño fijo */
 }
 
 .filter-btn:hover {
