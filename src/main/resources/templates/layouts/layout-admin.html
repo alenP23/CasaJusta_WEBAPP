@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title layout:title-pattern="$CONTENT_TITLE - CasaJusta Admin">Panel Admin</title>
     
-    <!-- CSS base admin -->
     <link rel="stylesheet" th:href="@{/css/admin/admin-base.css}">
     <link rel="stylesheet" th:href="@{/css/admin/admin-sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/admin/admin-header.css}">
@@ -16,40 +15,30 @@
     <link rel="stylesheet" th:href="@{/css/admin/admin-filtros.css}">
     <link rel="stylesheet" th:href="@{/css/admin/admin-configuracion.css}">
     
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <th:block layout:fragment="head-extra"></th:block>
 </head>
 <body>
 
-    <!-- SIDEBAR (siempre presente) -->
     <div th:replace="~{fragmentos/navbar/sidebar-admin :: sidebar-admin}"></div>
 
-    <!-- MAIN CONTENT -->
     <main class="main-content">
         
-        <!-- HEADER: zona COMPLETAMENTE reemplazable por cada página -->
+        <!-- HEADER: reemplazable por cada página, pero con fragmento por defecto -->
         <header class="top-header" layout:fragment="top-header">
-            <!-- Estructura por defecto (se usa si la página no la sobrescribe) -->
             <div class="header-filters">
                 <h1 class="page-title">Panel de Administración</h1>
             </div>
-            <div class="header-actions">
-                <div class="user-avatar">
-                    <i class="fas fa-user-circle"></i>
-                    <span th:if="${username != null}" th:text="${username}">Admin</span>
-                </div>
-            </div>
+            <!-- Fragmento por defecto (las páginas pueden incluirlo o hacerlo manual) -->
+            <div th:replace="~{fragmentos/header/header-actions :: header-actions}"></div>
         </header>
 
-        <!-- CONTENIDO ESPECÍFICO -->
         <section class="content-section" layout:fragment="content">
         </section>
 
     </main>
 
-    <!-- Scripts comunes -->
     <script th:src="@{/js/admin.js}"></script>
     <th:block layout:fragment="scripts-extra"></th:block>
 
