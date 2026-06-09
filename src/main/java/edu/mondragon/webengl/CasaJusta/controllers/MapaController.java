@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.security.core.Authentication;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,7 +27,17 @@ public class MapaController {
             @RequestParam(required = false) String filtroMascotas,
             @RequestParam(required = false) String filtroFumador,
             @RequestParam(required = false) String filtroPareja,
+            Authentication authentication, 
             Model model) {
+
+        // ===== DATOS DEL USUARIO LOGUEADO 
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            model.addAttribute("username", username);
+            
+            String rol = authentication.getAuthorities().iterator().next().getAuthority();
+            model.addAttribute("rol", rol);
+        }
 
         List<Vivienda> viviendas = viviendaService.findAll().stream()
                 .filter(v -> v.getEstado() == null || !v.getEstado())

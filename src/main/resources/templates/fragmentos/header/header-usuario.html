@@ -20,11 +20,21 @@
                     <a th:href="@{/mapa}" class="navbar-btn">Mapa</a>
                 </div>
                 
-                <!-- Usuario a la derecha -->
-                <a th:href="@{/usuario/configuracion}" class="user-icon" th:if="${username != null}">
-                    <i class="fas fa-user-circle"></i>
-                    <span th:text="${username}">Usuario</span>
-                </a>
+                <!-- Logout + Usuario a la derecha -->
+                <div class="user-actions" th:if="${username != null}">
+                    <!-- LOGOUT a la izquierda del usuario -->
+                    <form th:action="@{/logout}" method="post" class="logout-form">
+                        <button type="submit" class="btn-logout" title="Cerrar sesión">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </form>
+                    
+                    <!-- USUARIO a la derecha del logout -->
+                    <a th:href="@{/usuario/configuracion}" class="user-icon">
+                        <i class="fas fa-user-circle"></i>
+                        <span th:text="${username}">Usuario</span>
+                    </a>
+                </div>
             </div>
         </nav>
     </div>
