@@ -15,4 +15,6 @@ public interface MensajeRepository extends JpaRepository<Mensaje, Integer> {
     // ===== NUEVO: Listar mensajes por chatId (para borrar) =====
     List<Mensaje> findByChat_ChatId(Integer chatId);
     // ==========================================================
+
+    List<Mensaje> findByUsuario_Dni(String dni);
 }

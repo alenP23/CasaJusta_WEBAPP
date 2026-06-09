@@ -13,6 +13,7 @@ import edu.mondragon.webengl.CasaJusta.repository.SolicitudRepository;
 import edu.mondragon.webengl.CasaJusta.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -181,5 +182,40 @@ public class ChatServiceImpl implements ChatService {
                 solicitudRepository.save(solicitud);
             }
         }
+    }
+
+    @Override
+    @Transactional
+    public void resetearChat(Integer chatId) {
+        // 1. Borrar todos los mensajes del chat
+        List<Mensaje> mensajes = mensajeRepository.findByChat_ChatId(chatId);
+        if (!mensajes.isEmpty()) {
+            mensajeRepository.deleteAll(mensajes);
+        }
+
+        // 2. Resetear estado del chat (volver a abierto)
+        ChatGrupal chat = chatGrupalRepository.findById(chatId)
+            .orElseThrow(() -> new IllegalArgumentException("Chat no encontrado"));
+        chat.setEstado(false);
+        chatGrupalRepository.save(chat);
+
+        // NOTA: No borramos las pertenencias porque ya se borraron antes
+        // Si llegamos aquí, el chat ya está vacío de pertenencias
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void limpiarChat(Integer chatId) {
+        // 1. Borrar todos los mensajes del chat
+        List<Mensaje> mensajes = mensajeRepository.findByChat_ChatId(chatId);
+        if (!mensajes.isEmpty()) {
+            mensajeRepository.deleteAll(mensajes);
+        }
+
+        // 2. Resetear estado del chat (volver a abierto)
+        ChatGrupal chat = chatGrupalRepository.findById(chatId)
+            .orElseThrow(() -> new IllegalArgumentException("Chat no encontrado"));
+        chat.setEstado(false);
+        chatGrupalRepository.save(chat);
     }
 }

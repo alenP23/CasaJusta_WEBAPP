@@ -6,6 +6,7 @@ import edu.mondragon.webengl.CasaJusta.model.Solicitud;
 import edu.mondragon.webengl.CasaJusta.model.Usuario;
 import edu.mondragon.webengl.CasaJusta.model.Vivienda;
 import edu.mondragon.webengl.CasaJusta.repository.FotoViviendaRepository;
+import edu.mondragon.webengl.CasaJusta.service.ChatService;
 import edu.mondragon.webengl.CasaJusta.service.SolicitudService;
 import edu.mondragon.webengl.CasaJusta.service.UsuarioService;
 import edu.mondragon.webengl.CasaJusta.service.ViviendaService;
@@ -38,6 +39,9 @@ public class VistaPisosController {
 
     @Autowired
     private SolicitudService solicitudService;
+
+    @Autowired
+    private ChatService chatService;
 
     private boolean esAdmin(Authentication authentication) {
         if (authentication == null) return false;
@@ -128,13 +132,11 @@ public class VistaPisosController {
         model.addAttribute("fotosPortada", fotosPortada);
 
         // ===== DATOS DE SOLICITUDES (para el botón apuntarse) =====
-        // CORRECCIÓN: Asegurar que TODAS las viviendas tienen entrada en los mapas
         if (usuarioActual != null) {
             Map<Integer, Boolean> usuarioApuntado = new HashMap<>();
             Map<Integer, Long> contadorInscritos = new HashMap<>();
 
             for (Vivienda v : viviendas) {
-                // Inicializar SIEMPRE ambos mapas para cada vivienda
                 boolean apuntado = solicitudService.usuarioYaApuntado(
                     usuarioActual.getUsuarioId(), v.getViviendaID());
                 long inscritos = solicitudService.countByViviendaId(v.getViviendaID());
@@ -142,7 +144,6 @@ public class VistaPisosController {
                 usuarioApuntado.put(v.getViviendaID(), apuntado);
                 contadorInscritos.put(v.getViviendaID(), inscritos);
                 
-                // DEBUG: Imprimir en consola para verificar
                 System.out.println("DEBUG Vivienda " + v.getViviendaID() + 
                     ": apuntado=" + apuntado + 
                     ", inscritos=" + inscritos + 
@@ -219,6 +220,14 @@ public class VistaPisosController {
             usuario.getUsuarioId(), id);
 
         if (solicitudOpt.isPresent()) {
+            // ✅ OPCIÓN A: Siempre limpiar el chat al desapuntarse
+            chatService.obtenerChatPorVivienda(id).ifPresent(chat -> {
+                // 1. Eliminar al usuario del chat
+                chatService.eliminarUsuarioDelChat(chat.getChatId(), usuario.getDni());
+                // 2. SIEMPRE limpiar mensajes y resetear estado (chat limpio para todos)
+                chatService.limpiarChat(chat.getChatId());
+            });
+            
             solicitudService.deleteById(solicitudOpt.get().getSolicitudId());
             redirectAttrs.addFlashAttribute("success", "Te has desapuntado correctamente");
         } else {
@@ -308,6 +317,14 @@ public class VistaPisosController {
             usuario.getUsuarioId(), id);
 
         if (solicitudOpt.isPresent()) {
+            // ✅ OPCIÓN A: Siempre limpiar el chat al desapuntarse
+            chatService.obtenerChatPorVivienda(id).ifPresent(chat -> {
+                // 1. Eliminar al usuario del chat
+                chatService.eliminarUsuarioDelChat(chat.getChatId(), usuario.getDni());
+                // 2. SIEMPRE limpiar mensajes y resetear estado (chat limpio para todos)
+                chatService.limpiarChat(chat.getChatId());
+            });
+            
             solicitudService.deleteById(solicitudOpt.get().getSolicitudId());
             
             long nuevosInscritos = solicitudService.countByViviendaId(id);
@@ -348,7 +365,7 @@ public class VistaPisosController {
         return "property-detail";
     }
 
-     // ===== COMPRAR VIVIENDA =====
+    // ===== COMPRAR VIVIENDA =====
     @PostMapping("/api/vivienda/{id}/comprar")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> comprarVivienda(@PathVariable Integer id,
@@ -377,11 +394,9 @@ public class VistaPisosController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        // Marcar vivienda como vendida
         vivienda.setEstado(true);
         viviendaService.save(vivienda);
 
-        // Crear solicitud completada
         Solicitud solicitud = new Solicitud();
         solicitud.setUsuario(usuario);
         solicitud.setVivienda(vivienda);
@@ -422,11 +437,9 @@ public class VistaPisosController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        // Marcar vivienda como alquilada
         vivienda.setEstado(true);
         viviendaService.save(vivienda);
 
-        // Crear solicitud completada
         Solicitud solicitud = new Solicitud();
         solicitud.setUsuario(usuario);
         solicitud.setVivienda(vivienda);
@@ -455,18 +468,15 @@ public class VistaPisosController {
         model.addAttribute("username", username);
         model.addAttribute("usuario", usuario);
 
-        // Buscar solicitudes completadas del usuario
         List<Solicitud> solicitudesCompletadas = solicitudService.findByUsuarioIdAndEstado(
             usuario.getUsuarioId(), "completada");
 
-        // Extraer las viviendas
         List<Vivienda> misViviendas = solicitudesCompletadas.stream()
             .map(Solicitud::getVivienda)
             .collect(Collectors.toList());
 
         model.addAttribute("viviendas", misViviendas);
 
-        // Fotos portada
         Map<Integer, String> fotosPortada = new HashMap<>();
         for (Vivienda v : misViviendas) {
             Optional<FotoVivienda> foto = fotoViviendaRepository
@@ -477,5 +487,4 @@ public class VistaPisosController {
 
         return "mis_propiedades";
     }
-    
 }
