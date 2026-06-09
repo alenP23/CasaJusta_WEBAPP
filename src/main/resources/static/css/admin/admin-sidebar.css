@@ -85,7 +85,6 @@
         transition: transform 0.3s;
     }
     
-    .sidebar.open {
-        transform: translateX(0);
-    }
+    /* El sidebar NO se abre con clase .open en móvil 
+       (ya no usamos el botón hamburguesa) */
 }

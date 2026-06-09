@@ -1,4 +1,4 @@
-// ========== FUNCIONES GLOBALES (accesibles desde onclick en HTML) ==========
+// ========== FUNCIONES GLOBALES ==========
 
 function toggleEdicion() {
     const modoLectura = document.getElementById('modoLectura');
@@ -20,26 +20,52 @@ function toggleEdicion() {
     }
 }
 
-// ========== DOMContentLoaded (todo lo demás) ==========
+// ========== DOMContentLoaded ==========
 document.addEventListener('DOMContentLoaded', function() {
 
     // ============================================================
-    // CÁLCULO AUTOMÁTICO DE PRECIO (NUEVO)
+    // MENÚ DESPLEGABLE DEL USUARIO (SOLO EN MÓVIL)
     // ============================================================
+    const userAvatar = document.getElementById('userAvatar');
+    const userDropdown = document.getElementById('userDropdown');
 
-    // Constantes de las rectas de regresión
+    // Solo activar el dropdown si estamos en móvil (ancho <= 768)
+    function esMovil() {
+        return window.innerWidth <= 768;
+    }
+
+    if (userAvatar && userDropdown) {
+        userAvatar.addEventListener('click', function(e) {
+            // Solo abrir dropdown en móvil
+            if (!esMovil()) return;
+            
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+
+        // Cerrar al pulsar fuera
+        document.addEventListener('click', function(e) {
+            if (!userAvatar.contains(e.target)) {
+                userDropdown.classList.remove('active');
+            }
+        });
+        
+        // Cerrar al redimensionar a ordenador
+        window.addEventListener('resize', function() {
+            if (!esMovil()) {
+                userDropdown.classList.remove('active');
+            }
+        });
+    }
+
+    // ============================================================
+    // CÁLCULO AUTOMÁTICO DE PRECIO
+    // ============================================================
     const PRECIO_COMPRA = { intercepto: -29276.88, pendiente: 2825.89 };
     const PRECIO_ALQUILER = { intercepto: 307.72, pendiente: 7.42 };
 
-    /**
-     * Calcula el precio estimado según tipo de operación y metros cuadrados
-     * @param {string} tipo - "alquiler" o "compra"
-     * @param {number} metros - metros cuadrados
-     * @returns {number|null} - precio calculado o null si no se puede calcular
-     */
     function calcularPrecio(tipo, metros) {
         if (!tipo || !metros || metros <= 0) return null;
-
         let precio;
         if (tipo === 'compra') {
             precio = PRECIO_COMPRA.intercepto + (PRECIO_COMPRA.pendiente * metros);
@@ -48,36 +74,25 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             return null;
         }
-
-        // Redondear a 2 decimales
         return Math.round(precio * 100) / 100;
     }
 
-    /**
-     * Formatea un número como moneda española
-     */
     function formatearPrecio(valor) {
         if (valor === null || valor === undefined) return '';
         return valor.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    /**
-     * Actualiza el campo de precio en el modal de crear
-     */
     function actualizarPrecioCrear() {
         const tipo = document.getElementById('propType')?.value;
         const metros = parseFloat(document.getElementById('propMeters')?.value);
         const precioInput = document.getElementById('propPrice');
         const precioInfo = document.getElementById('precioInfo');
-
         if (!precioInput) return;
-
         const precio = calcularPrecio(tipo, metros);
-
         if (precio !== null && precio > 0) {
             precioInput.value = precio;
             precioInfo.textContent = `Precio estimado: ${formatearPrecio(precio)} € (${tipo === 'compra' ? 'compra' : 'alquiler'}, ${metros} m²)`;
-            precioInfo.style.color = '#16a34a'; // verde
+            precioInfo.style.color = '#16a34a';
         } else {
             precioInput.value = '';
             precioInput.placeholder = 'Selecciona tipo y metros';
@@ -86,23 +101,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    /**
-     * Actualiza el campo de precio en el modal de editar
-     */
     function actualizarPrecioEditar() {
         const tipo = document.getElementById('editType')?.value;
         const metros = parseFloat(document.getElementById('editMeters')?.value);
         const precioInput = document.getElementById('editPrice');
         const precioInfo = document.getElementById('editPrecioInfo');
-
         if (!precioInput) return;
-
         const precio = calcularPrecio(tipo, metros);
-
         if (precio !== null && precio > 0) {
             precioInput.value = precio;
             precioInfo.textContent = `Precio estimado: ${formatearPrecio(precio)} € (${tipo === 'compra' ? 'compra' : 'alquiler'}, ${metros} m²)`;
-            precioInfo.style.color = '#16a34a'; // verde
+            precioInfo.style.color = '#16a34a';
         } else {
             precioInput.value = '';
             precioInfo.textContent = 'Se calcula automáticamente según tipo y m²';
@@ -110,31 +119,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Event listeners para el modal CREAR
     const propType = document.getElementById('propType');
     const propMeters = document.getElementById('propMeters');
+    if (propType) propType.addEventListener('change', actualizarPrecioCrear);
+    if (propMeters) propMeters.addEventListener('input', actualizarPrecioCrear);
 
-    if (propType) {
-        propType.addEventListener('change', actualizarPrecioCrear);
-    }
-    if (propMeters) {
-        propMeters.addEventListener('input', actualizarPrecioCrear);
-    }
-
-    // Event listeners para el modal EDITAR
     const editType = document.getElementById('editType');
     const editMeters = document.getElementById('editMeters');
-
-    if (editType) {
-        editType.addEventListener('change', actualizarPrecioEditar);
-    }
-    if (editMeters) {
-        editMeters.addEventListener('input', actualizarPrecioEditar);
-    }
-
-    // ============================================================
-    // FIN CÁLCULO AUTOMÁTICO DE PRECIO
-    // ============================================================
+    if (editType) editType.addEventListener('change', actualizarPrecioEditar);
+    if (editMeters) editMeters.addEventListener('input', actualizarPrecioEditar);
 
     // ========== MODAL AGREGAR ANUNCIO ==========
     const addPropertyBtn = document.getElementById('addPropertyBtn');
@@ -144,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (addPropertyBtn) {
         addPropertyBtn.addEventListener('click', function(e) {
-            e.stopPropagation(); // Evitar que el click se propague
+            e.stopPropagation();
             if (modalOverlay) {
                 modalOverlay.classList.add('active');
                 document.body.style.overflow = 'hidden';
@@ -152,19 +145,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========== TOGGLES PARA MODAL CREAR ==========
     window.toggleCrearFilter = function(nombre) {
         const capitalized = nombre.charAt(0).toUpperCase() + nombre.slice(1);
         const pill = document.getElementById('toggleCrear' + capitalized);
         const input = document.getElementById('inputCrear' + capitalized);
-
         if (!pill || !input) return;
-
         const actual = input.value === 'true';
         const nuevo = !actual;
-
         input.value = nuevo ? 'true' : 'false';
-
         if (nuevo) {
             pill.classList.add('active');
             pill.classList.remove('inactive');
@@ -179,7 +167,6 @@ document.addEventListener('DOMContentLoaded', function() {
             modalOverlay.classList.remove('active');
             document.body.style.overflow = '';
         }
-        // Resetear formulario y precio
         const form = document.getElementById('addPropertyForm');
         if (form) form.reset();
         actualizarPrecioCrear();
@@ -193,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========== SUBIDA DE IMAGEN EN MODAL CREAR ==========
+    // ========== SUBIDA DE IMAGEN ==========
     const imageUploadArea = document.getElementById('imageUploadArea');
     const propImage = document.getElementById('propImage');
     const uploadPlaceholder = document.getElementById('uploadPlaceholder');
@@ -202,23 +189,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const removeImage = document.getElementById('removeImage');
 
     if (imageUploadArea && propImage) {
-        // Click en el área abre el input file
         imageUploadArea.addEventListener('click', function(e) {
             if (e.target.closest('.remove-image')) return;
             propImage.click();
         });
-
-        // Arrastrar y soltar
         imageUploadArea.addEventListener('dragover', function(e) {
             e.preventDefault();
             this.style.borderColor = 'var(--primary)';
         });
-
         imageUploadArea.addEventListener('dragleave', function(e) {
             e.preventDefault();
             this.style.borderColor = '';
         });
-
         imageUploadArea.addEventListener('drop', function(e) {
             e.preventDefault();
             this.style.borderColor = '';
@@ -228,8 +210,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 mostrarPreview(files[0]);
             }
         });
-
-        // Selección normal
         propImage.addEventListener('change', function() {
             if (this.files && this.files[0]) {
                 mostrarPreview(this.files[0]);
@@ -263,7 +243,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteModalOverlay = document.getElementById('deleteModalOverlay');
     const closeDeleteModal = document.getElementById('closeDeleteModal');
     const cancelDelete = document.getElementById('cancelDelete');
-    const deleteForm = document.getElementById('deleteForm');
     const deleteIdInput = document.getElementById('deleteId');
 
     window.openDeleteModal = function(id) {
@@ -290,26 +269,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-     // ========== MODAL ELIMINAR USUARIO (NUEVO) ==========
+    // ========== MODAL ELIMINAR USUARIO ==========
     const deleteUserModalOverlay = document.getElementById('deleteUserModalOverlay');
     const closeDeleteUserModal = document.getElementById('closeDeleteUserModal');
     const cancelDeleteUser = document.getElementById('cancelDeleteUser');
-    const deleteUserForm = document.getElementById('deleteUserForm');
     const deleteUserIdInput = document.getElementById('deleteUserId');
     const deleteUserName = document.getElementById('deleteUserName');
 
-    // Event delegation para los botones de eliminar usuario
     document.addEventListener('click', function(e) {
         const btn = e.target.closest('.btn-eliminar-usuario');
         if (!btn) return;
-
         e.stopPropagation();
         const id = btn.getAttribute('data-id');
         const nombre = btn.getAttribute('data-nombre');
-
         if (deleteUserIdInput) deleteUserIdInput.value = id;
         if (deleteUserName) deleteUserName.textContent = nombre;
-
         if (deleteUserModalOverlay) {
             deleteUserModalOverlay.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -341,16 +315,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.openEditModal = function(id) {
         const card = document.querySelector(`.admin-property-card[data-id="${id}"]`);
-
         if (!card) {
             console.error('No se encontró la tarjeta con ID:', id);
             return;
         }
-
         const titulo = card.querySelector('.property-details h3')?.textContent || '';
         const tipo = card.dataset.tipo || 'alquiler';
         const precio = card.dataset.precio || '';
-
         document.getElementById('editId').value = id;
         document.getElementById('editTitle').value = titulo;
         document.getElementById('editType').value = tipo;
@@ -367,12 +338,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('editBathrooms').value = data.banos || 0;
                 document.getElementById('editMeters').value = data.metrosCuadrados || 0;
                 document.getElementById('editPersons').value = data.cupoPersonas || 0;
-
                 setToggle('fumador', data.fumador);
                 setToggle('mascotas', data.mascotas);
                 setToggle('pareja', data.pareja);
-
-                // Actualizar precio automático con los datos cargados
                 actualizarPrecioEditar();
             })
             .catch(err => {
@@ -394,27 +362,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // ========== FILTRAR POR CONVIVENCIA ==========
     window.filtrarPorConvivencia = function(tipo, valor) {
-        // Evitar que se propague el click a la tarjeta
         event.stopPropagation();
-
         const cards = document.querySelectorAll('.admin-property-card[data-id]');
-
         cards.forEach(card => {
             const cardValor = card.dataset[tipo] === 'true';
-
             if (cardValor === valor) {
                 card.style.display = 'flex';
             } else {
                 card.style.display = 'none';
             }
         });
-
-        // Ocultar también la tarjeta de "Agregar"
         const addCard = document.getElementById('addPropertyBtn');
         if (addCard) addCard.style.display = 'none';
-
         console.log(`Filtrado por ${tipo}: ${valor}`);
     };
 
@@ -422,12 +382,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const capitalized = nombre.charAt(0).toUpperCase() + nombre.slice(1);
         const pill = document.getElementById('toggle' + capitalized);
         const input = document.getElementById('input' + capitalized);
-
         if (!pill || !input) return;
-
         const boolValor = valor === true || valor === 'true' || valor === 1;
         input.value = boolValor ? 'true' : 'false';
-
         if (boolValor) {
             pill.classList.add('active');
             pill.classList.remove('inactive');
@@ -441,14 +398,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const capitalized = nombre.charAt(0).toUpperCase() + nombre.slice(1);
         const pill = document.getElementById('toggle' + capitalized);
         const input = document.getElementById('input' + capitalized);
-
         if (!pill || !input) return;
-
         const actual = input.value === 'true';
         const nuevo = !actual;
-
         input.value = nuevo ? 'true' : 'false';
-
         if (nuevo) {
             pill.classList.add('active');
             pill.classList.remove('inactive');
@@ -481,37 +434,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // ========== CERRAR CON ESCAPE ==========
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            if (modalOverlay && modalOverlay.classList.contains('active')) {
-                closeAddModal();
-            }
-            if (deleteModalOverlay && deleteModalOverlay.classList.contains('active')) {
-                closeDeleteModalFunc();
-            }
-            if (deleteUserModalOverlay && deleteUserModalOverlay.classList.contains('active')) {
-                closeDeleteUserModalFunc();
-            }
-            if (editModalOverlay && editModalOverlay.classList.contains('active')) {
-                closeEditModalFunc();
-            }
+            if (modalOverlay && modalOverlay.classList.contains('active')) closeAddModal();
+            if (deleteModalOverlay && deleteModalOverlay.classList.contains('active')) closeDeleteModalFunc();
+            if (deleteUserModalOverlay && deleteUserModalOverlay.classList.contains('active')) closeDeleteUserModalFunc();
+            if (editModalOverlay && editModalOverlay.classList.contains('active')) closeEditModalFunc();
         }
     });
 
-    console.log('✅ Admin JS cargado correctamente (con cálculo automático de precio)');
+    console.log('✅ Admin JS cargado correctamente');
 
     // ========== MARCAR PESTAÑA ACTIVA EN SIDEBAR ==========
     function marcarPestanaActiva() {
         const path = window.location.pathname;
         const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
-
         navItems.forEach(item => item.classList.remove('active'));
-
         let mejorCoincidencia = null;
         let mejorLongitud = 0;
-
         navItems.forEach(item => {
             const href = item.getAttribute('href');
             if (!href) return;
-
             if (path === href) {
                 mejorCoincidencia = item;
                 mejorLongitud = href.length;
@@ -520,7 +461,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 mejorLongitud = href.length;
             }
         });
-
         if (mejorCoincidencia) {
             mejorCoincidencia.classList.add('active');
         }

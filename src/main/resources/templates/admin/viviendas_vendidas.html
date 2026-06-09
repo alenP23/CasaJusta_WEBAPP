@@ -11,12 +11,8 @@
         <div class="header-filters">
             <h1 class="page-title">Viviendas Vendidas/Alquiladas</h1>
         </div>
-        <div class="header-actions">
-            <div class="user-avatar">
-                <i class="fas fa-user-circle"></i>
-                <span th:if="${username != null}" th:text="${username}">Admin</span>
-            </div>
-        </div>
+        <!-- INCLUIMOS EL FRAGMENTO DE ACCIONES -->
+        <div th:replace="~{fragmentos/header/header-actions :: header-actions}"></div>
     </header>
 
     <div layout:fragment="content">
