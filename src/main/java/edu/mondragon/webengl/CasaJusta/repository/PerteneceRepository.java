@@ -17,4 +17,6 @@ public interface PerteneceRepository extends JpaRepository<Pertenece, Integer> {
     long countByChat_ChatIdAndVotoSiTrue(Integer chatId);
     
     long countByChat_ChatId(Integer chatId);
+
+    List<Pertenece> findByUsuario_Dni(String dni);
 }

@@ -206,3 +206,5 @@
 ✅ Backup guardado en: /mnt/c/Users/alen_p/Desktop/backups/backup_casajusta_20260606_205508.sql
 /home/alen_p/git/spring-kaixo-mundua/scripts/backup_bd_CasaJusta.sh: line 14: /mnt/c/Users/alen_p/Desktop/backups/backup_casajusta_20260606_210008.sql: Permission denied
 ✅ Backup guardado en: /mnt/c/Users/alen_p/Desktop/backups/backup_casajusta_20260606_210008.sql
+/home/alen_p/git/spring-kaixo-mundua/scripts/backup_bd_CasaJusta.sh: line 14: /mnt/c/Users/alen_p/Desktop/backups/backup_casajusta_20260609_000006.sql: Permission denied
+✅ Backup guardado en: /mnt/c/Users/alen_p/Desktop/backups/backup_casajusta_20260609_000006.sql
