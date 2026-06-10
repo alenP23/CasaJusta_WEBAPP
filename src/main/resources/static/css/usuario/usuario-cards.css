@@ -380,3 +380,19 @@
 .card-link:hover {
     text-decoration: none;
 }
+
+/* En Mis Propiedades, ocultar el botón favorito para que contactar ocupe todo */
+
+
+.property-actions.mis-propiedades {
+    display: flex;
+}
+
+.property-actions.mis-propiedades .btn-contact {
+    flex: 1;
+    width: 100%;
+}
+
+.property-actions.mis-propiedades .btn-favorite {
+    display: none;
+}

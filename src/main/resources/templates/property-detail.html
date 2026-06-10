@@ -16,10 +16,6 @@
                 <span>CasaJusta</span>
             </a>
             <div class="header-actions">
-                <button class="btn-share">
-                    <i class="fas fa-share-alt"></i>
-                    Compartir Piso
-                </button>
                 <div class="user-icon">
                     <i class="fas fa-user-circle"></i>
                     <span th:if="${username != null}" th:text="${username}"></span>
@@ -144,7 +140,7 @@
                         Contactar
                     </button>
                     
-                    <button th:if="${esAdmin}" class="btn-contact" th:onclick="|window.location.href='@{/admin/anuncio/editar/}' + ${vivienda.viviendaID}|">
+                    <button th:if="${esAdmin}" class="btn-contact" th:onclick="|window.location.href='@{/admin/anuncio/}' + ${vivienda.viviendaID}|">
                         <i class="fas fa-pen"></i>
                         Editar anuncio
                     </button>
