@@ -32,7 +32,7 @@
 
             <!-- Tarjetas de vivienda usando fragmento -->
             <div th:each="vivienda : ${viviendas}" 
-                 th:insert="~{fragmentos/tarjeta/tarjeta-usuario :: tarjeta-usuario(${vivienda})}">
+                 th:insert="~{fragmentos/tarjeta/tarjeta-usuario :: tarjeta-usuario(${vivienda}, false)}">
             </div>
 
         </div>

@@ -3,7 +3,7 @@
 <body>
 
     <!-- FRAGMENTO USUARIO -->
-    <div th:fragment="tarjeta-usuario(vivienda)" class="property-card" 
+    <div th:fragment="tarjeta-usuario(vivienda, esMisPropiedades)" class="property-card" 
          th:data-id="${vivienda.viviendaID}">
         
         <!-- ENLACE A DETALLE: solo imagen + info -->
@@ -52,10 +52,8 @@
         
         <!-- BOTONES: fuera del enlace, no navegan -->
         <div class="property-actions"
-             th:classappend="${vivienda.tipoOperacion == 'compra' || (vivienda.tipoOperacion == 'alquiler' && vivienda.cupoPersonas != null && vivienda.cupoPersonas == 1)} ? ' property-actions-no-apuntarse' : ''">
-            
-            <!-- Botón Contactar (siempre visible) -->
-            <button class="btn-contact" type="button" th:onclick="|contactarAnunciante(${vivienda.viviendaID})|">
+     th:classappend="${(esMisPropiedades != null && esMisPropiedades) ? ' mis-propiedades' : ((vivienda.tipoOperacion == 'compra' || (vivienda.tipoOperacion == 'alquiler' && vivienda.cupoPersonas != null && vivienda.cupoPersonas == 1)) ? ' property-actions-no-apuntarse' : '')}">            
+     <button class="btn-contact" type="button" th:onclick="|contactarAnunciante(${vivienda.viviendaID})|">
                 <i class="fas fa-envelope"></i> Contactar
             </button>
             
@@ -117,7 +115,7 @@
             </th:block>
             
             <!-- ===== COMPRA: Botón Comprar ===== -->
-            <th:block th:if="${vivienda.tipoOperacion == 'compra'}">
+            <th:block th:if="${vivienda.tipoOperacion == 'compra' and (esMisPropiedades == null or !esMisPropiedades)}">
                 <button class="btn-comprar" type="button" th:onclick="|iniciarCompra(${vivienda.viviendaID})|">
                     <i class="fas fa-shopping-cart"></i> Comprar
                 </button>

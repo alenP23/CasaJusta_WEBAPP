@@ -26,7 +26,7 @@
 
             <!-- Tarjetas de vivienda -->
             <div th:each="vivienda : ${viviendas}" 
-                 th:insert="~{fragmentos/tarjeta/tarjeta-usuario :: tarjeta-usuario(${vivienda})}">
+                 th:insert="~{fragmentos/tarjeta/tarjeta-usuario :: tarjeta-usuario(${vivienda}, true)}">
             </div>
 
         </div>
